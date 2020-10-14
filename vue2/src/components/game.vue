@@ -13,7 +13,7 @@
       </div>
     </div>
 
-    <div class="row content product">
+    <div class="row content game">
       <div class="row body">
         <div class="col-sm-12">
           <div class="row title">
@@ -43,6 +43,15 @@
             </div>
           </div>
         </div>
+        <div class="row body" v-for="index in height" :key="index">
+          <div class="col-sm-4"  v-for="index2 in width" :key="index2">
+            <div class="row thumbnail">
+              <div class="col-sm-12">
+                aaaaaa
+              </div>
+            </div>          
+        </div>
+
       </div>
     </div>
   </div>
