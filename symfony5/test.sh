@@ -35,7 +35,7 @@ fi
 # #67 Execute `lint.sh`, otherwise I tend to forget. Tests are executed before every commit.
 ./lint.sh
 
-# #43 Fill test tables before executing tests.
-php bin/console doctrine:fixtures:load -n ${FIXTURE_ARGS} -e test
+# #12 Fill test tables before executing tests.
+# php bin/console doctrine:fixtures:load -n ${FIXTURE_ARGS} -e test
 
 ./vendor/bin/phpunit tests/
