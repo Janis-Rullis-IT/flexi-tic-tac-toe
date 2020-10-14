@@ -1,5 +1,17 @@
 version: '3.6'
 services:
+    lm1-vue2:
+        container_name: lm1-vue2
+        build:
+            context: ./vue2
+            dockerfile: Dockerfile
+        environment:
+            VIRTUAL_HOST: lm1.local
+        volumes:
+            - './vue2:/var/www:rw'
+        networks:
+            lm1-net:
+                ipv4_address: 172.71.3.10
     lm1-symfony5:
         container_name: lm1-symfony5
         build:

@@ -23,6 +23,7 @@ It will download, install and prepare all the required software.
 This transletes the machines address to the domain-name.
 
 ```
+172.71.3.10     lm1.local
 172.71.3.11     api.lm1.local
 172.71.3.14     pma.lm1.local
 ```
