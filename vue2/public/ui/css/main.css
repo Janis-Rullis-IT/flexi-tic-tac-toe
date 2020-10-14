@@ -1,0 +1,50 @@
+.width-50{
+	width: 50px;
+}
+.width-100{
+	width: 100px;
+}
+.width-150{
+	width: 150px;
+}
+.body{
+	min-height: 450px;
+	background: lightgray;
+	padding: 25px;
+}
+.no-bullet{
+	list-style: none;
+}
+.float-right{
+	float: right;
+}
+.float-left{
+	float: left;
+}
+.txt-center{
+	text-align: center;
+}
+.txt-right{
+	text-align: right;
+}
+
+/* https://github.com/SortableJS/Vue.Draggable/blob/master/example/components/simple.vue */
+.list-group-item:first-child {
+    border-top-left-radius: .25rem;
+    border-top-right-radius: .25rem;
+}
+.list-group-item {
+    position: relative;
+    display: block;
+    padding: .75rem 1.25rem;
+    margin-bottom: -1px;
+    background-color: #fff;
+    border: 1px solid rgba(0,0,0,.125);
+}
+.list-group-item {
+    cursor: move;
+}
+.ghost {
+  opacity: 0.5;
+  background: #c8ebfb;
+}
