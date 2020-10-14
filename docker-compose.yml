@@ -1,0 +1,63 @@
+version: '3.6'
+services:
+    lm1-symfony5:
+        container_name: lm1-symfony5
+        build:
+            context: ./symfony5
+            dockerfile: Dockerfile
+        restart: unless-stopped
+        depends_on:
+            - lm1-pma            
+        environment:            
+            VIRTUAL_HOST: api.lm1.local
+        volumes:
+            - './symfony5:/var/www:rw'
+        networks:
+            lm1-net:
+                ipv4_address: 172.71.3.11
+    lm1-mysql:
+        container_name: lm1-mysql
+        image: 'mariadb:10.3.22-bionic'
+        restart: unless-stopped
+        ports:
+            - '3306:3306'
+        volumes:
+            - type: bind
+              source: ./db/mysql
+              target: /var/lib/mysql
+            - type: bind
+              source: ./db/docker-entrypoint-initdb.d
+              target: /docker-entrypoint-initdb.d
+        environment:
+            TZ: Europe/Riga
+            LANG: en_US.UTF-8
+            MYSQL_ROOT_PASSWORD: $MYSQL_PASSWORD
+            MYSQL_USER: lm1-user
+            MYSQL_PASSWORD: $MYSQL_PASSWORD
+            INIT_TOKUDB: 1
+            INIT_ROCKSDB: 0
+        networks:
+            lm1-net:
+                ipv4_address: 172.71.3.13
+        command: '--sql-mode= --server-id=1 --log-bin=mysql-bin --expire_logs_days=3'
+    lm1-pma:
+        container_name: lm1-pma
+        image: 'phpmyadmin/phpmyadmin'
+        restart: always
+        depends_on:
+        - lm1-mysql
+        environment:
+            MYSQL_ROOT_PASSWORD: $MYSQL_PASSWORD
+            MYSQL_USER: lm1-user
+            MYSQL_PASSWORD: $MYSQL_PASSWORD
+            PMA_HOST: lm1-mysql  
+            PMA_PORT: 3306
+        networks:
+            lm1-net:
+                ipv4_address: 172.71.3.14
+networks:
+    lm1-net:
+        ipam:
+            driver: default
+            config:
+                - subnet: 172.71.0.0/16
