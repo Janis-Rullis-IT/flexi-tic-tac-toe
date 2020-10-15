@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-namespace App\Tests;
+namespace App\Tests\WxH;
 
 use App\Entity\Game;
 use App\Exception\GameValidatorException;
@@ -16,7 +16,7 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
  * 
  * * Grid has already been chosen					0
  */
-class GameUnitTest extends KernelTestCase
+class GridHeightUnitTest extends KernelTestCase
 {
 
 	private $c;
@@ -29,55 +29,56 @@ class GameUnitTest extends KernelTestCase
 		$this->gameCreatorService = $this->c->get('test.' . GameCreatorService::class);
 	}
 
-	public function testValidWith()
+	public function testValidHeight()
 	{
 		$width = 3;
 		$game = new Game();
-		$game->setWidth($width);
-		$this->assertEquals($width, $game->getWidth());
+		$game->setHeight($width);
+		$this->assertEquals($width, $game->getHeight());
 	}
 
-//	public function testWidthAlreadySet()
+	// #12 TODO: Implement this later when status field is added.
+//	public function testHeightAlreadySet()
 //	{
 //		// #12 TODO: Load with status 'ongoing'.
 ////		$game
 //		$this->expectException(GameValidatorException::class);
-//		$this->expectExceptionCode(Game::ERROR_WIDTH_INVALID_CODE, Game::ERROR_WIDTH_INVALID);
-//		$game->setWidth(3);
+//		$this->expectExceptionCode(Game::ERROR_HEIGHT_WIDTH_INVALID_CODE, Game::ERROR_HEIGHT_WIDTH_INVALID);
+//		$game->setHeight(3);
 //	}
 
 
-	public function testWidthNotInteger()
+	public function testHeightNotInteger()
 	{
 		$game = new Game();
 
 		$this->expectException(\TypeError::class);
-		$game->setWidth('a');
+		$game->setHeight('a');
 	}
 
-	public function testWidthNotInteger2()
+	public function testHeightNotInteger2()
 	{
 		$game = new Game();
 
 		$this->expectException(\TypeError::class);
-		$game->setWidth(3.9);
+		$game->setHeight(3.9);
 	}
 
-	public function testWidthTooSmall()
+	public function testHeightTooSmall()
 	{
 		$game = new Game();
 
 		$this->expectException(GameValidatorException::class);
-		$this->expectExceptionCode(Game::ERROR_WIDTH_INVALID_CODE, Game::ERROR_WIDTH_INVALID);
-		$game->setWidth(Game::MIN_WIDTH - 1);
+		$this->expectExceptionCode(Game::ERROR_HEIGHT_WIDTH_INVALID_CODE, Game::ERROR_HEIGHT_WIDTH_INVALID);
+		$game->setHeight(Game::MIN_HEIGHT_WIDTH - 1);
 	}
 
-	public function testWidthTooBig()
+	public function testHeightTooBig()
 	{
 		$game = new Game();
 
 		$this->expectException(GameValidatorException::class);
-		$this->expectExceptionCode(Game::ERROR_WIDTH_INVALID_CODE, Game::ERROR_WIDTH_INVALID);
-		$game->setWidth(Game::MAX_WIDTH + 1);
+		$this->expectExceptionCode(Game::ERROR_HEIGHT_WIDTH_INVALID_CODE, Game::ERROR_HEIGHT_WIDTH_INVALID);
+		$game->setHeight(Game::MAX_HEIGHT_WIDTH + 1);
 	}
 }

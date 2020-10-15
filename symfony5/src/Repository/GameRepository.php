@@ -34,7 +34,7 @@ final class GameRepository extends BaseRepository implements IGameRepo
 	{
 		$item = new Game();
 		$item->setWidth($width);
-//		$game->setHeight($height);
+		$item->setHeight($height);
 
 		return $item;
 	}
