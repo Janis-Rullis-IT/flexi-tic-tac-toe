@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace App\Repository;
 
 use App\Entity\Game;
@@ -29,10 +32,11 @@ final class GameRepository extends BaseRepository implements IGameRepo
 	 */
 	public function setBoardDimensions(int $width, int $height): Game
 	{
-		$game->setWidth($width);
+		$item = new Game();
+		$item->setWidth($width);
 //		$game->setHeight($height);
 
-		return $game;
+		return $item;
 	}
 	/**
 	 * #12 Collect player's current 'ongoing' game or create a new one.

@@ -60,7 +60,7 @@ class GameUnitTest extends KernelTestCase
 		$game = new Game();
 
 		$this->expectException(\TypeError::class);
-		$game->setWidth(1.3);
+		$game->setWidth(3.9);
 	}
 
 	public function testWidthTooSmall()
