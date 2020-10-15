@@ -24,22 +24,24 @@
           <div class="row thumbnail">
             <div class="col-sm-12"></div>
           </div>
-          <div class="row rating">
-            <input
-              id="width"
-              style="width: 100%;"
-              type="number"
-              v-model="width"
-              placeholder="Width. Ex. 3"
-            />
-            <input
-              id="height"
-              type="number"
-              style="width: 100%;"
-              v-model="height"
-              placeholder="Price. Ex., 0.3"
-            />
-            <button type="button" @click="startGame()">Start</button>
+          <div v-if="show_input">
+              <div class="row rating">
+              <input
+                id="width"
+                style="width: 100%;"
+                type="number"
+                v-model="width"
+                placeholder="Width. Ex. 3"
+              />
+              <input
+                id="height"
+                type="number"
+                style="width: 100%;"
+                v-model="height"
+                placeholder="Price. Ex., 0.3"
+              />
+              <button type="button" @click="startGame()">Start</button>
+              </div>
             </div>
           </div>
         </div>
@@ -68,6 +70,7 @@ export default {
       type: this.$route.params.type,
       game: {},
       show_board: false,
+      show_input: true,
       width: 3,
       height:3
     };
@@ -78,12 +81,15 @@ export default {
     startGame() {
       this.clearAlerts();
 
+      this.show_input = false;
       this.loading = true;
+      this.width = parseInt(this.width);
+      this.height = parseInt(this.height);
 
       this.$http
         .post("game/grid", {
-          width: parseInt(this.width),
-          height: parseInt(this.height)
+          width: this.width,
+          height:this.height
         })
         .then(
           function onSuccess(response) {
@@ -92,6 +98,7 @@ export default {
           },
           function onFail(response) {
             this.loading = false;
+            this.show_input = true;
             this.showError(response.data.errors);
           }
         );
