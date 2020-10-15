@@ -32,7 +32,7 @@ services:
         image: 'mariadb:10.3.22-bionic'
         restart: unless-stopped
         ports:
-            - '3306:3306'
+            - '3316:3306'
         volumes:
             - type: bind
               source: ./db/mysql
