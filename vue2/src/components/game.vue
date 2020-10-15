@@ -47,9 +47,9 @@
         </div>
         <div v-if=show_board>
           <div class="row body" v-for="index in height" :key="index">
-            <div class="col-sm-4"  v-for="index2 in width" :key="index2">
+            <div :class="computedClass" v-for="index2 in width" :key="index2">
               <div class="row thumbnail">
-                <div class="col-sm-12">
+                <div class="col-sm-24">
                   aaaaaa
                 </div>
               </div>          
@@ -74,6 +74,11 @@ export default {
       width: 3,
       height:3
     };
+  },
+  computed: {
+    computedClass() {
+      return 'col-sm-' + Math.floor(20 / this.width);
+    }
   },
   created() {
   },
