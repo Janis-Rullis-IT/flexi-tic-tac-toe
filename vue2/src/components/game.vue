@@ -43,13 +43,15 @@
             </div>
           </div>
         </div>
-        <div class="row body" v-for="index in height" :key="index">
-          <div class="col-sm-4"  v-for="index2 in width" :key="index2">
-            <div class="row thumbnail">
-              <div class="col-sm-12">
-                aaaaaa
-              </div>
-            </div>          
+        <div v-if=!loading>
+          <div class="row body" v-for="index in height" :key="index">
+            <div class="col-sm-4"  v-for="index2 in width" :key="index2">
+              <div class="row thumbnail">
+                <div class="col-sm-12">
+                  aaaaaa
+                </div>
+              </div>          
+          </div>
         </div>
 
       </div>
@@ -75,6 +77,23 @@ export default {
   methods: {
     startGame() {
       this.clearAlerts();
+
+      this.loading = true;
+
+      this.$http
+        .post("game/grid", {
+          width: this.width,
+          heigh: this.height
+        })
+        .then(
+          function onSuccess(response) {
+            this.loading = true;
+          },
+          function onFail(response) {
+            this.loading = false;
+            this.showError(response.data.errors);
+          }
+        );
     },
     clearAlerts: function() {
       (this.alerts.success = ""), (this.alerts.errors = []);
