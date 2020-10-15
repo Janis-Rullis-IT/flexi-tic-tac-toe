@@ -1,6 +1,9 @@
 <?php
+declare(strict_types=1);
 namespace App\Tests;
 
+use App\Entity\Game;
+use App\Exception\GameValidatorException;
 use App\Service\GameCreatorService;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
@@ -26,29 +29,46 @@ class GameUnitTest extends KernelTestCase
 		$this->gameCreatorService = $this->c->get('test.' . GameCreatorService::class);
 	}
 
-//	public function testValidWith()
-//	{
-//		$game = new Game();
-//		$game->setWidth(3);
-//		
-//		// #12 TODO: Check against the validator.
-//	}
-//
+	public function testValidWith()
+	{
+		$width = 3;
+		$game = new Game();
+		$game->setWidth($width);
+		$this->assertEquals($width, $game->getWidth());
+	}
+
 //	public function testWidthAlreadySet()
 //	{
 //		// #12 TODO: Load with status 'ongoing'.
 ////		$game
 //		$this->expectException(GameValidatorException::class);
-//		$this->expectExceptionCode(Game::ERROR_WIDTH_MUST_BE_INT_CODE, Game::ERROR_WIDTH_MUST_BE_INT);
+//		$this->expectExceptionCode(Game::ERROR_WIDTH_INVALID_CODE, Game::ERROR_WIDTH_INVALID);
 //		$game->setWidth(3);
 //	}
+
+
+	public function testWidthNotInteger()
+	{
+		$game = new Game();
+
+		$this->expectException(\TypeError::class);
+		$game->setWidth('a');
+	}
+
+	public function testWidthNotInteger2()
+	{
+		$game = new Game();
+
+		$this->expectException(\TypeError::class);
+		$game->setWidth(1.3);
+	}
 
 	public function testWidthTooSmall()
 	{
 		$game = new Game();
 
 		$this->expectException(GameValidatorException::class);
-		$this->expectExceptionCode(Game::ERROR_WIDTH_MUST_BE_INT_CODE, Game::ERROR_WIDTH_MUST_BE_INT);
+		$this->expectExceptionCode(Game::ERROR_WIDTH_INVALID_CODE, Game::ERROR_WIDTH_INVALID);
 		$game->setWidth(Game::MIN_WIDTH - 1);
 	}
 
@@ -57,25 +77,7 @@ class GameUnitTest extends KernelTestCase
 		$game = new Game();
 
 		$this->expectException(GameValidatorException::class);
-		$this->expectExceptionCode(Game::ERROR_WIDTH_MUST_BE_INT_CODE, Game::ERROR_WIDTH_MUST_BE_INT);
+		$this->expectExceptionCode(Game::ERROR_WIDTH_INVALID_CODE, Game::ERROR_WIDTH_INVALID);
 		$game->setWidth(Game::MAX_WIDTH + 1);
-	}
-
-	public function testWidthNotInteger()
-	{
-		$game = new Game();
-
-		$this->expectException(GameValidatorException::class);
-		$this->expectExceptionCode(Game::ERROR_WIDTH_MUST_BE_INT_CODE, Game::ERROR_WIDTH_MUST_BE_INT);
-		$game->setWidth('a');
-	}
-
-	public function testWidthNotInteger2()
-	{
-		$game = new Game();
-
-		$this->expectException(GameValidatorException::class);
-		$this->expectExceptionCode(Game::ERROR_WIDTH_MUST_BE_INT_CODE, Game::ERROR_WIDTH_MUST_BE_INT);
-		$game->setWidth(1.3);
 	}
 }
