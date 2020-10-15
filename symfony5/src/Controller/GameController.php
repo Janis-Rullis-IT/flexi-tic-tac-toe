@@ -25,7 +25,7 @@ class GameController extends AbstractController
 		try {
 			$resp = $gameCreatorService->setBoardDimensions(json_decode($request->getContent(), true));
 
-			return $this->json(+$resp, Response::HTTP_OK);
+			return $this->json($resp, Response::HTTP_OK);
 		} catch (\Exception $e) {
 			if (method_exists($e, 'getErrors')) {
 				return $this->json(['errors'=> $e->getErrors()], Response::HTTP_BAD_REQUEST);

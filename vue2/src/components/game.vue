@@ -43,7 +43,7 @@
             </div>
           </div>
         </div>
-        <div v-if=!loading>
+        <div v-if=show_board>
           <div class="row body" v-for="index in height" :key="index">
             <div class="col-sm-4"  v-for="index2 in width" :key="index2">
               <div class="row thumbnail">
@@ -67,9 +67,9 @@ export default {
       slug: this.$route.params.slug,
       type: this.$route.params.type,
       game: {},
-      enabled: true,
+      show_board: false,
       width: 3,
-      height: 3
+      height:3
     };
   },
   created() {
@@ -82,12 +82,13 @@ export default {
 
       this.$http
         .post("game/grid", {
-          width: this.width,
-          heigh: this.height
+          width: parseInt(this.width),
+          height: parseInt(this.height)
         })
         .then(
           function onSuccess(response) {
-            this.loading = true;
+            this.loading = false;
+            this.show_board = true;
           },
           function onFail(response) {
             this.loading = false;
@@ -103,10 +104,11 @@ export default {
       this.loading = false;
     },
     showError: function(errors = ["Sorry, but there's a problem."]) {
-      for (let i = 0; i < errors.length; i++) {
-        this.alerts.errors.push(this.getTranslatedMessage(errors[i]));
-        this.loading = false;
+
+      for(let key in errors){
+        this.alerts.errors.push(key + ": " + errors[key]);
       }
+      this.loading = false;
     },
     // TODO: Plug translations.
     getTranslatedMessage: function(messageKey) {
