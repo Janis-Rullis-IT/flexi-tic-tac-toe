@@ -3,6 +3,7 @@
 namespace App\Tests;
 
 use App\Service\GameCreatorService;
+use App\Entity\Game;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -20,13 +21,11 @@ class GameTest extends WebTestCase
         $this->orderShippingService = $this->c->get('test.'.GameCreatorService::class);
     }
 
-    public function testInvalidCustomer()
+    public function testEmptyRequest()
     {
-//        $uri = '/users/'.$this->impossibleInt.'/order/complete';
-//        $this->client->request('PUT', $uri);
-
-        $this->assertEquals(1, 1);
-//        $this->assertEquals(Response::HTTP_NOT_FOUND, $this->client->getResponse()->getStatusCode());
-//        $this->assertEquals([Order::ID => 'invalid user'], json_decode($this->client->getResponse()->getContent(), true));
+        $uri = '/game/grid';
+        $this->client->request('POST', $uri);
+        $this->assertEquals(Response::HTTP_BAD_REQUEST, $this->client->getResponse()->getStatusCode());
+        $this->assertEquals([Game::WIDTH => Game::WIDTH], json_decode($this->client->getResponse()->getContent(), true));
     }
 }

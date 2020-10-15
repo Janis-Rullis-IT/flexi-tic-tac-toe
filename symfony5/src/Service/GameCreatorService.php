@@ -2,6 +2,7 @@
 namespace App\Service;
 
 use App\Interfaces\IGameRepo;
+use App\Entity\Game;
 
 class GameCreatorService
 {
@@ -15,12 +16,14 @@ class GameCreatorService
 
 	/**
 	 * #12 Set game board dimensions.
-	 * 
-	 * @param int $width
-	 * @param int $height
 	 */
-	public function setBoardDimensions(int $width, int $height)
+	public function setBoardDimensions(?array $request)
 	{
-		$game = $this->gameRepo->setBoardDimensions($width, $height);
+    //int $width, int $height
+    if(!isset($request[Game::WIDTH])){
+      throw new \App\Exception\GameValidatorException([Game::WIDTH => Game::WIDTH], 1);
+    }
+    
+		$game = $this->gameRepo->setBoardDimensions($request[Game::WIDTH], $request[Game::WIDTH]);
 	}
 }
