@@ -20,9 +20,9 @@ class GameController extends AbstractController
 	 * @Route("/game/grid", name="setBoardDimensions", methods={"POST"})
 	 * @SWG\Tag(name="1. game")
 	 * 
-	 * @SWG\Parameter(name="body", in="body", required=true, @SWG\Schema(required={"width", "height"}, type="object", ref=@Model(type=Game::class, groups={"CREATE"})))
+	 * @SWG\Parameter(name="body", in="body", required=true, @SWG\Schema(required={"width", "height"}, type="object", ref=@Model(type=Game::class, groups={"PUB"})))
 	 * @SWG\Response(response=200, description="Created.", @SWG\Schema(type="object", ref=@Model(type=Game::class, groups={"PUB"})))
-     * @SWG\Response(response=404, description="Not found.", @SWG\Schema(type="object", ref=@Model(type=Game::class, groups={"ID_ERROR"})))
+     * @SWG\Response(response=404, description="Not found.", @SWG\Schema(type="object", ref=@Model(type=Game::class, groups={"PUB"})))
 	 */
 	public function setBoardDimensions(Request $request, GameCreatorService $gameCreatorService): JsonResponse
 	{
