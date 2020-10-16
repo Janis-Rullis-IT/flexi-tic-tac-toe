@@ -2,13 +2,13 @@
 namespace App\Controller;
 
 use App\Service\GameCreatorService;
-use Swagger\Annotations as SWG;
 use Nelmio\ApiDocBundle\Annotation\Model;
+use Swagger\Annotations as SWG;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\JsonResponse;
 
 class GameController extends AbstractController
 {
@@ -16,7 +16,9 @@ class GameController extends AbstractController
 	/**
 	 * Submit the width and height for the new game's board.
 	 *
-	 * @Route("/game/grid", name="setBoardDimensions", methods={"POST"})
+	 * @Route("/game/grid", methods={"POST"})
+	 * @SWG\Tag(name="1. game")
+	 * @SWG\Response(response=200, description="",@SWG\Schema(@SWG\Property(property="width", type="integet", example=3)))
 	 */
 	public function setBoardDimensions(Request $request, GameCreatorService $gameCreatorService): JsonResponse
 	{
