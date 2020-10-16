@@ -29,14 +29,14 @@ class Game
 	/**
 	 * @ORM\Column(type="integer")
 	 * @SWG\Property(property="width", type="integer", example=3)
-	 * @Groups({"PUB"})
+	 * @Groups({"CREATE", "PUB", "ID_ERROR"})
 	 */
 	private int $width;
 
 	/**
 	 * @ORM\Column(type="integer")
 	 * @SWG\Property(property="height", type="integer", example=3)
-	 * @Groups({"PUB"})
+	 * @Groups({"CREATE", "PUB", "ID_ERROR"})
 	 */
 	private int $height;
 

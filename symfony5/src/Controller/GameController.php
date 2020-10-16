@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller;
 
+use App\Entity\Game;
 use App\Service\GameCreatorService;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Swagger\Annotations as SWG;
@@ -16,9 +17,12 @@ class GameController extends AbstractController
 	/**
 	 * Submit the width and height for the new game's board.
 	 *
-	 * @Route("/game/grid", methods={"POST"})
+	 * @Route("/game/grid", name="setBoardDimensions", methods={"POST"})
 	 * @SWG\Tag(name="1. game")
-	 * @SWG\Response(response=200, description="",@SWG\Schema(@SWG\Property(property="width", type="integet", example=3)))
+	 * 
+	 * @SWG\Parameter(name="body", in="body", required=true, @SWG\Schema(required={"width", "height"}, type="object", ref=@Model(type=Game::class, groups={"CREATE"})))
+	 * @SWG\Response(response=200, description="Created.", @SWG\Schema(type="object", ref=@Model(type=Game::class, groups={"PUB"})))
+     * @SWG\Response(response=404, description="Not found.", @SWG\Schema(type="object", ref=@Model(type=Game::class, groups={"ID_ERROR"})))
 	 */
 	public function setBoardDimensions(Request $request, GameCreatorService $gameCreatorService): JsonResponse
 	{
