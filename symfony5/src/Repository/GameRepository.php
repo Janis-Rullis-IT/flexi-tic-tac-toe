@@ -16,35 +16,31 @@ use Doctrine\ORM\EntityManagerInterface;
  */
 final class GameRepository extends BaseRepository implements IGameRepo
 {
+    public function __construct(EntityManagerInterface $em)
+    {
+        parent::__construct($em, Game::class);
+    }
 
-	public function __construct(EntityManagerInterface $em)
-	{
-		parent::__construct($em, Game::class);
-	}
+    /**
+     * #12 Set game board dimensions but don't store it yet.
+     * Validations happen in those Entity methods.
+     */
+    public function setBoardDimensions(int $width, int $height): Game
+    {
+        $item = new Game();
+        $item->setWidth($width);
+        $item->setHeight($height);
 
-	/**
-	 * #12 Set game board dimensions but don't store it yet.
-	 * Validations happen in those Entity methods.
-	 * 
-	 * @param int $width
-	 * @param int $height
-	 * @return Game
-	 */
-	public function setBoardDimensions(int $width, int $height): Game
-	{
-		$item = new Game();
-		$item->setWidth($width);
-		$item->setHeight($height);
+        return $item;
+    }
 
-		return $item;
-	}
-	/**
-	 * #12 Collect player's current 'ongoing' game or create a new one.
-	 * 
-	 * @param int $playerId
-	 * @return Game
-	 * @throws GameValidatorException
-	 */
+    /*
+     * #12 Collect player's current 'ongoing' game or create a new one.
+     *
+     * @param int $playerId
+     * @return Game
+     * @throws GameValidatorException
+     */
 //	public function insertDraftIfNotExist(int $playerId): Game
 //	{
 //		$item = $this->getCurrentDraft($playerId);
@@ -65,32 +61,32 @@ final class GameRepository extends BaseRepository implements IGameRepo
 //		return $item;
 //	}
 
-	/**
-	 * #12 Collect player's current 'ongoing' game.
-	 * 
-	 * @param int $playerId
-	 * @return Game|null
-	 */
+    /*
+     * #12 Collect player's current 'ongoing' game.
+     *
+     * @param int $playerId
+     * @return Game|null
+     */
 //	public function getCurrentDraft(int $playerId): ?Game
 //	{
 //		return $this->findOneBy(['player_id' => $playerId, 'status' => Game::ONGOING]);
 //	}
 
-	/**
-	 * #12 Shorthand to write to the database.
-	 */
+    /*
+     * #12 Shorthand to write to the database.
+     */
 //	public function save()
 //	{
 //		$this->em->flush();
 //		$this->em->clear();
 //	}
 
-	/**
-	 * #12 Mark the game as completed.
-	 * 
-	 * @param Game $game
-	 * @return Game
-	 */
+    /*
+     * #12 Mark the game as completed.
+     *
+     * @param Game $game
+     * @return Game
+     */
 //	public function markAsCompleted(Game $game): Game
 //	{
 //		// #12 A refresh-entity workaround for the field not being updated. https://www.doctrine-project.org/projects/doctrine-orm/en/2.7/reference/unitofwork.html https://www.doctrine-project.org/api/orm/latest/Doctrine/ORM/EntityManager.html
@@ -101,14 +97,14 @@ final class GameRepository extends BaseRepository implements IGameRepo
 //
 //		return $game;
 //	}
-	/**
-	 * #12 Find game by id. Throw an exception if not found.
-	 * 
-	 * @param int $userId
-	 * @param int $gameId
-	 * @return Game
-	 * @throws GameValidatorException
-	 */
+    /*
+     * #12 Find game by id. Throw an exception if not found.
+     *
+     * @param int $userId
+     * @param int $gameId
+     * @return Game
+     * @throws GameValidatorException
+     */
 //	public function mustFindUsersGame(int $userId, int $gameId): Game
 //	{
 //		$game = $this->findOneBy(['player_id' => $userId, 'id' => $gameId]);
@@ -119,12 +115,12 @@ final class GameRepository extends BaseRepository implements IGameRepo
 //		return $game;
 //	}
 
-	/**
-	 * #12 Find user's games.
-	 * 
-	 * @param int $userId
-	 * @return array
-	 */
+    /*
+     * #12 Find user's games.
+     *
+     * @param int $userId
+     * @return array
+     */
 //	public function mustFindUsersGames(int $userId): array
 //	{
 //		return $this->findBy(['player_id' => $userId]);

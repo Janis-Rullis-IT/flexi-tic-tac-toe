@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controller;
 
 use App\Entity\Game;
@@ -13,28 +14,28 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class GameController extends AbstractController
 {
-
-	/**
-	 * Submit the width and height for the new game's board.
-	 *
-	 * @Route("/game/grid", name="setBoardDimensions", methods={"POST"})
-	 * @SWG\Tag(name="1. game")
-	 * 
-	 * @SWG\Parameter(name="body", in="body", required=true, @SWG\Schema(required={"width", "height"}, type="object", ref=@Model(type=Game::class, groups={"PUB"})))
-	 * @SWG\Response(response=200, description="Created.", @SWG\Schema(type="object", ref=@Model(type=Game::class, groups={"PUB"})))
+    /**
+     * Submit the width and height for the new game's board.
+     *
+     * @Route("/game/grid", name="setBoardDimensions", methods={"POST"})
+     * @SWG\Tag(name="1. game")
+     *
+     * @SWG\Parameter(name="body", in="body", required=true, @SWG\Schema(required={"width", "height"}, type="object", ref=@Model(type=Game::class, groups={"PUB"})))
+     * @SWG\Response(response=200, description="Created.", @SWG\Schema(type="object", ref=@Model(type=Game::class, groups={"PUB"})))
      * @SWG\Response(response=404, description="Not found.", @SWG\Schema(type="object", ref=@Model(type=Game::class, groups={"PUB"})))
-	 */
-	public function setBoardDimensions(Request $request, GameCreatorService $gameCreatorService): JsonResponse
-	{
-		try {
-			$resp = $gameCreatorService->setBoardDimensions(json_decode($request->getContent(), true));
+     */
+    public function setBoardDimensions(Request $request, GameCreatorService $gameCreatorService): JsonResponse
+    {
+        try {
+            $resp = $gameCreatorService->setBoardDimensions(json_decode($request->getContent(), true));
 
-			return $this->json($resp, Response::HTTP_OK);
-		} catch (\Exception $e) {
-			if (method_exists($e, 'getErrors')) {
-				return $this->json(['errors'=> $e->getErrors()], Response::HTTP_BAD_REQUEST);
-			}
-			return $this->json(['errors'=> [$e->getMessage()]], Response::HTTP_BAD_REQUEST);
-		}
-	}
+            return $this->json($resp, Response::HTTP_OK);
+        } catch (\Exception $e) {
+            if (method_exists($e, 'getErrors')) {
+                return $this->json(['errors' => $e->getErrors()], Response::HTTP_BAD_REQUEST);
+            }
+
+            return $this->json(['errors' => [$e->getMessage()]], Response::HTTP_BAD_REQUEST);
+        }
+    }
 }
