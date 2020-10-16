@@ -13,36 +13,80 @@
       </div>
     </div>
 
-    <div class="row content product">
+    <div class="row content game">
       <div class="row body">
-        <div class="col-sm-12">
-          <div class="row title">
-            <div class="col-sm-12">
-              <h1>{{game.width}}</h1>
-            </div>
-          </div>
-          <div class="row thumbnail">
-            <div class="col-sm-12"></div>
-          </div>
-          <div class="row rating">
-            <input
-              id="width"
-              style="width: 100%;"
-              type="number"
-              v-model="width"
-              placeholder="Width. Ex. 3"
-            />
-            <input
-              id="height"
-              type="number"
-              style="width: 100%;"
-              v-model="height"
-              placeholder="Price. Ex., 0.3"
-            />
-            <button type="button" @click="startGame()">Start</button>
+        <div class="col-sm-20">
+
+          <div v-if="show_input">
+
+              <div class="row rating">
+                <div class="col-sm-5">
+                  <label for="width">Width</label>
+                </div>
+                <div class="col-sm-15">
+                  <input
+                    id="width"
+                    style="width: 100%;"
+                    type="number"
+                    v-model="width"
+                  />
+                </div>
+              </div>
+
+              <div class="row rating">
+                <div class="col-sm-5">
+                  <label for="height">Height</label>
+                </div>
+                <div class="col-sm-15">
+                  <input
+                    id="height"
+                    type="number"
+                    style="width: 100%;"
+                    v-model="height"
+                  />
+                </div>
+              </div>
+
+              <div class="row rating">
+                <div class="col-sm-5">
+                  <label for="moves">Moves to win</label>
+                </div>
+                <div class="col-sm-15">
+                  <input
+                    id="moves"
+                    type="number"
+                    style="width: 100%;"
+                    v-model="move_cnt_to_win"
+                  />
+                </div>
+              </div>
+
+              <div class="row rating">
+                <div class="col-sm-20">
+                  &nbsp;
+                </div>
+              </div>
+
+              <div class="row rating">
+                <div class="col-sm-20">
+                  <button style="width: 100%;" type="button" @click="startGame()">Start</button>
+                </div>
+              </div>
+              </div>
             </div>
           </div>
         </div>
+        <div v-if=show_board>
+          <div class="row body" v-for="index in height" :key="index">
+            <div :class="computedClass" v-for="index2 in width" :key="index2">
+              <div class="row thumbnail">
+                <div class="col-sm-20">
+                  aaaaaa
+                </div>
+              </div>          
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -56,16 +100,48 @@ export default {
       slug: this.$route.params.slug,
       type: this.$route.params.type,
       game: {},
-      enabled: true,
+      show_board: false,
+      show_input: true,
       width: 3,
-      height: 3
+      height:3,
+      move_cnt_to_win: 3
     };
+  },
+  computed: {
+    computedClass() {
+      return 'col-sm-' + Math.floor(20 / this.width);
+    }
   },
   created() {
   },
   methods: {
     startGame() {
       this.clearAlerts();
+
+      this.show_input = false;
+      this.loading = true;
+      this.width = parseInt(this.width);
+      this.height = parseInt(this.height);
+      this.move_cnt_to_win = parseInt(this.move_cnt_to_win);
+
+
+      this.$http
+        .post("game/grid", {
+          width: this.width,
+          height:this.height,
+          move_cnt_to_win:this.move_cnt_to_win
+        })
+        .then(
+          function onSuccess(response) {
+            this.loading = false;
+            this.show_board = true;
+          },
+          function onFail(response) {
+            this.loading = false;
+            this.show_input = true;
+            this.showError(response.data.errors);
+          }
+        );
     },
     clearAlerts: function() {
       (this.alerts.success = ""), (this.alerts.errors = []);
@@ -75,10 +151,11 @@ export default {
       this.loading = false;
     },
     showError: function(errors = ["Sorry, but there's a problem."]) {
-      for (let i = 0; i < errors.length; i++) {
-        this.alerts.errors.push(this.getTranslatedMessage(errors[i]));
-        this.loading = false;
+
+      for(let key in errors){
+        this.alerts.errors.push(key + ": " + errors[key]);
       }
+      this.loading = false;
     },
     // TODO: Plug translations.
     getTranslatedMessage: function(messageKey) {
