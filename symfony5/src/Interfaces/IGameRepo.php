@@ -6,8 +6,7 @@ use App\Entity\Game;
 
 interface IGameRepo
 {
-
-	public function setBoardDimensions(int $width, int $height): Game;
+    public function setBoardDimensions(int $width, int $height): Game;
 
 //    public function insertDraftIfNotExist(int $customerId): Order;
 //
