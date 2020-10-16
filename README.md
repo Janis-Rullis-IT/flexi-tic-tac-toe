@@ -41,6 +41,8 @@ This describes all the available functions and the way how to call them.
 
 * http://api.lm1.local/doc
 
+![doc.png](doc.png)
+
 ## Wiki
 
 * https://github.com/janis-rullis/lm1-symfony5-vue2-api/wiki
