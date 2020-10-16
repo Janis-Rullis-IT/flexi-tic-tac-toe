@@ -43,8 +43,8 @@ This describes all the available functions and the way how to call them.
 
 ## Wiki
 
-* https://github.com/janis-rullis/lm1/wiki
+* https://github.com/janis-rullis/lm1-symfony5-vue2-api/wiki
 
 ## Have questions? Found a bug?
 
-Please, submit an issue [here](https://github.com/janis-rullis/lm1/issues).
+Please, submit an issue https://github.com/janis-rullis/lm1-symfony5-vue2-api/issues
