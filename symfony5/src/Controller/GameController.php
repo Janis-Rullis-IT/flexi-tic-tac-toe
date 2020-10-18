@@ -27,7 +27,7 @@ class GameController extends AbstractController
     public function setBoardDimensions(Request $request, GameCreatorService $gameCreatorService): JsonResponse
     {
         try {
-            $resp = $gameCreatorService->setBoardDimensions(json_decode($request->getContent(), true));
+            $resp = $gameCreatorService->setBoardDimensions(json_decode($request->getContent(), true))->toArray();
 
             return $this->json($resp, Response::HTTP_OK);
         } catch (\Exception $e) {

@@ -25,11 +25,11 @@ final class GameRepository extends BaseRepository implements IGameRepo
      * #12 Set game board dimensions but don't store it yet.
      * Validations happen in those Entity methods.
      */
-    public function setBoardDimensions(int $width, int $height): Game
+    public function setBoardDimensions(Game $item, int $width, int $height): Game
     {
-        $item = new Game();
         $item->setWidth($width);
         $item->setHeight($height);
+        $this->save();
 
         return $item;
     }
@@ -41,58 +41,59 @@ final class GameRepository extends BaseRepository implements IGameRepo
      */
     public function setRules(Game $item, int $moveCntToWin): Game
     {
-        // #15 Collect game first.
         $item->setMoveCntToWin($moveCntToWin);
 
         return $item;
     }
 
     /*
-     * #12 Collect player's current 'ongoing' game or create a new one.
-     *
-     * @param int $playerId
-     * @return Game
-     * @throws GameValidatorException
+     * #14 Collect player's current 'ongoing' game or create a new one.
      */
-//	public function insertDraftIfNotExist(int $playerId): Game
-//	{
-//		$item = $this->getCurrentDraft($playerId);
-//
-//		// #12 Create if it doesn't exist yet.
-//		if (empty($item)) {
-//			$item = new Game();
-//			$item->setPlayerId($playerId);
-//			$item->setStatus(Game::ONGOING);
-//			$this->em->persist($item);
-//			$this->em->flush();
-//		}
-//
-//		if (empty($item)) {
-//			throw new GameValidatorException([Game::ORDER_ID => Game::CANT_CREATE]);
-//		}
-//
-//		return $item;
-//	}
+    public function insertDraftIfNotExist(): Game
+    {
+        $item = $this->getCurrentDraft();
+
+        // #14 Create if it doesn't exist yet.
+        if (empty($item)) {
+            $item = new Game();
+            $item->setStatus(Game::DRAFT);
+            $this->em->persist($item);
+            $this->em->flush();
+        }
+
+        if (empty($item)) {
+            throw new GameValidatorException([Game::STATUS => Game::ERROR_CAN_NOT_CREATE], Game::ERROR_CAN_NOT_CREATE_CODE);
+        }
+
+        return $item;
+    }
 
     /*
-     * #12 Collect player's current 'ongoing' game.
-     *
-     * @param int $playerId
-     * @return Game|null
+     * #14 Collect player's current new ('draft') game.
      */
-//	public function getCurrentDraft(int $playerId): ?Game
-//	{
-//		return $this->findOneBy(['player_id' => $playerId, 'status' => Game::ONGOING]);
-//	}
+    public function getCurrentDraft(): ?Game
+    {
+        return $this->findOneBy(['status' => Game::DRAFT]);
+    }
+
+    public function mustFindCurrentDraft(): ?Game
+    {
+        $item = $this->getCurrentDraft();
+        if (empty($item)) {
+            throw new GameValidatorException([Game::STATUS => Game::ERROR_CAN_NOT_FIND], Game::ERROR_CAN_NOT_FIND_CODE);
+        }
+
+        return $item;
+    }
 
     /*
-     * #12 Shorthand to write to the database.
+     * #14 Shorthand to write to the database.
      */
-//	public function save()
-//	{
-//		$this->em->flush();
-//		$this->em->clear();
-//	}
+    public function save()
+    {
+        $this->em->flush();
+        $this->em->clear();
+    }
 
     /*
      * #12 Mark the game as completed.
