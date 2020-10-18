@@ -6,7 +6,6 @@ namespace App\Tests\WxH;
 
 use App\Entity\Game;
 use App\Exception\GameValidatorException;
-use App\Service\GameCreatorService;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
@@ -21,13 +20,11 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 class GridHeightUnitTest extends KernelTestCase
 {
     private $c;
-    private $gameCreatorService;
 
     protected function setUp(): void
     {
         $kernel = self::bootKernel();
         $this->c = $kernel->getContainer();
-        $this->gameCreatorService = $this->c->get('test.'.GameCreatorService::class);
     }
 
     public function testValidHeight()

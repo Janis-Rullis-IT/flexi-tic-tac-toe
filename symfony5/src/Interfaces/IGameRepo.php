@@ -8,6 +8,8 @@ interface IGameRepo
 {
     public function setBoardDimensions(int $width, int $height): Game;
 
+    public function setRules(Game $item, int $moveCntToWin): Game;
+
 //    public function insertDraftIfNotExist(int $customerId): Order;
 //
 //    public function getCurrentDraft(int $customerId): ?Order;
