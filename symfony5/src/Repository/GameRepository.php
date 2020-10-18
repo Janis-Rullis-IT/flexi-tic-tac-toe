@@ -50,16 +50,14 @@ final class GameRepository extends BaseRepository implements IGameRepo
      */
     public function insertDraftIfNotExist(): Game
     {
-        //			#14 TODO: Uncomment this when the DB struct is ready.
-        //		$item = $this->getCurrentDraft();
+        		$item = $this->getCurrentDraft();
 
         // #14 Create if it doesn't exist yet.
         if (empty($item)) {
             $item = new Game();
             $item->setStatus(Game::DRAFT);
-            //			#14 TODO: Uncomment this when the DB struct is ready.
-//			$this->em->persist($item);
-//			$this->em->flush();
+			$this->em->persist($item);
+			$this->em->flush();
         }
 
         if (empty($item)) {
@@ -88,13 +86,13 @@ final class GameRepository extends BaseRepository implements IGameRepo
     }
 
     /*
-     * #12 Shorthand to write to the database.
+     * #14 Shorthand to write to the database.
      */
-//	public function save()
-//	{
-//		$this->em->flush();
-//		$this->em->clear();
-//	}
+	public function save()
+	{
+		$this->em->flush();
+		$this->em->clear();
+	}
 
     /*
      * #12 Mark the game as completed.

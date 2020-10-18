@@ -9,6 +9,10 @@ use Doctrine\ORM\Mapping as ORM;
 use Swagger\Annotations as SWG;
 use Symfony\Component\Serializer\Annotation\Groups;
 
+/**
+ * @ORM\Entity(repositoryClass="App\Repository\GameRepository")
+ * @ORM\Table(name="`game`")
+ */
 class Game
 {
     const DRAFT = 'draft';
@@ -40,10 +44,19 @@ class Game
     const HEIGHT = 'height';
     const HEIGHT_WIDTH = 'height_width';
     const MOVE_CNT_TO_WIN = 'move_cnt_to_win';
+	
+	    /**
+     * @ORM\Id()
+     * @ORM\GeneratedValue()
+     * @ORM\Column(type="integer")
+     * @SWG\Property(property="id", type="integer", example=1)
+     * @Groups({"PUB"})
+     */
+    private int $id;
 
     /**
-     * @ORM\Column(type="string")
-     * @SWG\Property(property="status", type="string", example="ongoing", nullable=true)
+     * @ORM\Column(type="string", nullable=true)
+     * @SWG\Property(property="status", type="string", example="ongoing")
      * @Groups({"CREATE", "PUB", "ID_ERROR"})
      */
     private ?string $status = null;
