@@ -29,6 +29,7 @@ final class GameRepository extends BaseRepository implements IGameRepo
     {
         $item->setWidth($width);
         $item->setHeight($height);
+        $this->save();
 
         return $item;
     }
@@ -50,14 +51,14 @@ final class GameRepository extends BaseRepository implements IGameRepo
      */
     public function insertDraftIfNotExist(): Game
     {
-        		$item = $this->getCurrentDraft();
+        $item = $this->getCurrentDraft();
 
         // #14 Create if it doesn't exist yet.
         if (empty($item)) {
             $item = new Game();
             $item->setStatus(Game::DRAFT);
-			$this->em->persist($item);
-			$this->em->flush();
+            $this->em->persist($item);
+            $this->em->flush();
         }
 
         if (empty($item)) {
@@ -88,11 +89,11 @@ final class GameRepository extends BaseRepository implements IGameRepo
     /*
      * #14 Shorthand to write to the database.
      */
-	public function save()
-	{
-		$this->em->flush();
-		$this->em->clear();
-	}
+    public function save()
+    {
+        $this->em->flush();
+        $this->em->clear();
+    }
 
     /*
      * #12 Mark the game as completed.

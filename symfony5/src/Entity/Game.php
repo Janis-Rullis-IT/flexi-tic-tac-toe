@@ -39,13 +39,14 @@ class Game
     const ERROR_CAN_NOT_FIND = '#14 Can not find the game.';
     const ERROR_CAN_NOT_FIND_CODE = 106;
     // #12 Field names.
+    const ID = 'id';
     const STATUS = 'status';
     const WIDTH = 'width';
     const HEIGHT = 'height';
     const HEIGHT_WIDTH = 'height_width';
     const MOVE_CNT_TO_WIN = 'move_cnt_to_win';
-	
-	    /**
+
+    /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
@@ -78,11 +79,10 @@ class Game
     /**
      * @ORM\Column(type="integer", nullable=true)
      * @SWG\Property(property="move_cnt_to_win", type="integer", example=3)
-     * @Groups({"CREATE", "PUB", "ID_ERROR"})
      */
-    private ?int $moveCntToWin;
-	
-	public function getId(): ?int
+    private ?int $moveCntToWin = null;
+
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -210,5 +210,43 @@ class Game
     public function getMaxDimension(): int
     {
         return $this->getHeight() >= $this->getWidth() ? $this->getHeight() : $this->getWidth();
+    }
+
+    /**
+     * #15 Convert the Entity to array in unified manner.
+     * Will give same result in different endpoints.
+     *
+     * @param array $fields
+     */
+    public function toArray(?array $fields = [], $relations = []): array
+    {
+        $return = [];
+        // #15 Contains most popular fields. Add a field is necessary.
+        $return = $this->toArrayFill($fields);
+
+        return $return;
+    }
+
+    /**
+     * #15 Fill order's fields.
+     */
+    private function toArrayFill(?array $fields = []): array
+    {
+        $return = [];
+        $allFields = [
+            self::ID => $this->getId(), self::STATUS => $this->getStatus(),
+            self::WIDTH => $this->getWidth(), self::HEIGHT => $this->getHeight(),
+            self::MOVE_CNT_TO_WIN => $this->getMoveCntToWin(),
+        ];
+
+        if (empty($fields)) {
+            return $allFields;
+        }
+
+        foreach ($fields as $field) {
+            $return[$field] = isset($allFields[$field]) ? $allFields[$field] : null;
+        }
+
+        return $return;
     }
 }

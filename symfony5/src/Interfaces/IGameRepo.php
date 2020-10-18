@@ -11,12 +11,13 @@ interface IGameRepo
     public function setRules(Game $item, int $moveCntToWin): Game;
 
     public function insertDraftIfNotExist(): Game;
+
     public function getCurrentDraft(): ?Game;
-	public function mustFindCurrentDraft(): ?Game;
-	
-	
+
+    public function mustFindCurrentDraft(): ?Game;
+
     public function save();
-	
+
 //    public function markAsCompleted(Order $order): Order;
 //
 //    public function mustFindUsersOrder(int $userId, int $orderId): Order;

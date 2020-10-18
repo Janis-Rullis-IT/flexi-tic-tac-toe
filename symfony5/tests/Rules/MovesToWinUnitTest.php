@@ -54,14 +54,6 @@ class MovesToWinUnitTest extends KernelTestCase
         $game->setMoveCntToWin(3.9);
     }
 
-    public function testHeightNotSet()
-    {
-        $game = new Game();
-        $this->expectException('\Error');
-        $this->expectErrorMessage('Typed property '.Game::class.'::$height must not be accessed before initialization');
-        $game->setMoveCntToWin(Game::MIN_HEIGHT_WIDTH);
-    }
-
     public function testInvalidStatusSet()
     {
         $game = new Game();
@@ -70,16 +62,6 @@ class MovesToWinUnitTest extends KernelTestCase
         $game->setStatus(Game::ONGOING);
         $game->setHeight(Game::MIN_HEIGHT_WIDTH);
         $game->setWidth(Game::MIN_HEIGHT_WIDTH);
-        $game->setMoveCntToWin(Game::MIN_HEIGHT_WIDTH);
-    }
-
-    public function testWidthNotSet()
-    {
-        $game = new Game();
-        $game->setStatus(Game::DRAFT);
-        $game->setHeight(Game::MIN_HEIGHT_WIDTH);
-        $this->expectException('\Error');
-        $this->expectErrorMessage('Typed property '.Game::class.'::$width must not be accessed before initialization');
         $game->setMoveCntToWin(Game::MIN_HEIGHT_WIDTH);
     }
 
