@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\WxH;
+namespace App\Tests\Rules;
 
 use App\Entity\Game;
 use App\Exception\GameValidatorException;

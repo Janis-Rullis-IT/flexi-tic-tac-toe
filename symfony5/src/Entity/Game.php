@@ -11,6 +11,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 class Game
 {
+    const DRAFT = 'draft';
+    const ONGOING = 'ongoing';
+    const COMPLETED = 'completed';
+    const STATUS_VALUES = [self::DRAFT, self::ONGOING, self::COMPLETED];
     // #12 Limits.
     // #12 TODO: Maybe replace this hard-code with reading from DB? In case if def can be changed.
     const MIN_HEIGHT_WIDTH = 2;
@@ -22,11 +26,23 @@ class Game
     const ERROR_WIDTH_ALREADY_SET_CODE = 101;
     const ERROR_MOVE_CNT_TO_WIN_INVALID = '#15 Move count to win must be an integer not smaller than 2 and not bigger than the height or width.';
     const ERROR_MOVE_CNT_TO_WIN_INVALID_CODE = 102;
+    const ERROR_STATUS_INVALID = '#14 Status must be \'draft\', \'ongoing\' or \'completed\'.';
+    const ERROR_STATUS_INVALID_CODE = 103;
+    const ERROR_ONLY_FOR_DRAFT = '#14 Allowed only for a game with a \'draft\' status.';
+    const ERROR_ONLY_FOR_DRAFT_CODE = 104;
     // #12 Field names.
+    const STATUS = 'status';
     const WIDTH = 'width';
     const HEIGHT = 'height';
     const HEIGHT_WIDTH = 'height_width';
     const MOVE_CNT_TO_WIN = 'move_cnt_to_win';
+
+    /**
+     * @ORM\Column(type="string")
+     * @SWG\Property(property="status", type="string", example="ongoing", nullable=true)
+     * @Groups({"CREATE", "PUB", "ID_ERROR"})
+     */
+    private ?string $status = null;
 
     /**
      * @ORM\Column(type="integer")
@@ -50,6 +66,30 @@ class Game
     private ?int $moveCntToWin = null;
 
     /**
+     * #14 Set games status like 'ongoing'.
+     *
+     * @return \self
+     *
+     * @throws GameValidatorException
+     */
+    public function setStatus(string $status): self
+    {
+        // #14 Make sure that passed values are valid.
+        if (!in_array($status, self::STATUS_VALUES)) {
+            throw new GameValidatorException([self::STATUS => self::ERROR_STATUS_INVALID], self::ERROR_STATUS_INVALID_CODE);
+        }
+
+        $this->status = $status;
+
+        return $this;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->$status;
+    }
+
+    /**
      * #12 Make sure that the width is correct.
      *
      * @return \self
@@ -58,8 +98,13 @@ class Game
      */
     public function setWidth(int $width): self
     {
+        // #14 Make sure that passed values are valid.
         if ($width < self::MIN_HEIGHT_WIDTH || $width > self::MAX_HEIGHT_WIDTH) {
             throw new GameValidatorException([self::WIDTH => self::ERROR_HEIGHT_WIDTH_INVALID], self::ERROR_HEIGHT_WIDTH_INVALID_CODE);
+        }
+        // #15 Allow to set dimensions only if it is a new game.
+        if (self::DRAFT !== $this->getStatus()) {
+            throw new GameValidatorException([self::WIDTH => self::ERROR_ONLY_FOR_DRAFT], self::ERROR_ONLY_FOR_DRAFT_CODE);
         }
 
         $this->width = $width;
@@ -81,8 +126,13 @@ class Game
      */
     public function setHeight(int $height): self
     {
+        // #14 Make sure that passed values are valid.
         if ($height < self::MIN_HEIGHT_WIDTH || $height > self::MAX_HEIGHT_WIDTH) {
             throw new GameValidatorException([self::HEIGHT => self::ERROR_HEIGHT_WIDTH_INVALID], self::ERROR_HEIGHT_WIDTH_INVALID_CODE);
+        }
+        // #15 Allow to set dimensions only if it is a new game.
+        if (self::DRAFT !== $this->getStatus()) {
+            throw new GameValidatorException([self::HEIGHT => self::ERROR_ONLY_FOR_DRAFT], self::ERROR_ONLY_FOR_DRAFT_CODE);
         }
 
         $this->height = $height;
@@ -100,6 +150,8 @@ class Game
      * Board dimensions are required to be set first.
      *
      * @return \self
+     *
+     * @throws GameValidatorException
      */
     public function setMoveCntToWin(int $moveCntToWin): self
     {
@@ -107,10 +159,19 @@ class Game
         if ($moveCntToWin < $this->getMinDimension() || $moveCntToWin > $this->getMaxDimension()) {
             throw new GameValidatorException([self::MOVE_CNT_TO_WIN => self::ERROR_MOVE_CNT_TO_WIN_INVALID], self::ERROR_MOVE_CNT_TO_WIN_INVALID_CODE);
         }
+        // #15 Allow to set dimensions only if it is a new game.
+        if (self::DRAFT !== $this->getStatus()) {
+            throw new GameValidatorException([self::MOVE_CNT_TO_WIN => self::ERROR_ONLY_FOR_DRAFT], self::ERROR_ONLY_FOR_DRAFT_CODE);
+        }
 
         $this->moveCntToWin = $moveCntToWin;
 
         return $this;
+    }
+
+    public function getMoveCntToWin(): ?int
+    {
+        return $this->moveCntToWin;
     }
 
     /**
@@ -127,10 +188,5 @@ class Game
     public function getMaxDimension(): int
     {
         return $this->getHeight() >= $this->getWidth() ? $this->getHeight() : $this->getWidth();
-    }
-
-    public function getMoveCntToWin(): ?int
-    {
-        return $this->moveCntToWin;
     }
 }
