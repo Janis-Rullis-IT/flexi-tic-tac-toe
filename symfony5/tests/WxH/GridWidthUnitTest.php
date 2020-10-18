@@ -36,7 +36,7 @@ class GridWidthUnitTest extends KernelTestCase
     }
 
     // #12 TODO: Implement this later when status field is added.
-    //	public function testWidthAlreadySet()
+    //	public function testAlreadySet()
     //	{
     //		// #12 TODO: Load with status 'ongoing'.
     ////		$game
@@ -45,7 +45,7 @@ class GridWidthUnitTest extends KernelTestCase
     //		$game->setWidth(3);
     //	}
 
-    public function testWidthNotInteger()
+    public function testNotInteger()
     {
         $game = new Game();
 
@@ -53,7 +53,7 @@ class GridWidthUnitTest extends KernelTestCase
         $game->setWidth('a');
     }
 
-    public function testWidthNotInteger2()
+    public function testNotInteger2()
     {
         $game = new Game();
 
@@ -61,7 +61,7 @@ class GridWidthUnitTest extends KernelTestCase
         $game->setWidth(3.9);
     }
 
-    public function testWidthTooSmall()
+    public function testTooSmall()
     {
         $game = new Game();
 
@@ -70,7 +70,7 @@ class GridWidthUnitTest extends KernelTestCase
         $game->setWidth(Game::MIN_HEIGHT_WIDTH - 1);
     }
 
-    public function testWidthTooBig()
+    public function testTooBig()
     {
         $game = new Game();
 

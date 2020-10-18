@@ -36,7 +36,7 @@ class GridHeightUnitTest extends KernelTestCase
     }
 
     // #12 TODO: Implement this later when status field is added.
-    //	public function testHeightAlreadySet()
+    //	public function testAlreadySet()
     //	{
     //		// #12 TODO: Load with status 'ongoing'.
     ////		$game
@@ -45,7 +45,7 @@ class GridHeightUnitTest extends KernelTestCase
     //		$game->setHeight(3);
     //	}
 
-    public function testHeightNotInteger()
+    public function testNotInteger()
     {
         $game = new Game();
 
@@ -53,7 +53,7 @@ class GridHeightUnitTest extends KernelTestCase
         $game->setHeight('a');
     }
 
-    public function testHeightNotInteger2()
+    public function testNotInteger2()
     {
         $game = new Game();
 
@@ -61,7 +61,7 @@ class GridHeightUnitTest extends KernelTestCase
         $game->setHeight(3.9);
     }
 
-    public function testHeightTooSmall()
+    public function testTooSmall()
     {
         $game = new Game();
 
@@ -70,7 +70,7 @@ class GridHeightUnitTest extends KernelTestCase
         $game->setHeight(Game::MIN_HEIGHT_WIDTH - 1);
     }
 
-    public function testHeightTooBig()
+    public function testTooBig()
     {
         $game = new Game();
 
