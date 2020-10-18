@@ -45,9 +45,10 @@ class GameCreatorService
      *
      * @throws \App\Exception\GameValidatorException
      */
-    public function setRules(int $gameId, ?array $request): Game
+    public function setRules(?array $request): Game
     {
-        // #15 TODO: #14 Collect the game created previously so could read it's dimensions.
+        // #14 Currently, there is only 1 ongoing game.
+        // Multiple games will be implemented in #25
         exit;
 
         if (!isset($request[Game::MOVE_CNT_TO_WIN])) {

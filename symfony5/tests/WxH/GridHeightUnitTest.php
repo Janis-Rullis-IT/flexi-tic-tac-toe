@@ -36,14 +36,12 @@ class GridHeightUnitTest extends KernelTestCase
     }
 
     // #12 TODO: Implement this later when status field is added.
-    //	public function testAlreadySet()
-    //	{
-    //		// #12 TODO: Load with status 'ongoing'.
-    ////		$game
-    //		$this->expectException(GameValidatorException::class);
-    //		$this->expectExceptionCode(Game::ERROR_HEIGHT_WIDTH_INVALID_CODE, Game::ERROR_HEIGHT_WIDTH_INVALID);
-    //		$game->setHeight(3);
-    //	}
+//    	public function testSetOnlyForDraft()
+//    	{
+//    		$this->expectException(GameValidatorException::class);
+//    		$this->expectExceptionCode(Game::ERROR_HEIGHT_WIDTH_INVALID_CODE, Game::ERROR_HEIGHT_WIDTH_INVALID);
+//    		$game->setHeight(3);
+//    	}
 
     public function testNotInteger()
     {
