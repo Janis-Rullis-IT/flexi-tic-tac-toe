@@ -25,6 +25,7 @@ class GridWidthTest extends WebTestCase
     {
         $data = [Game::WIDTH => Game::MAX_HEIGHT_WIDTH, Game::HEIGHT => Game::MIN_HEIGHT_WIDTH];
         $this->client->request('POST', $this->uri, [], [], ['CONTENT_TYPE' => 'application/json'], json_encode($data));
+        //		print_r($this->client->getResponse());exit;
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
         $responseBody = json_decode($this->client->getResponse()->getContent(), true);
         $this->assertEquals($data[Game::WIDTH], $responseBody[Game::WIDTH]);

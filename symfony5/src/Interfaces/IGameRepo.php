@@ -6,7 +6,7 @@ use App\Entity\Game;
 
 interface IGameRepo
 {
-    public function setBoardDimensions(int $width, int $height): Game;
+    public function setBoardDimensions(Game $item, int $width, int $height): Game;
 
     public function setRules(Game $item, int $moveCntToWin): Game;
 

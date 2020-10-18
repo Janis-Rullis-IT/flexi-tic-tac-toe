@@ -25,7 +25,7 @@ final class GameRepository extends BaseRepository implements IGameRepo
      * #12 Set game board dimensions but don't store it yet.
      * Validations happen in those Entity methods.
      */
-    public function setBoardDimensions(int $width, int $height): Game
+    public function setBoardDimensions(Game $item, int $width, int $height): Game
     {
         $item->setWidth($width);
         $item->setHeight($height);
@@ -40,7 +40,6 @@ final class GameRepository extends BaseRepository implements IGameRepo
      */
     public function setRules(Game $item, int $moveCntToWin): Game
     {
-        // #15 Collect game first.
         $item->setMoveCntToWin($moveCntToWin);
 
         return $item;

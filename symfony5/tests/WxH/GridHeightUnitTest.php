@@ -31,28 +31,28 @@ class GridHeightUnitTest extends KernelTestCase
     {
         $width = 3;
         $game = new Game();
-		$game->setStatus(Game::DRAFT);
+        $game->setStatus(Game::DRAFT);
         $game->setHeight($width);
         $this->assertEquals($width, $game->getHeight());
     }
 
-	public function testStatusNotSet()
+    public function testStatusNotSet()
     {
         $game = new Game();
         $this->expectException(GameValidatorException::class);
         $this->expectExceptionCode(Game::ERROR_ONLY_FOR_DRAFT_CODE, Game::ERROR_ONLY_FOR_DRAFT);
-		$game->setHeight(Game::MIN_HEIGHT_WIDTH);
+        $game->setHeight(Game::MIN_HEIGHT_WIDTH);
     }
-	
-	public function testInvalidStatusSet()
+
+    public function testInvalidStatusSet()
     {
         $game = new Game();
         $this->expectException(GameValidatorException::class);
         $this->expectExceptionCode(Game::ERROR_ONLY_FOR_DRAFT_CODE, Game::ERROR_ONLY_FOR_DRAFT);
-		$game->setStatus(Game::ONGOING);
-		$game->setHeight(Game::MIN_HEIGHT_WIDTH);
+        $game->setStatus(Game::ONGOING);
+        $game->setHeight(Game::MIN_HEIGHT_WIDTH);
     }
-	
+
     public function testNotInteger()
     {
         $game = new Game();
@@ -72,7 +72,7 @@ class GridHeightUnitTest extends KernelTestCase
     public function testTooSmall()
     {
         $game = new Game();
-		$game->setStatus(Game::DRAFT);
+        $game->setStatus(Game::DRAFT);
 
         $this->expectException(GameValidatorException::class);
         $this->expectExceptionCode(Game::ERROR_HEIGHT_WIDTH_INVALID_CODE, Game::ERROR_HEIGHT_WIDTH_INVALID);
@@ -82,7 +82,7 @@ class GridHeightUnitTest extends KernelTestCase
     public function testTooBig()
     {
         $game = new Game();
-		$game->setStatus(Game::DRAFT);
+        $game->setStatus(Game::DRAFT);
 
         $this->expectException(GameValidatorException::class);
         $this->expectExceptionCode(Game::ERROR_HEIGHT_WIDTH_INVALID_CODE, Game::ERROR_HEIGHT_WIDTH_INVALID);
