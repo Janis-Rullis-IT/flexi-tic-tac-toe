@@ -45,8 +45,11 @@ class GameCreatorService
      *
      * @throws \App\Exception\GameValidatorException
      */
-    public function setRules(Game $game, ?array $request): Game
+    public function setRules(int $gameId, ?array $request): Game
     {
+        // #15 TODO: #14 Collect the game created previously so could read it's dimensions.
+        exit;
+
         if (!isset($request[Game::MOVE_CNT_TO_WIN])) {
             throw new \App\Exception\GameValidatorException([Game::MOVE_CNT_TO_WIN => Game::ERROR_MOVE_CNT_TO_WIN_INVALID], Game::ERROR_MOVE_CNT_TO_WIN_INVALID_CODE);
         }
