@@ -66,21 +66,26 @@ class Game
      * @SWG\Property(property="width", type="integer", example=3)
      * @Groups({"CREATE", "PUB", "ID_ERROR"})
      */
-    private int $width;
+    private int $width = 3;
 
     /**
      * @ORM\Column(type="integer")
      * @SWG\Property(property="height", type="integer", example=3)
      * @Groups({"CREATE", "PUB", "ID_ERROR"})
      */
-    private int $height;
+    private int $height = 3;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
      * @SWG\Property(property="move_cnt_to_win", type="integer", example=3)
      * @Groups({"CREATE", "PUB", "ID_ERROR"})
      */
-    private ?int $moveCntToWin = null;
+    private ?int $moveCntToWin;
+	
+	public function getId(): ?int
+    {
+        return $this->id;
+    }
 
     /**
      * #14 Set games status like 'ongoing'.

@@ -23,5 +23,14 @@ class GameUnitTest extends KernelTestCase
     public function testValid()
     {
 		$this->assertNull($this->gameRepo->getCurrentDraft());
+		
+		$item = $this->gameRepo->insertDraftIfNotExist();
+		$this->assertGreaterThan(1, $item->getId());
+		$this->assertEquals(Game::DRAFT, $item->getStatus());
+		$this->assertEquals(3, $item->getWidth());
+		$this->assertEquals(3, $item->getHeight());
+		
+		$item2 = $this->gameRepo->getCurrentDraft();
+		$this->assertEquals($item2->getId(), $item->getId());
     }
 }
