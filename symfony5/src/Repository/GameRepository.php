@@ -27,7 +27,6 @@ final class GameRepository extends BaseRepository implements IGameRepo
      */
     public function setBoardDimensions(int $width, int $height): Game
     {
-        $item = new Game();
         $item->setWidth($width);
         $item->setHeight($height);
 
@@ -48,42 +47,46 @@ final class GameRepository extends BaseRepository implements IGameRepo
     }
 
     /*
-     * #12 Collect player's current 'ongoing' game or create a new one.
-     *
-     * @param int $playerId
-     * @return Game
-     * @throws GameValidatorException
+     * #14 Collect player's current 'ongoing' game or create a new one.
      */
-//	public function insertDraftIfNotExist(int $playerId): Game
-//	{
-//		$item = $this->getCurrentDraft($playerId);
-//
-//		// #12 Create if it doesn't exist yet.
-//		if (empty($item)) {
-//			$item = new Game();
-//			$item->setPlayerId($playerId);
-//			$item->setStatus(Game::ONGOING);
+    public function insertDraftIfNotExist(): Game
+    {
+        //			#14 TODO: Uncomment this when the DB struct is ready.
+        //		$item = $this->getCurrentDraft();
+
+        // #14 Create if it doesn't exist yet.
+        if (empty($item)) {
+            $item = new Game();
+            $item->setStatus(Game::DRAFT);
+            //			#14 TODO: Uncomment this when the DB struct is ready.
 //			$this->em->persist($item);
 //			$this->em->flush();
-//		}
-//
-//		if (empty($item)) {
-//			throw new GameValidatorException([Game::ORDER_ID => Game::CANT_CREATE]);
-//		}
-//
-//		return $item;
-//	}
+        }
+
+        if (empty($item)) {
+            throw new GameValidatorException([Game::STATUS => Game::ERROR_CAN_NOT_CREATE], Game::ERROR_CAN_NOT_CREATE_CODE);
+        }
+
+        return $item;
+    }
 
     /*
-     * #12 Collect player's current 'ongoing' game.
-     *
-     * @param int $playerId
-     * @return Game|null
+     * #14 Collect player's current new ('draft') game.
      */
-//	public function getCurrentDraft(int $playerId): ?Game
-//	{
-//		return $this->findOneBy(['player_id' => $playerId, 'status' => Game::ONGOING]);
-//	}
+    public function getCurrentDraft(): ?Game
+    {
+        return $this->findOneBy(['status' => Game::DRAFT]);
+    }
+
+    public function mustFindCurrentDraft(): ?Game
+    {
+        $item = $this->getCurrentDraft();
+        if (empty($item)) {
+            throw new GameValidatorException([Game::STATUS => Game::ERROR_CAN_NOT_FIND], Game::ERROR_CAN_NOT_FIND_CODE);
+        }
+
+        return $item;
+    }
 
     /*
      * #12 Shorthand to write to the database.

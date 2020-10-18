@@ -32,7 +32,9 @@ class GameCreatorService
             throw new \App\Exception\GameValidatorException([Game::HEIGHT => Game::ERROR_HEIGHT_WIDTH_INVALID], Game::ERROR_HEIGHT_WIDTH_INVALID_CODE);
         }
         try {
-            return $this->gameRepo->setBoardDimensions($request[Game::WIDTH], $request[Game::HEIGHT]);
+            $game = $this->orderRepo->insertDraftIfNotExist();
+
+            return $this->gameRepo->setBoardDimensions($game, $request[Game::WIDTH], $request[Game::HEIGHT]);
         } catch (\Error $ex) {
             throw new \App\Exception\GameValidatorException([Game::HEIGHT_WIDTH => Game::ERROR_HEIGHT_WIDTH_INVALID], Game::ERROR_HEIGHT_WIDTH_INVALID_CODE);
         }
@@ -55,6 +57,8 @@ class GameCreatorService
             throw new \App\Exception\GameValidatorException([Game::MOVE_CNT_TO_WIN => Game::ERROR_MOVE_CNT_TO_WIN_INVALID], Game::ERROR_MOVE_CNT_TO_WIN_INVALID_CODE);
         }
         try {
+            $game = $this->orderRepo->mustFindCurrentDraft();
+
             return $this->gameRepo->setRules($game, $request[Game::MOVE_CNT_TO_WIN]);
         } catch (\Error $ex) {
             throw new \App\Exception\GameValidatorException([Game::MOVE_CNT_TO_WIN => Game::ERROR_MOVE_CNT_TO_WIN_INVALID], Game::ERROR_MOVE_CNT_TO_WIN_INVALID_CODE);

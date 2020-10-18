@@ -30,6 +30,10 @@ class Game
     const ERROR_STATUS_INVALID_CODE = 103;
     const ERROR_ONLY_FOR_DRAFT = '#14 Allowed only for a game with a \'draft\' status.';
     const ERROR_ONLY_FOR_DRAFT_CODE = 104;
+    const ERROR_CAN_NOT_CREATE = '#14 Can not create a new game.';
+    const ERROR_CAN_NOT_CREATE_CODE = 105;
+    const ERROR_CAN_NOT_FIND = '#14 Can not find the game.';
+    const ERROR_CAN_NOT_FIND_CODE = 106;
     // #12 Field names.
     const STATUS = 'status';
     const WIDTH = 'width';
@@ -86,7 +90,7 @@ class Game
 
     public function getStatus(): ?string
     {
-        return $this->$status;
+        return $this->status;
     }
 
     /**
