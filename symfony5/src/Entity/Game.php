@@ -20,10 +20,13 @@ class Game
     const ERROR_HEIGHT_WIDTH_INVALID_CODE = 100;
     const ERROR_WIDTH_ALREADY_SET = '#12 Can not change the width for a game that has already started.';
     const ERROR_WIDTH_ALREADY_SET_CODE = 101;
+    const ERROR_MOVE_CNT_TO_WIN_INVALID = '#15 Move count to win must be an integer not smaller than 2 and not bigger than the height or width.';
+    const ERROR_MOVE_CNT_TO_WIN_INVALID_CODE = 102;
     // #12 Field names.
     const WIDTH = 'width';
     const HEIGHT = 'height';
     const HEIGHT_WIDTH = 'height_width';
+    const MOVE_CNT_TO_WIN = 'move_cnt_to_win';
 
     /**
      * @ORM\Column(type="integer")
@@ -39,9 +42,22 @@ class Game
      */
     private int $height;
 
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     * @SWG\Property(property="move_cnt_to_win", type="integer", example=3)
+     * @Groups({"CREATE", "PUB", "ID_ERROR"})
+     */
+    private ?int $moveCntToWin = null;
+
+    /**
+     * #12 Make sure that the width is correct.
+     *
+     * @return \self
+     *
+     * @throws GameValidatorException
+     */
     public function setWidth(int $width): self
     {
-        // #12 Make sure that the width is correct.
         if ($width < self::MIN_HEIGHT_WIDTH || $width > self::MAX_HEIGHT_WIDTH) {
             throw new GameValidatorException([self::WIDTH => self::ERROR_HEIGHT_WIDTH_INVALID], self::ERROR_HEIGHT_WIDTH_INVALID_CODE);
         }
@@ -56,9 +72,15 @@ class Game
         return $this->width;
     }
 
+    /**
+     * #12 Make sure that the range is correct.
+     *
+     * @return \self
+     *
+     * @throws GameValidatorException
+     */
     public function setHeight(int $height): self
     {
-        // #12 Make sure that the range is correct.
         if ($height < self::MIN_HEIGHT_WIDTH || $height > self::MAX_HEIGHT_WIDTH) {
             throw new GameValidatorException([self::HEIGHT => self::ERROR_HEIGHT_WIDTH_INVALID], self::ERROR_HEIGHT_WIDTH_INVALID_CODE);
         }
@@ -71,5 +93,44 @@ class Game
     public function getHeight(): ?int
     {
         return $this->height;
+    }
+
+    /**
+     * #15 Set how many moves are required to win.
+     * Board dimensions are required to be set first.
+     *
+     * @return \self
+     */
+    public function setMoveCntToWin(int $moveCntToWin): self
+    {
+        // #15 Move count to win must be no smaller than the min board dimensions or go outside the board.
+        if ($moveCntToWin < $this->getMinDimension() || $moveCntToWin > $this->getMaxDimension()) {
+            throw new GameValidatorException([self::MOVE_CNT_TO_WIN => self::ERROR_MOVE_CNT_TO_WIN_INVALID], self::ERROR_MOVE_CNT_TO_WIN_INVALID_CODE);
+        }
+
+        $this->moveCntToWin = $moveCntToWin;
+
+        return $this;
+    }
+
+    /**
+     * #15 Get the smallest dimension - width or height.
+     */
+    public function getMinDimension(): int
+    {
+        return $this->getHeight() >= $this->getWidth() ? $this->getWidth() : $this->getHeight();
+    }
+
+    /**
+     * #15 Get the biggest dimension - width or height.
+     */
+    public function getMaxDimension(): int
+    {
+        return $this->getHeight() >= $this->getWidth() ? $this->getHeight() : $this->getWidth();
+    }
+
+    public function getMoveCntToWin(): ?int
+    {
+        return $this->moveCntToWin;
     }
 }

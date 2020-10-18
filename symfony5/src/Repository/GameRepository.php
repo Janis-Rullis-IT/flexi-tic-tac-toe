@@ -35,6 +35,19 @@ final class GameRepository extends BaseRepository implements IGameRepo
     }
 
     /*
+     * #15 Set game rules like how many moves are required to win.
+     * Board dimensions are required to be set first.
+     *
+     */
+    public function setRules(Game $item, int $moveCntToWin): Game
+    {
+        // #15 Collect game first.
+        $item->setMoveCntToWin($moveCntToWin);
+
+        return $item;
+    }
+
+    /*
      * #12 Collect player's current 'ongoing' game or create a new one.
      *
      * @param int $playerId

@@ -37,4 +37,27 @@ class GameCreatorService
             throw new \App\Exception\GameValidatorException([Game::HEIGHT_WIDTH => Game::ERROR_HEIGHT_WIDTH_INVALID], Game::ERROR_HEIGHT_WIDTH_INVALID_CODE);
         }
     }
+
+    /**
+     * #15 Set game rules like how many moves are required to win.
+     *
+     * @param array $request
+     *
+     * @throws \App\Exception\GameValidatorException
+     */
+    public function setRules(?array $request): Game
+    {
+        // #14 Currently, there is only 1 ongoing game.
+        // Multiple games will be implemented in #25
+        exit;
+
+        if (!isset($request[Game::MOVE_CNT_TO_WIN])) {
+            throw new \App\Exception\GameValidatorException([Game::MOVE_CNT_TO_WIN => Game::ERROR_MOVE_CNT_TO_WIN_INVALID], Game::ERROR_MOVE_CNT_TO_WIN_INVALID_CODE);
+        }
+        try {
+            return $this->gameRepo->setRules($game, $request[Game::MOVE_CNT_TO_WIN]);
+        } catch (\Error $ex) {
+            throw new \App\Exception\GameValidatorException([Game::MOVE_CNT_TO_WIN => Game::ERROR_MOVE_CNT_TO_WIN_INVALID], Game::ERROR_MOVE_CNT_TO_WIN_INVALID_CODE);
+        }
+    }
 }
