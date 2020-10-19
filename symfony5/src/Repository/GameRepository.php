@@ -88,6 +88,15 @@ final class GameRepository extends BaseRepository implements IGameRepo
     {
         return $this->findOneBy(['status' => Game::DRAFT]);
     }
+	
+	/*
+     * #17 Collect player's current new ('ongoing') game.
+     * @return Game|null
+     */
+    public function getCurrentOngoing(): ?Game
+    {
+        return $this->findOneBy(['status' => Game::ONGOING]);
+    }
 
     /**
      * Collect the current game (draft or ongoing - must be only 1).
@@ -97,6 +106,16 @@ final class GameRepository extends BaseRepository implements IGameRepo
     public function getCurrent(): ?Game
     {
         return $this->findOneBy(['status' => [Game::DRAFT, Game::ONGOING]]);
+    }
+	
+	public function mustFindCurrentOngoing(): ?Game
+    {
+        $item = $this->getCurrentOngoing();
+        if (empty($item)) {
+            throw new GameValidatorException([Game::STATUS => Game::ERROR_CAN_NOT_FIND], Game::ERROR_CAN_NOT_FIND_CODE);
+        }
+
+        return $item;
     }
 
     public function mustFindCurrentDraft(): ?Game

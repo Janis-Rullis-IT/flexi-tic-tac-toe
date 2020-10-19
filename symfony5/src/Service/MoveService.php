@@ -36,7 +36,7 @@ class MoveService
             throw new MoveValidatorException([Move::COLUMN => Move::ERROR_COLUMN_MISSING], Move::ERROR_COLUMN_MISSING_CODE);
         }
         try {
-            $game = $this->gameRepo->mustFindCurrentDraft();
+            $game = $this->gameRepo->mustFindCurrentOngoing();
 
             return $this->moveRepo->selectCell($game, $request[Move::ROW], $request[Move::COLUMN]);
         } catch (\Error $ex) {

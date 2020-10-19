@@ -36,4 +36,10 @@ final class MoveRepository extends BaseRepository implements IMoveRepo
 
         return $item;
     }
+	
+	public function save()
+    {
+        $this->em->flush();
+        $this->em->clear();
+    }
 }
