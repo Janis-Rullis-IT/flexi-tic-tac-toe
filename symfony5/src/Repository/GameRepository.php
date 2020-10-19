@@ -70,10 +70,19 @@ final class GameRepository extends BaseRepository implements IGameRepo
 
     /*
      * #14 Collect player's current new ('draft') game.
+     * @return Game|null
      */
     public function getCurrentDraft(): ?Game
     {
         return $this->findOneBy(['status' => Game::DRAFT]);
+    }
+
+    /**
+     * Collect the current game (draft or ongoing - must be only 1).
+     */
+    public function getCurrent(): ?Game
+    {
+        return $this->findOneBy(['status' => [Game::DRAFT, Game::ONGOING]]);
     }
 
     public function mustFindCurrentDraft(): ?Game

@@ -32,5 +32,8 @@ class GameUnitTest extends KernelTestCase
 
         $item2 = $this->gameRepo->getCurrentDraft();
         $this->assertEquals($item2->getId(), $item->getId());
+
+        $item3 = $this->gameRepo->getCurrent();
+        $this->assertEquals($item3->getId(), $item->getId());
     }
 }
