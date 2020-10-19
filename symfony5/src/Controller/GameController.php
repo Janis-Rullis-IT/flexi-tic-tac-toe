@@ -6,6 +6,7 @@ use App\Entity\Game;
 use App\Entity\Move;
 use App\Interfaces\IGameRepo;
 use App\Service\GameCreatorService;
+use App\Service\MoveService;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Swagger\Annotations as SWG;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

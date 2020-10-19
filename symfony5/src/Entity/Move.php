@@ -11,7 +11,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 class Move
 {
-	const MIN_INDEX=0;
+    const MIN_INDEX = 0;
     // #17 Error messages.
     const ERROR_MOVE_INVALID = '#17 Invalid move.';
     const ERROR_MOVE_INVALID_CODE = 200;
