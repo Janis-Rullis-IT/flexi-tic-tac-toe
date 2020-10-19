@@ -83,8 +83,9 @@ class Game
     /**
      * @ORM\Column(type="integer", nullable=true)
      * @SWG\Property(property="move_cnt_to_win", type="integer", example=3)
+	 * @Groups({"CREATE", "PUB", "RULES"})
      */
-    private ?int $moveCntToWin = null;
+    private ?int $move_cnt_to_win = null;
 
     public function getId(): ?int
     {
@@ -204,14 +205,14 @@ class Game
             throw new GameValidatorException([self::MOVE_CNT_TO_WIN => self::ERROR_ONLY_FOR_DRAFT], self::ERROR_ONLY_FOR_DRAFT_CODE);
         }
 
-        $this->moveCntToWin = $moveCntToWin;
+        $this->move_cnt_to_win = $moveCntToWin;
 
         return $this;
     }
 
     public function getMoveCntToWin(): ?int
     {
-        return $this->moveCntToWin;
+        return $this->move_cnt_to_win;
     }
 
     /**

@@ -9,6 +9,10 @@ use Doctrine\ORM\Mapping as ORM;
 use Swagger\Annotations as SWG;
 use Symfony\Component\Serializer\Annotation\Groups;
 
+/**
+ * @ORM\Entity(repositoryClass="App\Repository\MoveRepository")
+ * @ORM\Table(name="`move`")
+ */
 class Move
 {
     const MIN_INDEX = 0;
@@ -25,6 +29,17 @@ class Move
     const MOVE = 'move';
     const ROW = 'row';
     const COLUMN = 'column';
+	
+	    /**
+     * @ORM\Id()
+     * @ORM\GeneratedValue()
+     * @ORM\Column(type="integer")
+     * @SWG\Property(property="id", type="integer", example=1)
+     * @Groups({"PUB"})
+     */
+    private int $id;
+
+
 
     /**
      * @ORM\Column(type="integer")
@@ -46,6 +61,12 @@ class Move
      * @Groups({"CREATE", "PUB", "ID_ERROR"})
      */
     private int $column;
+	
+	    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
 
     /**
      * #17 Make sure that the selected row is correct.
@@ -58,11 +79,11 @@ class Move
      */
     public function setRow(Game $game, int $row): self
     {
-        // #17 Make sure that passed values are valid.
+        // #17 Make sure that the move is not outside the board.
         if ($row < self::MIN_INDEX || $row > $this->getMaxAllowedRow($game)) {
             throw new MoveValidatorException([self::MOVE => self::ERROR_MOVE_INVALID], self::ERROR_MOVE_INVALID_CODE);
         }
-        // #15 Allow to set dimensions only if it is a new game.
+        // #15 Allow to set move only if it is a started game.
         if (Game::ONGOING !== $game->getStatus()) {
             throw new MoveValidatorException([self::MOVE => self::ERROR_MOVE_ONLY_FOR_ONGOING], self::ERROR_MOVE_ONLY_FOR_ONGOING_CODE);
         }
@@ -87,11 +108,11 @@ class Move
      */
     public function setColumn(Game $game, int $column): self
     {
-        // #17 Make sure that passed values are valid.
+        // #17 Make sure that the move is not outside the board.
         if ($column < self::MIN_INDEX || $column > $this->getMaxAllowedColumn($game)) {
             throw new MoveValidatorException([self::MOVE => self::ERROR_MOVE_INVALID], self::ERROR_MOVE_INVALID_CODE);
         }
-        // #15 Allow to set dimensions only if it is a new game.
+        // #15 Allow to set move only if it is a started game.
         if (Game::ONGOING !== $game->getStatus()) {
             throw new MoveValidatorException([self::MOVE => self::ERROR_MOVE_ONLY_FOR_ONGOING], self::ERROR_MOVE_ONLY_FOR_ONGOING_CODE);
         }
