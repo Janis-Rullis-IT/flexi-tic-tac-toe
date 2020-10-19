@@ -38,6 +38,10 @@ class Game
     const ERROR_CAN_NOT_CREATE_CODE = 105;
     const ERROR_CAN_NOT_FIND = '#14 Can not find the game.';
     const ERROR_CAN_NOT_FIND_CODE = 106;
+    const ERROR_STATUS_DRAFT_INVALID = '#17 DRAFT should be only set once.';
+    const ERROR_STATUS_DRAFT_INVALID_CODE = 107;
+    const ERROR_STATUS_ONGOING_INVALID = '#17 ONGOING requires to have a draft status and board dimensions and rules set.';
+    const ERROR_STATUS_ONGOING_INVALID_CODE = 108;
     // #12 Field names.
     const ID = 'id';
     const STATUS = 'status';
@@ -88,7 +92,7 @@ class Game
     }
 
     /**
-     * #14 Set games status like 'ongoing'.
+     * #14 #17 Set games status like 'ongoing'.
      *
      * @return \self
      *
@@ -99,6 +103,20 @@ class Game
         // #14 Make sure that passed values are valid.
         if (!in_array($status, self::STATUS_VALUES)) {
             throw new GameValidatorException([self::STATUS => self::ERROR_STATUS_INVALID], self::ERROR_STATUS_INVALID_CODE);
+        }
+
+        switch ($status) {
+            // #17 DRAFT should be only set once.
+            case self::DRAFT:
+                if (!(self::DRAFT === $this->getStatus() || null === $this->getStatus())) {
+                    throw new GameValidatorException([self::STATUS => self::ERROR_STATUS_DRAFT_INVALID], self::ERROR_STATUS_DRAFT_INVALID_CODE);
+                }
+                break;
+            // #17 ONGOING requires to have a draft status and board dimensions and rules set.
+            case self::ONGOING:
+                if (!(self::DRAFT === $this->getStatus() && !empty($this->getHeight()) && !empty($this->getWidth()) && !empty(!empty($this->getMoveCntToWin())))) {
+                    throw new GameValidatorException([self::STATUS => self::ERROR_STATUS_ONGOING_INVALID], self::ERROR_STATUS_ONGOING_INVALID_CODE);
+                }
         }
 
         $this->status = $status;

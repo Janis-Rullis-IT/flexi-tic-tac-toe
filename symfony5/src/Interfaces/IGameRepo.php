@@ -20,6 +20,8 @@ interface IGameRepo
 
     public function save();
 
+    public function markAsStarted(Game $item): Game;
+
 //    public function markAsCompleted(Order $order): Order;
 //
 //    public function mustFindUsersOrder(int $userId, int $orderId): Order;

@@ -82,9 +82,36 @@ class GameController extends AbstractController
     public function setRules(Request $request, GameCreatorService $gameCreatorService): JsonResponse
     {
         try {
-            $resp = $gameCreatorService->setRules(json_decode($request->getContent(), true));
-
+            $resp = $gameCreatorService->setRules(json_decode($request->getContent(), true))->toArray();
             return $this->json($resp, Response::HTTP_OK);
+        } catch (\Exception $e) {
+            if (method_exists($e, 'getErrors')) {
+                return $this->json(['errors' => $e->getErrors()], Response::HTTP_BAD_REQUEST);
+            }
+
+            return $this->json(['errors' => [$e->getMessage()]], Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    /**
+     * Mark game as started ('ongoing').
+     *
+     * @Route("/game/ongoing", name="markAsStarted", methods={"PUT"})
+     * @SWG\Tag(name="1. game")
+     *
+     * @SWG\Response(response=200, description="OK", @SWG\Schema(type="object", ref=@Model(type=Game::class, groups={"PUB"})))
+     * @SWG\Response(response=400, description="Bad Request", @SWG\Schema(type="object", ref=@Model(type=Game::class, groups={"PUB"})))
+     */
+    public function markAsStarted(IGameRepo $gameRepo): JsonResponse
+    {
+        try {
+            $game = $gameRepo->getCurrent();
+            if (empty($game)) {
+                return $this->json(['errors' => [Game::ID => Game::ERROR_CAN_NOT_FIND]], Response::HTTP_NOT_FOUND);
+            }
+            $game = $gameRepo->markAsStarted($game);
+
+            return $this->json($game->toArray(), Response::HTTP_OK);
         } catch (\Exception $e) {
             if (method_exists($e, 'getErrors')) {
                 return $this->json(['errors' => $e->getErrors()], Response::HTTP_BAD_REQUEST);
