@@ -51,8 +51,6 @@ class GameCreatorService
     {
         // #14 Currently, there is only 1 ongoing game.
         // Multiple games will be implemented in #25
-        exit;
-
         if (!isset($request[Game::MOVE_CNT_TO_WIN])) {
             throw new \App\Exception\GameValidatorException([Game::MOVE_CNT_TO_WIN => Game::ERROR_MOVE_CNT_TO_WIN_INVALID], Game::ERROR_MOVE_CNT_TO_WIN_INVALID_CODE);
         }

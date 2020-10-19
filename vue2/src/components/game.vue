@@ -75,10 +75,20 @@
           </div>
         </div>
         <div class="board" v-if=show_board>
-          <div class="row" v-for="index in height" :key="index">
-            <div class="cell" :class="computedClass" v-for="index2 in width" :key="index2">
-              <span>X</span>
-              </div>          
+          <div class="row" v-for="row in rows" :key="row.number">
+            <div v-for="cell in row.columns" :key="cell.cell">
+              <template v-if=cell.value>
+                <div :class="computedClass" class="cell selected">
+                  <span>{{cell.value}}</span>
+                </div>
+              </template>
+              <template v-else>
+                <div :class="computedClass" class="cell choose-me" @click="selectCell(cell)">
+                  <span>{{cell.value}}</span>
+                </div>
+              </template>
+              
+            </div>
           </div>
         </div>
 
@@ -94,7 +104,7 @@ export default {
       alerts: { success: "", errors: [] },
       slug: this.$route.params.slug,
       type: this.$route.params.type,
-      game: {},
+      rows: [],
       show_board: false,
       show_input: false,
       width: 3,
@@ -104,7 +114,7 @@ export default {
   },
   computed: {
     computedClass() {
-      return 'col-sm-' + Math.floor(20 / this.width);
+      return  'col-sm-' + Math.floor(20 / this.width);      
     }
   },
   created() {
@@ -117,6 +127,17 @@ export default {
         function onSuccess(response) {
           this.width = response.data.width;
           this.height = response.data.height;
+
+          // #16 Populate rows and columns based on the board dimensions.
+          for(let i = 0; i < this.height; i++){
+            let row = {number: i, columns: []};
+            for(let j = 0; j < this.width; j++){
+              let column = {row: i, column: j,value: null}
+              row.columns.push(column);
+            }
+            this.rows.push(row);
+          }
+
           this.loading = false;
           this.show_board = true;
           this.show_input = false;
@@ -127,6 +148,24 @@ export default {
         }
       );
     },
+    selectCell(cell){
+      if(cell.value === null){
+        // #16 Send to API where it will be validated and stored.
+        this.loading = true;
+         this.$http.post("game/move", cell).then(
+          function onSuccess(response) {
+            this.loading = false;
+            // #16 Sets X or O.
+            cell.value = response.data.value;
+          },
+          function onFail(response) {
+            this.loading = false;
+            this.showError(response.data.errors);
+          }
+        );
+      }
+      return false;
+    },
     startGame() {
       this.clearAlerts();
 
@@ -135,8 +174,6 @@ export default {
       this.width = parseInt(this.width);
       this.height = parseInt(this.height);
       this.move_cnt_to_win = parseInt(this.move_cnt_to_win);
-
-
       this.$http
         .post("game/grid", {
           width: this.width,

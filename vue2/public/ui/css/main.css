@@ -55,6 +55,9 @@
   border-bottom: 1px solid gray;
   text-align: center;
   padding-top: 15px;
+  
+}
+.board .cell.choose-me{
   cursor: pointer;
 }
 .board .cell.selected{

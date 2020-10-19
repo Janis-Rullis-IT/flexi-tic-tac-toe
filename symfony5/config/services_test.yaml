@@ -34,3 +34,7 @@ services:
     test.App\Interfaces\IGameRepo:
         alias: App\Interfaces\IGameRepo
         public: true
+    #17
+    test.App\Interfaces\IMoveRepo:
+        alias: App\Interfaces\IMoveRepo
+        public: true

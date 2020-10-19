@@ -48,7 +48,7 @@ class GridHeightUnitTest extends KernelTestCase
     {
         $game = new Game();
         $this->expectException(GameValidatorException::class);
-        $this->expectExceptionCode(Game::ERROR_ONLY_FOR_DRAFT_CODE, Game::ERROR_ONLY_FOR_DRAFT);
+        $this->expectExceptionCode(Game::ERROR_STATUS_ONGOING_INVALID_CODE, Game::ERROR_STATUS_ONGOING_INVALID);
         $game->setStatus(Game::ONGOING);
         $game->setHeight(Game::MIN_HEIGHT_WIDTH);
     }

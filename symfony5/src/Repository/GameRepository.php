@@ -34,20 +34,22 @@ final class GameRepository extends BaseRepository implements IGameRepo
         return $item;
     }
 
-    /*
+    /**
      * #15 Set game rules like how many moves are required to win.
      * Board dimensions are required to be set first.
-     *
      */
     public function setRules(Game $item, int $moveCntToWin): Game
     {
         $item->setMoveCntToWin($moveCntToWin);
+        $this->save();
 
         return $item;
     }
 
-    /*
+    /**
      * #14 Collect player's current 'ongoing' game or create a new one.
+     *
+     * @throws GameValidatorException
      */
     public function insertDraftIfNotExist(): Game
     {
@@ -77,12 +79,31 @@ final class GameRepository extends BaseRepository implements IGameRepo
         return $this->findOneBy(['status' => Game::DRAFT]);
     }
 
+    /*
+     * #17 Collect player's current new ('ongoing') game.
+     * @return Game|null
+     */
+    public function getCurrentOngoing(): ?Game
+    {
+        return $this->findOneBy(['status' => Game::ONGOING]);
+    }
+
     /**
      * Collect the current game (draft or ongoing - must be only 1).
      */
     public function getCurrent(): ?Game
     {
         return $this->findOneBy(['status' => [Game::DRAFT, Game::ONGOING]]);
+    }
+
+    public function mustFindCurrentOngoing(): ?Game
+    {
+        $item = $this->getCurrentOngoing();
+        if (empty($item)) {
+            throw new GameValidatorException([Game::STATUS => Game::ERROR_CAN_NOT_FIND], Game::ERROR_CAN_NOT_FIND_CODE);
+        }
+
+        return $item;
     }
 
     public function mustFindCurrentDraft(): ?Game
@@ -95,7 +116,7 @@ final class GameRepository extends BaseRepository implements IGameRepo
         return $item;
     }
 
-    /*
+    /**
      * #14 Shorthand to write to the database.
      */
     public function save()
@@ -104,22 +125,20 @@ final class GameRepository extends BaseRepository implements IGameRepo
         $this->em->clear();
     }
 
-    /*
-     * #12 Mark the game as completed.
-     *
-     * @param Game $game
-     * @return Game
+    /**
+     * #17 Mark game as started ('ongoing').
      */
-//	public function markAsCompleted(Game $game): Game
-//	{
-//		// #12 A refresh-entity workaround for the field not being updated. https://www.doctrine-project.org/projects/doctrine-orm/en/2.7/reference/unitofwork.html https://www.doctrine-project.org/api/orm/latest/Doctrine/ORM/EntityManager.html
-//		// TODO: Ask someone about this behaviour.
-//		$game = $this->em->getReference(Game::class, $game->getId());
-//		$game->setStatus(Game::COMPLETED);
-//		$this->save($game);
-//
-//		return $game;
-//	}
+    public function markAsStarted(Game $item): Game
+    {
+        // #17 A refresh-entity workaround for the field not being updated. https://www.doctrine-project.org/projects/doctrine-orm/en/2.7/reference/unitofwork.html https://www.doctrine-project.org/api/orm/latest/Doctrine/ORM/EntityManager.html
+        // TODO: Ask someone about this behaviour.
+        $item = $this->em->getReference(Game::class, $item->getId());
+        $item->setStatus(Game::ONGOING);
+        $this->save($item);
+
+        return $item;
+    }
+
     /*
      * #12 Find game by id. Throw an exception if not found.
      *
