@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Game;
+use App\Entity\Move;
 use App\Interfaces\IGameRepo;
 use App\Service\GameCreatorService;
 use Nelmio\ApiDocBundle\Annotation\Model;
@@ -50,7 +51,7 @@ class GameController extends AbstractController
      *
      * @SWG\Parameter(name="body", in="body", required=true, @SWG\Schema(required={"width", "height"}, type="object", ref=@Model(type=Game::class, groups={"CREATE"})))
      * @SWG\Response(response=200, description="OK", @SWG\Schema(type="object", ref=@Model(type=Game::class, groups={"PUB"})))
-	 * @SWG\Response(response=400, description="Bad Request", @SWG\Schema(type="object", @SWG\Property(property="errors", type="object", example={"width": "#12 Width and height must be an integer from 2 to 20."})))
+     * @SWG\Response(response=400, description="Bad Request", @SWG\Schema(type="object", @SWG\Property(property="errors", type="object", example={"width": "#12 Width and height must be an integer from 2 to 20."})))
      */
     public function setBoardDimensions(Request $request, GameCreatorService $gameCreatorService): JsonResponse
     {
@@ -81,6 +82,31 @@ class GameController extends AbstractController
     {
         try {
             $resp = $gameCreatorService->setRules(json_decode($request->getContent(), true));
+
+            return $this->json($resp, Response::HTTP_OK);
+        } catch (\Exception $e) {
+            if (method_exists($e, 'getErrors')) {
+                return $this->json(['errors' => $e->getErrors()], Response::HTTP_BAD_REQUEST);
+            }
+
+            return $this->json(['errors' => [$e->getMessage()]], Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    /**
+     * Select the cell.
+     *
+     * @Route("/game/move", name="selectCell", methods={"POST"})
+     * @SWG\Tag(name="1. game")
+     *
+     * @SWG\Parameter(name="body", in="body", required=true, @SWG\Schema(required={"row", "column"}, type="object", ref=@Model(type=Move::class, groups={"CREATE"})))
+     * @SWG\Response(response=200, description="OK", @SWG\Schema(type="object", ref=@Model(type=Move::class, groups={"PUB"})))
+     * @SWG\Response(response=400, description="Bad Request", @SWG\Schema(type="object", @SWG\Property(property="errors", type="object", example={"cell": "#12 Width and height must be an integer from 2 to 20."})))
+     */
+    public function selectCell(Request $request, MoveService $moveService): JsonResponse
+    {
+        try {
+            $resp = $moveService->selectCell(json_decode($request->getContent(), true))->toArray();
 
             return $this->json($resp, Response::HTTP_OK);
         } catch (\Exception $e) {
