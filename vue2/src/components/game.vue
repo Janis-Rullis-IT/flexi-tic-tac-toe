@@ -76,7 +76,7 @@
         </div>
         <div class="board" v-if=show_board>
           <div class="row" v-for="row in rows" :key="row.number">
-            <div v-for="cell in row.cells" :key="cell.number">
+            <div v-for="cell in row.cells" :key="cell.cell">
               <template v-if=cell.value>
                 <div :class="computedClass" class="cell selected">
                   <span>{{cell.value}}</span>
@@ -132,7 +132,8 @@ export default {
           for(let i = 0; i < this.height; i++){
             let row = {number: i, cells: []};
             for(let j = 0; j < this.width; j++){
-              row.cells.push({number: j,value: null});
+              let cell = {row: i, cell: j,value: null}
+              row.cells.push(cell);
             }
             this.rows.push(row);
           }
@@ -149,8 +150,19 @@ export default {
     },
     selectCell(cell){
       if(cell.value === null){
-        cell.value = 'X';
-        return true;
+        // #16 Send to API where it will be validated and stored.
+        this.loading = true;
+         this.$http.post("game/move", cell).then(
+          function onSuccess(response) {
+            this.loading = false;
+            // #16 Sets X or O.
+            cell.value = response.data.value;
+          },
+          function onFail(response) {
+            this.loading = false;
+            this.showError(response.data.errors);
+          }
+        );
       }
       return false;
     },
@@ -162,8 +174,6 @@ export default {
       this.width = parseInt(this.width);
       this.height = parseInt(this.height);
       this.move_cnt_to_win = parseInt(this.move_cnt_to_win);
-
-
       this.$http
         .post("game/grid", {
           width: this.width,
