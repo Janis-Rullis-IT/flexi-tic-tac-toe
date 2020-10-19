@@ -118,13 +118,43 @@ class Move
         return $this->gameId;
     }
 
-    public function getMaxAllowedRow($game): ?int
+    public function getMaxAllowedRow(Game $game): ?int
     {
         return $game->getHeight() - 1;
     }
 
-    public function getMaxAllowedColumn($game): ?int
+    public function getMaxAllowedColumn(Game $game): ?int
     {
         return $game->getWidth() - 1;
+    }
+
+    public function toArray(?array $fields = [], $relations = []): array
+    {
+        $return = [];
+        // #17 Contains most popular fields. Add a field is necessary.
+        $return = $this->toArrayFill($fields);
+
+        return $return;
+    }
+
+    /**
+     * #17 Fill order's fields.
+     */
+    private function toArrayFill(?array $fields = []): array
+    {
+        $return = [];
+        $allFields = [
+            self::ROW => $this->getRow(), self::COLUMN => $this->getColumn(),
+        ];
+
+        if (empty($fields)) {
+            return $allFields;
+        }
+
+        foreach ($fields as $field) {
+            $return[$field] = isset($allFields[$field]) ? $allFields[$field] : null;
+        }
+
+        return $return;
     }
 }

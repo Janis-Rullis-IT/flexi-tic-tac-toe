@@ -30,8 +30,8 @@ final class MoveRepository extends BaseRepository implements IMoveRepo
         // #17 TODO: Look in DB if such move has already been registered.
         $item = new Move();
         $item->setGameId($game->getId());
-        $item->setRow($row);
-        $item->setColumn($column);
+        $item->setRow($game, $row);
+        $item->setColumn($game, $column);
         $this->save();
 
         return $item;
