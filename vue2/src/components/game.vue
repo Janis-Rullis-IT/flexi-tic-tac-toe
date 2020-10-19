@@ -13,12 +13,10 @@
       </div>
     </div>
 
+  <div v-if="show_input">
     <div class="row content game">
       <div class="row body">
         <div class="col-sm-20">
-
-          <div v-if="show_input">
-
               <div class="row rating">
                 <div class="col-sm-5">
                   <label for="width">Width</label>
@@ -76,13 +74,10 @@
             </div>
           </div>
         </div>
-        <div v-if=show_board>
-          <div class="row body" v-for="index in height" :key="index">
-            <div :class="computedClass" v-for="index2 in width" :key="index2">
-              <div class="row thumbnail">
-                <div class="col-sm-20">
-                  aaaaaa
-                </div>
+        <div class="board" v-if=show_board>
+          <div class="row" v-for="index in height" :key="index">
+            <div class="cell" :class="computedClass" v-for="index2 in width" :key="index2">
+              <span>X</span>
               </div>          
           </div>
         </div>
