@@ -76,9 +76,19 @@
         </div>
         <div class="board" v-if=show_board>
           <div class="row" v-for="row in rows" :key="row.number">
-            <div class="cell" :class="computedClass" v-for="cell in row.cells" :key="cell.number">
-              <span>{{cell.value}}</span>
-              </div>          
+            <div v-for="cell in row.cells" :key="cell.number">
+              <template v-if=cell.value>
+                <div :class="computedClass" class="cell selected">
+                  <span>{{cell.value}}</span>
+                </div>
+              </template>
+              <template v-else>
+                <div :class="computedClass" class="cell choose-me" @click="selectCell(cell)">
+                  <span>{{cell.value}}</span>
+                </div>
+              </template>
+              
+            </div>
           </div>
         </div>
 
@@ -104,7 +114,7 @@ export default {
   },
   computed: {
     computedClass() {
-      return 'col-sm-' + Math.floor(20 / this.width);
+      return  'col-sm-' + Math.floor(20 / this.width);      
     }
   },
   created() {
@@ -122,7 +132,7 @@ export default {
           for(let i = 0; i < this.height; i++){
             let row = {number: i, cells: []};
             for(let j = 0; j < this.width; j++){
-              row.cells.push({number: j,value: 'O'});
+              row.cells.push({number: j,value: null});
             }
             this.rows.push(row);
           }
@@ -136,6 +146,13 @@ export default {
           this.show_input = true;
         }
       );
+    },
+    selectCell(cell){
+      if(cell.value === null){
+        cell.value = 'X';
+        return true;
+      }
+      return false;
     },
     startGame() {
       this.clearAlerts();
