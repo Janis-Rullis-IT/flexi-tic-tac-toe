@@ -58,7 +58,7 @@ class Game
     /**
      * @ORM\Column(type="string", nullable=true)
      * @SWG\Property(property="status", type="string", example="ongoing")
-     * @Groups({"CREATE", "PUB", "ID_ERROR"})
+     * @Groups({"PUB", "ID_ERROR"})
      */
     private ?string $status = null;
 
