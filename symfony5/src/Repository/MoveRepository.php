@@ -18,7 +18,7 @@ final class MoveRepository extends BaseRepository implements IMoveRepo
 {
     public function __construct(EntityManagerInterface $em)
     {
-        parent::__construct($em, Game::class);
+        parent::__construct($em, Move::class);
     }
 
     /**
@@ -36,8 +36,8 @@ final class MoveRepository extends BaseRepository implements IMoveRepo
 
         return $item;
     }
-	
-	public function save()
+
+    public function save()
     {
         $this->em->flush();
         $this->em->clear();

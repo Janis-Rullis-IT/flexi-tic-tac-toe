@@ -30,13 +30,14 @@ class MoveColumnUnitTest extends KernelTestCase
         $move = new Move();
         $game = new Game();
         $game->setStatus(Game::DRAFT);
-		$game->setHeight(Game::MAX_HEIGHT_WIDTH);
-		$game->setWidth(Game::MAX_HEIGHT_WIDTH);
-		$game->setMoveCntToWin(Game::MAX_HEIGHT_WIDTH);
-		
+        $game->setHeight(Game::MAX_HEIGHT_WIDTH);
+        $game->setWidth(Game::MAX_HEIGHT_WIDTH);
+        $game->setMoveCntToWin(Game::MAX_HEIGHT_WIDTH);
+
         $game->setStatus(Game::ONGOING);
         $move->setColumn($game, $move->getMaxAllowedColumn($game));
-		$this->assertEquals($move->getColumn(), $move->getMaxAllowedColumn($game));
+        $this->assertEquals($move->getColumn(), $move->getMaxAllowedColumn($game));
+        $this->moveRepo->save();
     }
 
     public function testNotGame()
@@ -84,11 +85,11 @@ class MoveColumnUnitTest extends KernelTestCase
     {
         $move = new Move();
         $game = new Game();
-		$game->setStatus(Game::DRAFT);
-		$game->setHeight(Game::MAX_HEIGHT_WIDTH);
-		$game->setWidth(Game::MAX_HEIGHT_WIDTH);
-		$game->setMoveCntToWin(Game::MAX_HEIGHT_WIDTH);
-		
+        $game->setStatus(Game::DRAFT);
+        $game->setHeight(Game::MAX_HEIGHT_WIDTH);
+        $game->setWidth(Game::MAX_HEIGHT_WIDTH);
+        $game->setMoveCntToWin(Game::MAX_HEIGHT_WIDTH);
+
         $game->setStatus(Game::ONGOING);
         $this->expectException(MoveValidatorException::class);
         $this->expectExceptionCode(Move::ERROR_MOVE_INVALID_CODE, Move::ERROR_MOVE_INVALID);
@@ -100,10 +101,10 @@ class MoveColumnUnitTest extends KernelTestCase
         $move = new Move();
         $game = new Game();
         $game->setStatus(Game::DRAFT);
-		$game->setHeight(Game::MAX_HEIGHT_WIDTH);
-		$game->setWidth(Game::MAX_HEIGHT_WIDTH);
-		$game->setMoveCntToWin(Game::MAX_HEIGHT_WIDTH);
-		
+        $game->setHeight(Game::MAX_HEIGHT_WIDTH);
+        $game->setWidth(Game::MAX_HEIGHT_WIDTH);
+        $game->setMoveCntToWin(Game::MAX_HEIGHT_WIDTH);
+
         $game->setStatus(Game::ONGOING);
 
         $this->expectException(MoveValidatorException::class);

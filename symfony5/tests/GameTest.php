@@ -36,17 +36,17 @@ class GameTest extends WebTestCase
         $responseBody = json_decode($this->client->getResponse()->getContent(), true);
         $this->assertEquals($data[Game::HEIGHT], $responseBody[Game::HEIGHT]);
     }
-	
-	public function testValidMarkOngoing()
+
+    public function testValidMarkOngoing()
     {
-		$data = [Game::WIDTH => Game::MAX_HEIGHT_WIDTH, Game::HEIGHT => Game::MIN_HEIGHT_WIDTH];
+        $data = [Game::WIDTH => Game::MAX_HEIGHT_WIDTH, Game::HEIGHT => Game::MIN_HEIGHT_WIDTH];
         $this->client->request('POST', '/game/grid', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode($data));
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
-		
-		$data = [Game::MOVE_CNT_TO_WIN => Game::MAX_HEIGHT_WIDTH];
-		$this->client->request('PUT', '/game/rules', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode($data));
-		$this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
-		
+
+        $data = [Game::MOVE_CNT_TO_WIN => Game::MAX_HEIGHT_WIDTH];
+        $this->client->request('PUT', '/game/rules', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode($data));
+        $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+
         $data = [];
         $this->client->request('PUT', '/game/ongoing', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode($data));
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());

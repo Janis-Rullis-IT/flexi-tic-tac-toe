@@ -29,8 +29,8 @@ class Move
     const MOVE = 'move';
     const ROW = 'row';
     const COLUMN = 'column';
-	
-	    /**
+
+    /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
@@ -38,8 +38,6 @@ class Move
      * @Groups({"PUB"})
      */
     private int $id;
-
-
 
     /**
      * @ORM\Column(type="integer")
@@ -61,12 +59,11 @@ class Move
      * @Groups({"CREATE", "PUB", "ID_ERROR"})
      */
     private int $column;
-	
-	    public function getId(): ?int
+
+    public function getId(): ?int
     {
         return $this->id;
     }
-
 
     /**
      * #17 Make sure that the selected row is correct.

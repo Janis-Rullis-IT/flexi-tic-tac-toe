@@ -83,7 +83,7 @@ class Game
     /**
      * @ORM\Column(type="integer", nullable=true)
      * @SWG\Property(property="move_cnt_to_win", type="integer", example=3)
-	 * @Groups({"CREATE", "PUB", "RULES"})
+     * @Groups({"CREATE", "PUB", "RULES"})
      */
     private ?int $move_cnt_to_win = null;
 
