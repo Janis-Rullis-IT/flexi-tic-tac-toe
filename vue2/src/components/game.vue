@@ -76,7 +76,7 @@
         </div>
         <div class="board" v-if=show_board>
           <div class="row" v-for="row in rows" :key="row.number">
-            <div v-for="cell in row.cells" :key="cell.cell">
+            <div v-for="cell in row.columns" :key="cell.cell">
               <template v-if=cell.value>
                 <div :class="computedClass" class="cell selected">
                   <span>{{cell.value}}</span>
@@ -128,12 +128,12 @@ export default {
           this.width = response.data.width;
           this.height = response.data.height;
 
-          // #16 Populate rows and cells based on the board dimensions.
+          // #16 Populate rows and columns based on the board dimensions.
           for(let i = 0; i < this.height; i++){
-            let row = {number: i, cells: []};
+            let row = {number: i, columns: []};
             for(let j = 0; j < this.width; j++){
-              let cell = {row: i, cell: j,value: null}
-              row.cells.push(cell);
+              let column = {row: i, column: j,value: null}
+              row.columns.push(column);
             }
             this.rows.push(row);
           }
