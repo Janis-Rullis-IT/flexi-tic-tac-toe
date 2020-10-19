@@ -40,21 +40,21 @@ class Move
     private int $id;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(name="`game_id`", type="integer")
      * @SWG\Property(property="game_id", type="integer", example=1)
      * @Groups({"PUB", "ID_ERROR"})
      */
     private int $gameId;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(name="`row`", type="integer")
      * @SWG\Property(property="row", type="integer", example=0)
      * @Groups({"CREATE", "PUB", "ID_ERROR"})
      */
     private int $row;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(name="`column`", type="integer")
      * @SWG\Property(property="column", type="integer", example=0)
      * @Groups({"CREATE", "PUB", "ID_ERROR"})
      */

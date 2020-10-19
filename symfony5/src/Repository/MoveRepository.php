@@ -32,7 +32,8 @@ final class MoveRepository extends BaseRepository implements IMoveRepo
         $item->setGameId($game->getId());
         $item->setRow($game, $row);
         $item->setColumn($game, $column);
-        $this->save();
+        $this->em->persist($item);
+        $this->em->flush();
 
         return $item;
     }
