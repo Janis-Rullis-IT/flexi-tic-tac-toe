@@ -12,6 +12,8 @@ interface IGameRepo
 
     public function insertDraftIfNotExist(): Game;
 
+    public function getCurrent(): ?Game;
+
     public function getCurrentDraft(): ?Game;
 
     public function mustFindCurrentDraft(): ?Game;

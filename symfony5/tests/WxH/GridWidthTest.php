@@ -8,9 +8,6 @@ use App\Entity\Game;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- * #12 /game/grid.
- */
 class GridWidthTest extends WebTestCase
 {
     private $uri = '/game/grid';
