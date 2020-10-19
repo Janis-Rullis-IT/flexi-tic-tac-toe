@@ -101,7 +101,7 @@ export default {
       type: this.$route.params.type,
       game: {},
       show_board: false,
-      show_input: true,
+      show_input: false,
       width: 3,
       height:3,
       move_cnt_to_win: 3
@@ -113,8 +113,25 @@ export default {
     }
   },
   created() {
+    this.getCurrentGame();
   },
   methods: {
+    getCurrentGame() {
+      this.$http
+      .get("game").then(
+        function onSuccess(response) {
+          this.width = response.data.width;
+          this.height = response.data.height;
+          this.loading = false;
+          this.show_board = true;
+          this.show_input = false;
+        },
+        function onFail(response) {
+          this.loading = false;
+          this.show_input = true;
+        }
+      );
+    },
     startGame() {
       this.clearAlerts();
 
