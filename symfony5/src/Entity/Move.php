@@ -11,6 +11,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 class Move
 {
+	const MIN_INDEX=0;
     // #17 Error messages.
     const ERROR_MOVE_INVALID = '#17 Invalid move.';
     const ERROR_MOVE_INVALID_CODE = 200;
@@ -37,14 +38,14 @@ class Move
      * @SWG\Property(property="row", type="integer", example=0)
      * @Groups({"CREATE", "PUB", "ID_ERROR"})
      */
-    private int $row = 0;
+    private int $row;
 
     /**
      * @ORM\Column(type="integer")
      * @SWG\Property(property="column", type="integer", example=0)
      * @Groups({"CREATE", "PUB", "ID_ERROR"})
      */
-    private int $column = 3;
+    private int $column;
 
     /**
      * #17 Make sure that the selected row is correct.
@@ -58,7 +59,7 @@ class Move
     public function setRow(Game $game, int $row): self
     {
         // #17 Make sure that passed values are valid.
-        if ($row < 0 || $row > $this->getMaxAllowedRow($game)) {
+        if ($row < self::MIN_INDEX || $row > $this->getMaxAllowedRow($game)) {
             throw new MoveValidatorException([self::MOVE => self::ERROR_MOVE_INVALID], self::ERROR_MOVE_INVALID_CODE);
         }
         // #15 Allow to set dimensions only if it is a new game.
@@ -87,7 +88,7 @@ class Move
     public function setColumn(Game $game, int $column): self
     {
         // #17 Make sure that passed values are valid.
-        if ($column < Game::MIN_HEIGHT_WIDTH || $this->getMaxAllowedColumn($game)) {
+        if ($column < self::MIN_INDEX || $column > $this->getMaxAllowedColumn($game)) {
             throw new MoveValidatorException([self::MOVE => self::ERROR_MOVE_INVALID], self::ERROR_MOVE_INVALID_CODE);
         }
         // #15 Allow to set dimensions only if it is a new game.
