@@ -251,9 +251,10 @@ class Game
         return $this->move_cnt_to_win;
     }
 
-    public function setNextSymbol(string $symbol): self
+    public function setNextSymbol(): self
     {
-        $this->next_symbol = $symbol;
+		// #33 A move was made, need to change the next symbol.
+        $this->next_symbol = $this->getNextSymbol() === Move::SYMBOL_X ? Move::SYMBOL_O : Move::SYMBOL_X;
 
         return $this;
     }
