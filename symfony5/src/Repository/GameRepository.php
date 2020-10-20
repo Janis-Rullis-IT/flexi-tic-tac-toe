@@ -40,6 +40,7 @@ final class GameRepository extends BaseRepository implements IGameRepo
      */
     public function setRules(Game $item, int $moveCntToWin): Game
     {
+        $item = $this->em->getReference(Game::class, $item->getId());
         $item->setMoveCntToWin($moveCntToWin);
         $this->save();
 
