@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\WxH;
 
 use App\Entity\Game;
+use App\Entity\Move;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -37,6 +38,7 @@ class GameTest extends WebTestCase
         $responseBody = json_decode($this->client->getResponse()->getContent(), true);
         $this->assertEquals($data[Game::HEIGHT], $responseBody[Game::HEIGHT]);
         $this->assertTrue(isset($responseBody[Game::MOVES]));
+        $this->assertEquals(Move::SYMBOL_X, $responseBody[Game::NEXT_SYMBOL]);
     }
 
     public function testValidMarkOngoing()

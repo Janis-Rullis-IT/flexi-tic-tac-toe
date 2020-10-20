@@ -68,7 +68,7 @@ class Move
 
     /**
      * @ORM\Column(name="`symbol`", type="string")
-     * @SWG\Property(property="symbol", type="symbol", example="x")
+     * @SWG\Property(property="symbol", type="string", example="x")
      * @Groups({"CREATE", "PUB", "ID_ERROR"})
      */
     private string $symbol = self::SYMBOL_X;
