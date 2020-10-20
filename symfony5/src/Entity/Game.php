@@ -280,7 +280,9 @@ class Game
                         $return[Game::MOVES] = [];
                         if (!empty($moves)) {
                             foreach ($moves as $move) {
-                                $return[Game::MOVES][] = $move->toArray();
+                                // #32 This format is better because when drawing the board it's faster to make sure that it's selected.
+                                // https://github.com/janis-rullis/lm1-symfony5-vue2-api/issues/32#issuecomment-712735160
+                                $return[Game::MOVES][$move->getRow()][$move->getColumn()] = $move->toArray();
                             }
                         }
                         break;

@@ -16,6 +16,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class Move
 {
     const MIN_INDEX = 0;
+    const SYMBOL_X = 'x';
+    const SYMBOL_O = 'o';
+    const SYMBOL_VALUES = [self::SYMBOL_X, self::SYMBOL_O];
     // #17 Error messages.
     const ERROR_MOVE_INVALID = '#17 Invalid move.';
     const ERROR_MOVE_INVALID_CODE = 200;
@@ -68,7 +71,7 @@ class Move
      * @SWG\Property(property="symbol", type="symbol", example="x")
      * @Groups({"CREATE", "PUB", "ID_ERROR"})
      */
-    private string $symbol = 'x';
+    private string $symbol = self::SYMBOL_X;
 
     public function getId(): ?int
     {
