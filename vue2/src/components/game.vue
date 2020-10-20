@@ -161,7 +161,7 @@ export default {
           function onSuccess(response) {
             this.loading = false;
             // #16 Sets X or O.
-            cell.value = response.data.value;
+            cell.value = response.data.symbol;
           },
           function onFail(response) {
             this.loading = false;
