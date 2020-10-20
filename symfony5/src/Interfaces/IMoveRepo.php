@@ -9,9 +9,5 @@ interface IMoveRepo
 {
     public function selectCell(Game $game, int $row, int $column): Move;
 
-//    public function markAsCompleted(Order $order): Order;
-//
-//    public function mustFindUsersOrder(int $userId, int $orderId): Order;
-//
-//    public function mustFindUsersOrders(int $userId): array;
+    public function getMarkedCells(int $gameId, string $symbol): array;
 }

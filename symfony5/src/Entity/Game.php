@@ -253,8 +253,8 @@ class Game
 
     public function setNextSymbol(): self
     {
-		// #33 A move was made, need to change the next symbol.
-        $this->next_symbol = $this->getNextSymbol() === Move::SYMBOL_X ? Move::SYMBOL_O : Move::SYMBOL_X;
+        // #33 A move was made, need to change the next symbol.
+        $this->next_symbol = Move::SYMBOL_X === $this->getNextSymbol() ? Move::SYMBOL_O : Move::SYMBOL_X;
 
         return $this;
     }

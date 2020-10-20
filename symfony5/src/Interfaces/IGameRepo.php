@@ -21,8 +21,8 @@ interface IGameRepo
     public function save();
 
     public function markAsStarted(Game $item): Game;
-	
-	public function toggleNextSymbol(Game $item): Game;
+
+    public function toggleNextSymbol(Game $item): Game;
 
 //    public function markAsCompleted(Order $order): Order;
 //

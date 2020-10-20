@@ -25,6 +25,24 @@ class MoveUnitTest extends KernelTestCase
         $this->moveRepo = $this->c->get('test.'.IMoveRepo::class);
     }
 
+    public function testGetMarkedCells()
+    {
+        $this->assertNull($this->gameRepo->getCurrentDraft());
+        $game = $this->gameRepo->insertDraftIfNotExist();
+        $game = $this->gameRepo->setBoardDimensions($game, Game::MIN_HEIGHT_WIDTH, Game::MIN_HEIGHT_WIDTH);
+        $game = $this->gameRepo->setRules($game, Game::MIN_HEIGHT_WIDTH);
+        $game->setMoveCntToWin(Game::MIN_HEIGHT_WIDTH);
+        $game = $this->gameRepo->markAsStarted($game);
+        $move = $this->moveRepo->selectCell($game, Move::MIN_INDEX, Move::MIN_INDEX);
+        $move = $this->moveRepo->selectCell($game, Move::MIN_INDEX, Move::MIN_INDEX + 1);
+
+        $cells = $this->moveRepo->getMarkedCells($game->getId(), Move::SYMBOL_X);
+        $this->assertEquals($cells[0][Move::ROW], Move::MIN_INDEX);
+        $this->assertEquals($cells[1][Move::ROW], Move::MIN_INDEX);
+        $this->assertEquals($cells[0][Move::COLUMN], Move::MIN_INDEX);
+        $this->assertEquals($cells[1][Move::COLUMN], Move::MIN_INDEX + 1);
+    }
+
     public function testValid()
     {
         $this->assertNull($this->gameRepo->getCurrentDraft());
@@ -34,7 +52,7 @@ class MoveUnitTest extends KernelTestCase
         $game->setMoveCntToWin(Game::MIN_HEIGHT_WIDTH);
         $game = $this->gameRepo->markAsStarted($game);
         $move = $this->moveRepo->selectCell($game, Move::MIN_INDEX, Move::MIN_INDEX);
-        $this->assertEquals($move->getSymbol(), 'x');
+        $this->assertEquals($move->getSymbol(), Move::SYMBOL_X);
     }
 
     public function testCellAlreadyTaken()
