@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Entity\Game;
 use App\Entity\Move;
 use App\Interfaces\IGameRepo;
-use App\Service\GameCreatorService;
+use App\Service\GameService;
 use App\Service\MoveService;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Swagger\Annotations as SWG;
@@ -17,6 +17,31 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class GameController extends AbstractController
 {
+    /**
+     * Submit the width and height for the new game's board.
+     *
+     * @Route("/game", name="start", methods={"POST"})
+     * @SWG\Tag(name="1. game")
+     *
+     * @SWG\Parameter(name="body", in="body", required=true, @SWG\Schema(required={"width", "height", "move_cnt_to_win"}, type="object", ref=@Model(type=Game::class, groups={"CREATE"})))
+     * @SWG\Response(response=200, description="OK", @SWG\Schema(type="object", ref=@Model(type=Game::class, groups={"PUB"})))
+     * @SWG\Response(response=400, description="Bad Request", @SWG\Schema(type="object", @SWG\Property(property="errors", type="object", example={"width": "#12 Width and height must be an integer from 2 to 20."})))
+     */
+    public function start(Request $request, GameService $gameService): JsonResponse
+    {
+        try {
+            $resp = $gameService->start(json_decode($request->getContent(), true))->toArray();
+
+            return $this->json($resp, Response::HTTP_OK);
+        } catch (\Exception $e) {
+            if (method_exists($e, 'getErrors')) {
+                return $this->json(['errors' => $e->getErrors()], Response::HTTP_BAD_REQUEST);
+            }
+
+            return $this->json(['errors' => [$e->getMessage()]], Response::HTTP_BAD_REQUEST);
+        }
+    }
+
     /**
      * Collect the current game (draft or ongoing - must be only 1).
      *
@@ -50,14 +75,14 @@ class GameController extends AbstractController
      * @Route("/game/grid", name="setBoardDimensions", methods={"POST"})
      * @SWG\Tag(name="1. game")
      *
-     * @SWG\Parameter(name="body", in="body", required=true, @SWG\Schema(required={"width", "height"}, type="object", ref=@Model(type=Game::class, groups={"CREATE"})))
+     * @SWG\Parameter(name="body", in="body", required=true, @SWG\Schema(required={"width", "height"}, type="object", ref=@Model(type=Game::class, groups={"BOARD"})))
      * @SWG\Response(response=200, description="OK", @SWG\Schema(type="object", ref=@Model(type=Game::class, groups={"PUB"})))
      * @SWG\Response(response=400, description="Bad Request", @SWG\Schema(type="object", @SWG\Property(property="errors", type="object", example={"width": "#12 Width and height must be an integer from 2 to 20."})))
      */
-    public function setBoardDimensions(Request $request, GameCreatorService $gameCreatorService): JsonResponse
+    public function setBoardDimensions(Request $request, GameService $gameService): JsonResponse
     {
         try {
-            $resp = $gameCreatorService->setBoardDimensions(json_decode($request->getContent(), true))->toArray();
+            $resp = $gameService->setBoardDimensions(json_decode($request->getContent(), true))->toArray();
 
             return $this->json($resp, Response::HTTP_OK);
         } catch (\Exception $e) {
@@ -79,10 +104,10 @@ class GameController extends AbstractController
      * @SWG\Response(response=200, description="OK", @SWG\Schema(type="object", ref=@Model(type=Game::class, groups={"PUB"})))
      * @SWG\Response(response=400, description="Bad Request", @SWG\Schema(type="object", ref=@Model(type=Game::class, groups={"PUB"})))
      */
-    public function setRules(Request $request, GameCreatorService $gameCreatorService): JsonResponse
+    public function setRules(Request $request, GameService $gameService): JsonResponse
     {
         try {
-            $resp = $gameCreatorService->setRules(json_decode($request->getContent(), true))->toArray();
+            $resp = $gameService->setRules(json_decode($request->getContent(), true))->toArray();
 
             return $this->json($resp, Response::HTTP_OK);
         } catch (\Exception $e) {
