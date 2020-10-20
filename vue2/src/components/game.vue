@@ -127,26 +127,31 @@ export default {
         function onSuccess(response) {
           this.width = response.data.width;
           this.height = response.data.height;
-
-          // #16 Populate rows and columns based on the board dimensions.
-          for(let i = 0; i < this.height; i++){
-            let row = {number: i, columns: []};
-            for(let j = 0; j < this.width; j++){
-              let column = {row: i, column: j,value: null}
-              row.columns.push(column);
-            }
-            this.rows.push(row);
-          }
-
-          this.loading = false;
-          this.show_board = true;
-          this.show_input = false;
+          this.drawTheBoard(response.data.width, response.data.height)
         },
         function onFail(response) {
           this.loading = false;
           this.show_input = true;
         }
       );
+    },
+    drawTheBoard(width, height){
+      this.width = width;
+      this.height = height;
+
+    // #16 Populate rows and columns based on the board dimensions.
+      for(let i = 0; i < this.height; i++){
+        let row = {number: i, columns: []};
+        for(let j = 0; j < this.width; j++){
+          let column = {row: i, column: j,value: null}
+          row.columns.push(column);
+        }
+        this.rows.push(row);
+      }
+
+      this.loading = false;
+      this.show_board = true;
+      this.show_input = false;
     },
     selectCell(cell){
       if(cell.value === null){
@@ -175,15 +180,14 @@ export default {
       this.height = parseInt(this.height);
       this.move_cnt_to_win = parseInt(this.move_cnt_to_win);
       this.$http
-        .post("game/grid", {
+        .post("game", {
           width: this.width,
           height:this.height,
           move_cnt_to_win:this.move_cnt_to_win
         })
         .then(
           function onSuccess(response) {
-            this.loading = false;
-            this.show_board = true;
+            this.drawTheBoard(response.data.width, response.data.height)
           },
           function onFail(response) {
             this.loading = false;
