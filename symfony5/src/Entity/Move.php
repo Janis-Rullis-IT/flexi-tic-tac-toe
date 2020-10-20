@@ -16,6 +16,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class Move
 {
     const MIN_INDEX = 0;
+    const SYMBOL_X = 'x';
+    const SYMBOL_O = 'o';
+    const SYMBOL_VALUES = [self::SYMBOL_X, self::SYMBOL_O];
     // #17 Error messages.
     const ERROR_MOVE_INVALID = '#17 Invalid move.';
     const ERROR_MOVE_INVALID_CODE = 200;
@@ -31,6 +34,7 @@ class Move
     const MOVE = 'move';
     const ROW = 'row';
     const COLUMN = 'column';
+    const SYMBOL = 'symbol';
 
     /**
      * @ORM\Id()
@@ -61,6 +65,13 @@ class Move
      * @Groups({"CREATE", "PUB", "ID_ERROR"})
      */
     private int $column;
+
+    /**
+     * @ORM\Column(name="`symbol`", type="string")
+     * @SWG\Property(property="symbol", type="symbol", example="x")
+     * @Groups({"CREATE", "PUB", "ID_ERROR"})
+     */
+    private string $symbol = self::SYMBOL_X;
 
     public function getId(): ?int
     {
@@ -138,6 +149,18 @@ class Move
         return $this->gameId;
     }
 
+    public function setSymbol(string $symbol): self
+    {
+        $this->symbol = $symbol;
+
+        return $this;
+    }
+
+    public function getSymbol(): ?string
+    {
+        return $this->symbol;
+    }
+
     public function getMaxAllowedRow(Game $game): ?int
     {
         return $game->getHeight() - 1;
@@ -165,6 +188,7 @@ class Move
         $return = [];
         $allFields = [
             self::ROW => $this->getRow(), self::COLUMN => $this->getColumn(),
+            self::SYMBOL => $this->getSymbol(),
         ];
 
         if (empty($fields)) {

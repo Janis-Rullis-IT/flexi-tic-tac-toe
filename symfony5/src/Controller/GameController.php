@@ -59,7 +59,7 @@ class GameController extends AbstractController
                 return $this->json(['errors' => [Game::ID => Game::ERROR_CAN_NOT_FIND]], Response::HTTP_NOT_FOUND);
             }
 
-            return $this->json($game->toArray(), Response::HTTP_OK);
+            return $this->json($game->toArray([], [Game::MOVES]), Response::HTTP_OK);
         } catch (\Exception $e) {
             if (method_exists($e, 'getErrors')) {
                 return $this->json(['errors' => $e->getErrors()], Response::HTTP_BAD_REQUEST);

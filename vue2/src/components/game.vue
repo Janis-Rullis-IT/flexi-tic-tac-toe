@@ -127,7 +127,7 @@ export default {
         function onSuccess(response) {
           this.width = response.data.width;
           this.height = response.data.height;
-          this.drawTheBoard(response.data.width, response.data.height)
+          this.drawTheBoard(response.data)
         },
         function onFail(response) {
           this.loading = false;
@@ -135,15 +135,15 @@ export default {
         }
       );
     },
-    drawTheBoard(width, height){
-      this.width = width;
-      this.height = height;
+    drawTheBoard(game){
+      this.width = game.width;
+      this.height = game.height;
 
     // #16 Populate rows and columns based on the board dimensions.
       for(let i = 0; i < this.height; i++){
         let row = {number: i, columns: []};
         for(let j = 0; j < this.width; j++){
-          let column = {row: i, column: j,value: null}
+          let column = {row: i, column: j,value: this.getCellsValue(game, i, j)};
           row.columns.push(column);
         }
         this.rows.push(row);
@@ -161,7 +161,7 @@ export default {
           function onSuccess(response) {
             this.loading = false;
             // #16 Sets X or O.
-            cell.value = response.data.value;
+            cell.value = response.data.symbol;
           },
           function onFail(response) {
             this.loading = false;
@@ -187,7 +187,7 @@ export default {
         })
         .then(
           function onSuccess(response) {
-            this.drawTheBoard(response.data.width, response.data.height)
+            this.drawTheBoard(response.data)
           },
           function onFail(response) {
             this.loading = false;
@@ -195,6 +195,24 @@ export default {
             this.showError(response.data.errors);
           }
         );
+    },
+    // #32 Display marked cells.
+    getCellsValue(game, row, column){
+      let hasMoves = typeof game.moves != "undefined" && game.moves != null;
+      if(hasMoves){
+
+        let hasRow = typeof game.moves[row] != "undefined" && game.moves[row] != null;
+        if(hasRow){
+
+          let hasColumn = typeof game.moves[row][column] != "undefined" && game.moves[row][column] != null;
+          if(hasColumn){
+
+            return game.moves[row][column].symbol;
+          }
+        }
+      }
+
+      return null;
     },
     clearAlerts: function() {
       (this.alerts.success = ""), (this.alerts.errors = []);
