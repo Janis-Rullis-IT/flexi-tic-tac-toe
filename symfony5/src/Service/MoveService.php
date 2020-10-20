@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use App\Entity\Game;
 use App\Entity\Move;
 use App\Exception\MoveValidatorException;
 use App\Interfaces\IGameRepo;
@@ -42,54 +41,14 @@ class MoveService
             $game = $this->gameRepo->toggleNextSymbol($game);
 
             // #16 TODO: This works. Integrate.
-            //			$is = $this->isRowWin($game, $this->moveRepo->getMarkedCells($game->getId(), $move->getSymbol()));
+//            if ($this->moveRepo->isWin($game, $move)) {
+//                echo 'eeee';
+//                exit;
+//            }
 
             return $move;
         } catch (\Error $ex) {
             throw new MoveValidatorException([Move::MOVE => Move::ERROR_MOVE_INVALID], Move::ERROR_MOVE_INVALID_CODE);
         }
-    }
-
-    /**
-     * #19 Check if there's enough marked cells side-by-side in the row with the same symbol.
-     *
-     * @param array $cells
-     *
-     * @return bool
-     */
-    public function isRowWin(Game $game, ?array $cells = [])
-    {
-        // #19 TODO: Most probably the Array needs to be replaced with a Collection.
-        $cellCnt = count($cells);
-        $hasWin = false;
-        $markedCellCntInRow = 1;
-
-        // #19 Don't continue if there is not enough marked cells.
-        // #19 TODO: Don't return the list from DB if there is not enough marked cells.
-        if ($cellCnt < $game->getMoveCntToWin()) {
-            return $hasWin;
-        }
-
-        for ($i = 0; $i < $cellCnt - 1; ++$i) {
-            // #19 Still on the same row?
-            if ($cells[$i][Move::ROW] === $cells[$i + 1][Move::ROW]) {
-                // #19 Check that the next marked cell is exactly 1 column on the right.
-                if ($cells[$i][Move::COLUMN] === $cells[$i + 1][Move::COLUMN] - 1) {
-                    ++$markedCellCntInRow;
-
-                    // #19 Stop because enough marked cells are collected.
-                    if ($markedCellCntInRow === $game->getMoveCntToWin()) {
-                        $hasWin = true;
-                        break;
-                    }
-                }
-            }
-            // #19 Reset the marked cell counter because the row has changed.
-            else {
-                $markedCellCntInRow = 1;
-            }
-        }
-
-        return $hasWin;
     }
 }

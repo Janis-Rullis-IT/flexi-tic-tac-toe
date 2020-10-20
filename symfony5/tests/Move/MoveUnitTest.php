@@ -36,7 +36,7 @@ class MoveUnitTest extends KernelTestCase
         $move = $this->moveRepo->selectCell($game, Move::MIN_INDEX, Move::MIN_INDEX);
         $move = $this->moveRepo->selectCell($game, Move::MIN_INDEX, Move::MIN_INDEX + 1);
 
-        $cells = $this->moveRepo->getMarkedCells($game->getId(), Move::SYMBOL_X);
+        $cells = $this->moveRepo->getMarkedCellsByRows($game->getId(), Move::SYMBOL_X);
         $this->assertEquals($cells[0][Move::ROW], Move::MIN_INDEX);
         $this->assertEquals($cells[1][Move::ROW], Move::MIN_INDEX);
         $this->assertEquals($cells[0][Move::COLUMN], Move::MIN_INDEX);
