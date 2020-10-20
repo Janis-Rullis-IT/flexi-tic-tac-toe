@@ -141,6 +141,20 @@ final class GameRepository extends BaseRepository implements IGameRepo
     }
 
     /**
+     * #19 Mark game as started ('completed').
+     */
+    public function markAsCompleted(Game $item): Game
+    {
+        // #17 A refresh-entity workaround for the field not being updated. https://www.doctrine-project.org/projects/doctrine-orm/en/2.7/reference/unitofwork.html https://www.doctrine-project.org/api/orm/latest/Doctrine/ORM/EntityManager.html
+        // TODO: Ask someone about this behaviour.
+        $item = $this->em->getReference(Game::class, $item->getId());
+        $item->setStatus(Game::COMPLETED);
+        $this->save($item);
+
+        return $item;
+    }
+
+    /**
      * #33 A move was made, need to change the next symbol.
      */
     public function toggleNextSymbol(Game $item): Game

@@ -22,11 +22,7 @@ interface IGameRepo
 
     public function markAsStarted(Game $item): Game;
 
-    public function toggleNextSymbol(Game $item): Game;
+    public function markAsCompleted(Game $item): Game;
 
-//    public function markAsCompleted(Order $order): Order;
-//
-//    public function mustFindUsersOrder(int $userId, int $orderId): Order;
-//
-//    public function mustFindUsersOrders(int $userId): array;
+    public function toggleNextSymbol(Game $item): Game;
 }

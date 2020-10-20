@@ -35,6 +35,7 @@ class Move
     const ROW = 'row';
     const COLUMN = 'column';
     const SYMBOL = 'symbol';
+    const IS_LAST = 'is_last';
 
     /**
      * @ORM\Id()
@@ -72,6 +73,12 @@ class Move
      * @Groups({"CREATE", "PUB", "ID_ERROR"})
      */
     private string $symbol = self::SYMBOL_X;
+
+    /**
+     * @SWG\Property(property="is_last", type="boolean", example=false)
+     * @Groups({"PUB", "ID_ERROR"})
+     */
+    private bool $is_last = false;
 
     public function getId(): ?int
     {
@@ -161,6 +168,18 @@ class Move
         return $this->symbol;
     }
 
+    public function setIsLast(bool $isLast): self
+    {
+        $this->is_last = $isLast;
+
+        return $this;
+    }
+
+    public function getIsLast(): ?bool
+    {
+        return $this->is_last;
+    }
+
     public function getMaxAllowedRow(Game $game): ?int
     {
         return $game->getHeight() - 1;
@@ -188,7 +207,7 @@ class Move
         $return = [];
         $allFields = [
             self::ROW => $this->getRow(), self::COLUMN => $this->getColumn(),
-            self::SYMBOL => $this->getSymbol(),
+            self::SYMBOL => $this->getSymbol(), self::IS_LAST => $this->getIsLast(),
         ];
 
         if (empty($fields)) {

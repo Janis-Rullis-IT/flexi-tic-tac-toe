@@ -3,7 +3,7 @@
     <div class="row alerts">
       <div v-if="alerts.success" class="row">
         <div class="col-sm-12">
-          <div class="alert success">{{alerts.success}}</div>
+          <div class="alert success"><h2>{{alerts.success}}</h2></div>
         </div>
       </div>
       <div v-if="alerts.errors" class="row">
@@ -162,6 +162,16 @@ export default {
             this.loading = false;
             // #16 Sets X or O.
             cell.value = response.data.symbol;
+
+            // #19 This was the last move.
+            if(response.data.is_last){
+
+              // #19 Congratulations!
+              this.showSuccess(cell.value + ' wins!');
+
+              // #19 Let to enjoy the view for 3 seconds then reload the page.
+              setTimeout(function(){location.reload();}, 3000);
+            }
           },
           function onFail(response) {
             this.loading = false;

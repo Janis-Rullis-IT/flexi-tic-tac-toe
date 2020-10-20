@@ -33,7 +33,7 @@ class MoveTest extends WebTestCase
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
         $responseBody = json_decode($this->client->getResponse()->getContent(), true);
         $moves = $responseBody[Game::MOVES];
-        $this->assertEquals($moves[$data[Move::ROW]][$data[Move::COLUMN]], [Move::SYMBOL => MOVE::SYMBOL_X, Move::ROW => $data[Move::ROW], Move::COLUMN => $data[Move::COLUMN]]);
+        $this->assertEquals($moves[$data[Move::ROW]][$data[Move::COLUMN]], [Move::IS_LAST => false, Move::SYMBOL => MOVE::SYMBOL_X, Move::ROW => $data[Move::ROW], Move::COLUMN => $data[Move::COLUMN]]);
         $this->assertEquals($responseBody[Game::NEXT_SYMBOL], Move::SYMBOL_O);
     }
 }

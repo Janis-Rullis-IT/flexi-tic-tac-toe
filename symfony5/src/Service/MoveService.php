@@ -40,11 +40,10 @@ class MoveService
             $move = $this->moveRepo->selectCell($game, $request[Move::ROW], $request[Move::COLUMN]);
             $game = $this->gameRepo->toggleNextSymbol($game);
 
-            // #16 TODO: This works. Integrate.
-//            if ($this->moveRepo->isWin($game, $move)) {
-//                echo 'eeee';
-//                exit;
-//            }
+            if ($this->moveRepo->isWin($game, $move)) {
+                $this->gameRepo->markAsCompleted($game);
+                $move->setIsLast(true);
+            }
 
             return $move;
         } catch (\Error $ex) {
