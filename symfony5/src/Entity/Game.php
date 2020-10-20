@@ -53,6 +53,7 @@ class Game
     const HEIGHT_WIDTH = 'height_width';
     const MOVE_CNT_TO_WIN = 'move_cnt_to_win';
     const MOVES = 'moves';
+    const NEXT_SYMBOL = 'next_symbol';
 
     /**
      * @ORM\Id()
@@ -90,6 +91,13 @@ class Game
      * @Groups({"CREATE", "PUB", "RULES"})
      */
     private ?int $move_cnt_to_win = null;
+
+    /**
+     * @ORM\Column(name="`next_symbol`", type="string")
+     * @SWG\Property(property="next_symbol", type="string", example="x")
+     * @Groups({"CREATE", "PUB", "ID_ERROR"})
+     */
+    private string $next_symbol = Move::SYMBOL_X;
 
     /**
      * @ORM\ManyToMany(targetEntity="Move")
@@ -243,6 +251,19 @@ class Game
         return $this->move_cnt_to_win;
     }
 
+    public function setNextSymbol(): self
+    {
+		// #33 A move was made, need to change the next symbol.
+        $this->next_symbol = $this->getNextSymbol() === Move::SYMBOL_X ? Move::SYMBOL_O : Move::SYMBOL_X;
+
+        return $this;
+    }
+
+    public function getNextSymbol(): ?string
+    {
+        return $this->next_symbol;
+    }
+
     /**
      * #15 Get the smallest dimension - width or height.
      */
@@ -303,7 +324,7 @@ class Game
         $allFields = [
             self::ID => $this->getId(), self::STATUS => $this->getStatus(),
             self::WIDTH => $this->getWidth(), self::HEIGHT => $this->getHeight(),
-            self::MOVE_CNT_TO_WIN => $this->getMoveCntToWin(),
+            self::MOVE_CNT_TO_WIN => $this->getMoveCntToWin(), self::NEXT_SYMBOL => $this->getNextSymbol(),
         ];
 
         if (empty($fields)) {

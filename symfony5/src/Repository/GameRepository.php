@@ -128,7 +128,10 @@ final class GameRepository extends BaseRepository implements IGameRepo
 
     /**
      * #17 Mark game as started ('ongoing').
-     */
+	 * 
+	 * @param Game $item
+	 * @return Game
+	 */
     public function markAsStarted(Game $item): Game
     {
         // #17 A refresh-entity workaround for the field not being updated. https://www.doctrine-project.org/projects/doctrine-orm/en/2.7/reference/unitofwork.html https://www.doctrine-project.org/api/orm/latest/Doctrine/ORM/EntityManager.html
@@ -140,32 +143,22 @@ final class GameRepository extends BaseRepository implements IGameRepo
         return $item;
     }
 
-    /*
-     * #12 Find game by id. Throw an exception if not found.
-     *
-     * @param int $userId
-     * @param int $gameId
-     * @return Game
-     * @throws GameValidatorException
-     */
-//	public function mustFindUsersGame(int $userId, int $gameId): Game
-//	{
-//		$game = $this->findOneBy(['player_id' => $userId, 'id' => $gameId]);
-//		if (empty($game)) {
-//			throw new GameValidatorException([Game::ID => Game::INVALID], 1);
-//		}
-//
-//		return $game;
-//	}
+	/**
+	 * #33 A move was made, need to change the next symbol.
+	 * @param Game $item
+	 * @return Game
+	 */
+	public function toggleNextSymbol(Game $item): Game
+    {
+        // #17 A refresh-entity workaround for the field not being updated. https://www.doctrine-project.org/projects/doctrine-orm/en/2.7/reference/unitofwork.html https://www.doctrine-project.org/api/orm/latest/Doctrine/ORM/EntityManager.html
+        // TODO: Ask someone about this behaviour.
+        $item = $this->em->getReference(Game::class, $item->getId());
+        $item->setNextSymbol();
+		
+        $this->save($item);
 
-    /*
-     * #12 Find user's games.
-     *
-     * @param int $userId
-     * @return array
-     */
-//	public function mustFindUsersGames(int $userId): array
-//	{
-//		return $this->findBy(['player_id' => $userId]);
-//	}
+        return $item;
+    }
+
+
 }
