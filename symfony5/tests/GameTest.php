@@ -29,12 +29,14 @@ class GameTest extends WebTestCase
     {
         $data = [Game::WIDTH => Game::MAX_HEIGHT_WIDTH, Game::HEIGHT => Game::MIN_HEIGHT_WIDTH];
         $this->client->request('POST', '/game/grid', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode($data));
+
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
 
         $this->client->request('GET', $this->uri);
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
         $responseBody = json_decode($this->client->getResponse()->getContent(), true);
         $this->assertEquals($data[Game::HEIGHT], $responseBody[Game::HEIGHT]);
+        $this->assertTrue(isset($responseBody[Game::MOVES]));
     }
 
     public function testValidMarkOngoing()

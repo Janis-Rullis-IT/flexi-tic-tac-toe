@@ -4,8 +4,12 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Entity\Move;
 use App\Exception\GameValidatorException;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Nelmio\ApiDocBundle\Annotation\Model;
 use Swagger\Annotations as SWG;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -49,6 +53,7 @@ class Game
     const HEIGHT = 'height';
     const HEIGHT_WIDTH = 'height_width';
     const MOVE_CNT_TO_WIN = 'move_cnt_to_win';
+    const MOVES = 'moves';
 
     /**
      * @ORM\Id()
@@ -86,6 +91,30 @@ class Game
      * @Groups({"CREATE", "PUB", "RULES"})
      */
     private ?int $move_cnt_to_win = null;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="Move")
+     * @ORM\JoinTable(name="`move`",
+     *      joinColumns={@ORM\JoinColumn(name="game_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="id", referencedColumnName="id", unique=true)}
+     * )
+     * @SWG\Property(property="moves", type="array", @SWG\Items(@Model(type=Move::class)))
+     */
+    private ?Collection $moves = null;
+
+    public function __construct()
+    {
+        $this->moves = new ArrayCollection();
+    }
+
+    /**
+     * #30 Collect game's moves
+     * Collected using annotation JOIN. See `$moves`.
+     */
+    public function getMoves()
+    {
+        return $this->moves;
+    }
 
     public function getId(): ?int
     {
@@ -242,6 +271,24 @@ class Game
         $return = [];
         // #15 Contains most popular fields. Add a field is necessary.
         $return = $this->toArrayFill($fields);
+
+        // #30 Fill relations.
+        if (!empty($relations)) {
+            foreach ($relations as $relation) {
+                switch ($relation) {
+                    case Game::MOVES:
+                        $moves = $this->getMoves();
+                        $return[Game::MOVES] = [];
+                        if (!empty($moves)) {
+                            foreach ($moves as $move) {
+                                $return[Game::MOVES][] = $move->toArray();
+                            }
+                        }
+                        break;
+                    default: null;
+                }
+            }
+        }
 
         return $return;
     }
