@@ -7,7 +7,7 @@ namespace App\Service;
 use App\Entity\Game;
 use App\Interfaces\IGameRepo;
 
-class GameCreatorService
+class GameService
 {
     private $gameRepo;
 
@@ -61,5 +61,20 @@ class GameCreatorService
         } catch (\Error $ex) {
             throw new \App\Exception\GameValidatorException([Game::MOVE_CNT_TO_WIN => Game::ERROR_MOVE_CNT_TO_WIN_INVALID], Game::ERROR_MOVE_CNT_TO_WIN_INVALID_CODE);
         }
+    }
+
+    /**
+     * #28 Start the game - set game board dimensions and rules like how many moves are required to win.
+     *
+     * @param array $request
+     *
+     * @throws \App\Exception\GameValidatorException
+     */
+    public function start(?array $request): Game
+    {
+        $this->setBoardDimensions($request);
+        $game = $this->setRules($request);
+
+        return $this->gameRepo->markAsStarted($game);
     }
 }
