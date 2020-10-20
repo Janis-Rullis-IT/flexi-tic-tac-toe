@@ -23,6 +23,6 @@ final class Version2020102009000 extends AbstractMigration
     public function down(Schema $schema): void
     {
         $this->abortIf('mysql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'mysql\'.');
-        $this->addSql("ALTER TABLE `move` DROP `symbol`");
+        $this->addSql('ALTER TABLE `move` DROP `symbol`');
     }
 }

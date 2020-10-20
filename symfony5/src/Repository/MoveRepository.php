@@ -6,6 +6,7 @@ namespace App\Repository;
 
 use App\Entity\Game;
 use App\Entity\Move;
+use App\Exception\MoveValidatorException;
 use App\Interfaces\IMoveRepo;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -27,15 +28,20 @@ final class MoveRepository extends BaseRepository implements IMoveRepo
      */
     public function selectCell(Game $game, int $row, int $column): Move
     {
-        // #17 TODO: Look in DB if such move has already been registered.
-        $item = new Move();
-        $item->setGameId($game->getId());
-        $item->setRow($game, $row);
-        $item->setColumn($game, $column);
-        $this->em->persist($item);
-        $this->em->flush();
+        try {
+            $item = new Move();
+            $item->setGameId($game->getId());
+            $item->setRow($game, $row);
+            $item->setColumn($game, $column);
+            $this->em->persist($item);
+            $this->em->flush();
 
-        return $item;
+            return $item;
+        }
+        // #18 Look in DB if such move has already been registered.
+        catch (\Doctrine\DBAL\Exception\UniqueConstraintViolationException $ex) {
+            throw new MoveValidatorException([Move::MOVE => Move::ERROR_MOVE_ALREADY_TAKEN_INVALID], Move::ERROR_MOVE_ALREADY_TAKEN_INVALID_CODE);
+        }
     }
 
     public function save()

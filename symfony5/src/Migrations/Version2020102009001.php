@@ -17,12 +17,12 @@ final class Version2020102009001 extends AbstractMigration
     public function up(Schema $schema): void
     {
         $this->abortIf('mysql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'mysql\'.');
-        $this->addSql("ALTER TABLE `move` DROP INDEX `game_id`");
+        $this->addSql('ALTER TABLE `move` DROP INDEX `game_id`');
     }
 
     public function down(Schema $schema): void
     {
         $this->abortIf('mysql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'mysql\'.');
-		$this->addSql("ALTER TABLE `move` ADD INDEX `game_id`(`game_id`)");
+        $this->addSql('ALTER TABLE `move` ADD INDEX `game_id`(`game_id`)');
     }
 }

@@ -115,7 +115,7 @@ class Game
                 break;
             // #17 ONGOING requires to have a draft status and board dimensions and rules set.
             case self::ONGOING:
-                if (!(self::DRAFT === $this->getStatus() && !empty($this->getHeight()) && !empty($this->getWidth()) && !empty(!empty($this->getMoveCntToWin())))) {
+                if (!(self::DRAFT === $this->getStatus() && !empty($this->getHeight()) && !empty($this->getWidth()) && !empty($this->getMoveCntToWin()))) {
                     throw new GameValidatorException([self::STATUS => self::ERROR_STATUS_ONGOING_INVALID], self::ERROR_STATUS_ONGOING_INVALID_CODE);
                 }
         }

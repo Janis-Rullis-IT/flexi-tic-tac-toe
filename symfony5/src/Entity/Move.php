@@ -25,6 +25,8 @@ class Move
     const ERROR_ROW_MISSING_CODE = 202;
     const ERROR_COLUMN_MISSING = '#17 Column is missing.';
     const ERROR_COLUMN_MISSING_CODE = 203;
+    const ERROR_MOVE_ALREADY_TAKEN_INVALID = '#18 This cell is already taken.';
+    const ERROR_MOVE_ALREADY_TAKEN_INVALID_CODE = 204;
     // #17 Field names.
     const MOVE = 'move';
     const ROW = 'row';
