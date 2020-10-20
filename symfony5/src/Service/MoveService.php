@@ -37,10 +37,15 @@ class MoveService
         }
         try {
             $game = $this->gameRepo->mustFindCurrentOngoing();
-			$move = $this->moveRepo->selectCell($game, $request[Move::ROW], $request[Move::COLUMN]);
-			$game = $this->gameRepo->toggleNextSymbol($game);
+            $move = $this->moveRepo->selectCell($game, $request[Move::ROW], $request[Move::COLUMN]);
+            $game = $this->gameRepo->toggleNextSymbol($game);
 
-            return $move; 
+            if ($this->moveRepo->isWin($game, $move)) {
+                $this->gameRepo->markAsCompleted($game);
+                $move->setIsLast(true);
+            }
+
+            return $move;
         } catch (\Error $ex) {
             throw new MoveValidatorException([Move::MOVE => Move::ERROR_MOVE_INVALID], Move::ERROR_MOVE_INVALID_CODE);
         }

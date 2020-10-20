@@ -9,6 +9,7 @@ use App\Entity\Move;
 use App\Exception\MoveValidatorException;
 use App\Interfaces\IMoveRepo;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\QueryBuilder;
 
 /**
  * #12 Repo best practices:
@@ -33,7 +34,7 @@ final class MoveRepository extends BaseRepository implements IMoveRepo
             $item->setGameId($game->getId());
             $item->setRow($game, $row);
             $item->setColumn($game, $column);
-			$item->setSymbol($game->getNextSymbol());
+            $item->setSymbol($game->getNextSymbol());
             $this->em->persist($item);
             $this->em->flush();
 
@@ -49,5 +50,157 @@ final class MoveRepository extends BaseRepository implements IMoveRepo
     {
         $this->em->flush();
         $this->em->clear();
+    }
+
+    /**
+     * #19 Collect marked cells by a specific symbol. Will be used to calc. the winner.
+     *
+     * @return \App\Repository\QueryBuilder
+     */
+    public function getMarkedCellsQueryBuilder(int $gameId, string $symbol): QueryBuilder
+    {
+        return $this->em->createQueryBuilder('a')
+            ->select('a.row', 'a.column')
+            ->from(Move::class, 'a')
+            ->where('a.gameId = :gameId')
+            ->andWhere('a.symbol = :symbol')
+            ->setParameter('gameId', $gameId)
+            ->setParameter('symbol', $symbol);
+    }
+
+    /**
+     * #19 Collect marked cells by a specific symbol ordered by rows. Will be used to calc. the winner.
+     */
+    public function getMarkedCellsByRows(int $gameId, string $symbol): array
+    {
+        $q = $this->getMarkedCellsQueryBuilder($gameId, $symbol)
+            ->orderBy('a.row', 'ASC')
+            ->addOrderBy('a.column', 'ASC')
+            ->getQuery();
+
+        return $q->getResult();
+    }
+
+    /**
+     * #19 Collect marked cells by a specific symbol ordered by columns. Will be used to calc. the winner.
+     */
+    public function getMarkedCellsByColumns(int $gameId, string $symbol): array
+    {
+        $q = $this->getMarkedCellsQueryBuilder($gameId, $symbol)
+            ->orderBy('a.column', 'ASC')
+            ->addOrderBy('a.row', 'ASC')
+            ->getQuery();
+
+        return $q->getResult();
+    }
+
+    /**
+     * #19 Check if there's enough marked cells side-by-side in columns, rows and diagonals with the same symbol.
+     *
+     * @return bool
+     */
+    public function isWin(Game $game, Move $move)
+    {
+        // #19 TODO: Most probably the Array needs to be replaced with a Collection.
+        $cellCnt = 100; // TODO: Replace this.
+
+        // #19 Don't continue if there is not enough marked cells.
+        // #19 TODO: Don't return the list from DB if there is not enough marked cells.
+        if ($cellCnt < $game->getMoveCntToWin()) {
+            return false;
+        }
+
+        if ($this->isRowWin($game, $this->getMarkedCellsByRows($game->getId(), $move->getSymbol()))) {
+            return true;
+        }
+        if ($this->isColumnWin($game, $this->getMarkedCellsByColumns($game->getId(), $move->getSymbol()))) {
+            return true;
+        }
+    }
+
+    /**
+     * #19 Check if there's enough marked cells side-by-side in the column with the same symbol.
+     *
+     * @param array $cells
+     *
+     * @return bool
+     */
+    public function isColumnWin(Game $game, ?array $cells = [])
+    {
+        // #19 TODO: Most probably the Array needs to be replaced with a Collection.
+        $cellCnt = count($cells);
+        $hasWin = false;
+        $markedCellCntInRow = 1;
+
+        // #19 Don't continue if there is not enough marked cells.
+        // #19 TODO: Don't return the list from DB if there is not enough marked cells.
+        if ($cellCnt < $game->getMoveCntToWin()) {
+            return $hasWin;
+        }
+
+        for ($i = 0; $i < $cellCnt - 1; ++$i) {
+            // #19 Still on the same column?
+            if ($cells[$i][Move::COLUMN] === $cells[$i + 1][Move::COLUMN]) {
+                // #19 Check that the next marked cell is exactly 1 row below.
+                if ($cells[$i][Move::ROW] === $cells[$i + 1][Move::ROW] - 1) {
+                    ++$markedCellCntInRow;
+
+                    // #19 Stop because enough marked cells are collected.
+                    if ($markedCellCntInRow === $game->getMoveCntToWin()) {
+                        $hasWin = true;
+                        break;
+                    }
+                }
+            }
+            // #19 Reset the marked cell counter because the row has changed.
+            else {
+                $markedCellCntInRow = 1;
+            }
+        }
+
+        return $hasWin;
+    }
+
+    /**
+     * #19 Check if there's enough marked cells side-by-side in the row with the same symbol.
+     *
+     * @param array $cells
+     *
+     * @return bool
+     */
+    public function isRowWin(Game $game, ?array $cells = [])
+    {
+        // #19 TODO: Most probably the Array needs to be replaced with a Collection.
+        $cellCnt = count($cells);
+        $hasWin = false;
+        $markedCellCntInRow = 1;
+
+        // #19 Don't continue if there is not enough marked cells.
+        // #19 TODO: Don't return the list from DB if there is not enough marked cells.
+        if ($cellCnt < $game->getMoveCntToWin()) {
+            return $hasWin;
+        }
+
+        for ($i = 0; $i < $cellCnt - 1; ++$i) {
+            // #19 Still on the same row?
+            if ($cells[$i][Move::ROW] === $cells[$i + 1][Move::ROW]) {
+                // #19 Check that the next marked cell is exactly 1 column on the right.
+                if ($cells[$i][Move::COLUMN] === $cells[$i + 1][Move::COLUMN] - 1) {
+                    ++$markedCellCntInRow;
+
+                    // #19 Stop because enough marked cells are collected.
+                    if ($markedCellCntInRow === $game->getMoveCntToWin()) {
+                        $hasWin = true;
+                        break;
+                    }
+                }
+            }
+            // #19 Reset the marked cell counter because the row has changed.
+            else {
+                $markedCellCntInRow = 1;
+            }
+        }
+
+        return $hasWin;
     }
 }
