@@ -143,7 +143,7 @@ export default {
       for(let i = 0; i < this.height; i++){
         let row = {number: i, columns: []};
         for(let j = 0; j < this.width; j++){
-          let column = {row: i, column: j,value: null}
+          let column = {row: i, column: j,value: this.getCellsValue(game, i, j)};
           row.columns.push(column);
         }
         this.rows.push(row);
@@ -195,6 +195,24 @@ export default {
             this.showError(response.data.errors);
           }
         );
+    },
+    // #32 Display marked cells.
+    getCellsValue(game, row, column){
+      let hasMoves = typeof game.moves != "undefined" && game.moves != null;
+      if(hasMoves){
+
+        let hasRow = typeof game.moves[row] != "undefined" && game.moves[row] != null;
+        if(hasRow){
+
+          let hasColumn = typeof game.moves[row][column] != "undefined" && game.moves[row][column] != null;
+          if(hasColumn){
+
+            return game.moves[row][column].symbol;
+          }
+        }
+      }
+
+      return null;
     },
     clearAlerts: function() {
       (this.alerts.success = ""), (this.alerts.errors = []);
