@@ -127,7 +127,7 @@ export default {
         function onSuccess(response) {
           this.width = response.data.width;
           this.height = response.data.height;
-          this.drawTheBoard(response.data.width, response.data.height)
+          this.drawTheBoard(response.data)
         },
         function onFail(response) {
           this.loading = false;
@@ -135,9 +135,9 @@ export default {
         }
       );
     },
-    drawTheBoard(width, height){
-      this.width = width;
-      this.height = height;
+    drawTheBoard(game){
+      this.width = game.width;
+      this.height = game.height;
 
     // #16 Populate rows and columns based on the board dimensions.
       for(let i = 0; i < this.height; i++){
@@ -187,7 +187,7 @@ export default {
         })
         .then(
           function onSuccess(response) {
-            this.drawTheBoard(response.data.width, response.data.height)
+            this.drawTheBoard(response.data)
           },
           function onFail(response) {
             this.loading = false;
