@@ -76,7 +76,7 @@
         </div>
         <div class="board" v-if=show_board>
           <div class="row" v-for="row in rows" :key="row.number">
-            <div v-for="cell in row.columns" :key="cell.cell">
+            <div class="cell-wrap" v-for="cell in row.columns" :key="cell.cell">
               <template v-if=cell.value>
                 <div :class="computedClass" class="cell selected">
                   <span>{{cell.value}}</span>

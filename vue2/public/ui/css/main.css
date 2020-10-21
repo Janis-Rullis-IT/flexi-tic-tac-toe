@@ -49,17 +49,22 @@
   background: #c8ebfb;
 }
 .board .cell{
-  background-color: lightgreen;
   min-height: 50px;
   border-left: 1px solid gray;
   border-bottom: 1px solid gray;
   text-align: center;
   padding-top: 15px;
-  
+
+  font-weight: bold;
+  font-size: 20px;
+  text-transform: uppercase;
 }
 .board .cell.choose-me{
   cursor: pointer;
+} 
+.cell-wrap:first-child > .cell{
+  border-left: none;
 }
-.board .cell.selected{
-  background-color: lightcoral;
+.board .row:last-child > .cell-wrap > .cell{
+  border-bottom: none;
 }

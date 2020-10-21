@@ -1,4 +1,6 @@
-#### lm1
+#### LM1
+
+![page.jpg](page.jpg)
 
 ## FIRST TIME? HOW TO SET THIS UP?
 
