@@ -196,6 +196,26 @@ final class MoveRepository extends BaseRepository implements IMoveRepo
         return false;
     }
 
+    public function isDiagonalWin(Game $game, Move $move, ?array $cells = []): bool
+    {
+        $hasWin = false;
+        $markedCellCntInRow = 1;
+
+        // #19 Check that the row contains enough selected cells to have a win.
+        if (count($cells) < $game->getMoveCntToWin()) {
+            return $hasWin;
+        }
+
+        if ($game->getMoveCntToWin() === $this->moveRepo->getMarkedCellCntDiagonallyFromLeftToRight($game, $move, $cells)) {
+            return true;
+        }
+        if ($game->getMoveCntToWin() === $this->moveRepo->getMarkedCellCntDiagonallyFromRightToLeft($game, $move, $cells)) {
+            return true;
+        }
+
+        return false;
+    }
+
     /**
      * #19 Check if there's enough marked cells side-by-side in the row with the same symbol.
      *
@@ -269,7 +289,47 @@ final class MoveRepository extends BaseRepository implements IMoveRepo
         return $cntInNorthWest + $startingCell + $cntInSouthEast;
     }
 
-    public function getMarkedCellCntSouthEast(Game $game, Move $move, ?array $cells = []): int
+    public function getMarkedCellCntDiagonallyFromRightToLeft(Game $game, Move $move, ?array $cells = []): int
+    {
+        $cntInNorthWest = $this->getMarkedCellCntNorthEast($game, $move, $cells);
+        $startingCell = 1;
+        $cntInSouthEast = $this->getMarkedCellCntSouthWest($game, $move, $cells);
+
+        return $cntInNorthWest + $startingCell + $cntInSouthEast;
+    }
+
+    public function getMarkedCellCntSouthWest(Game $game, Move $move, ?array $cells = []): int
+    {
+        $markedCellCntInDiagonal = -1;
+
+        // #19 Check that the column contains enough selected cells to have a win.
+        if (count($cells) < $game->getMoveCntToWin()) {
+            return 0;
+        }
+
+        // #19 Traverse cells diagonally till the end of the list has been reached.
+        $continue = true;
+        // #19 Start the traverse from the last selected cell.
+        $row = $move->getRow();
+        $column = $move->getColumn();
+
+        while (true == $continue) {
+            // #19 Is there a marked cell?
+            if (isset($cells[$row][$column])) {
+                ++$markedCellCntInDiagonal;
+
+                // #19 Move diagonally.
+                ++$row;
+                --$column;
+            } else {
+                $continue = false;
+            }
+        }
+
+        return $markedCellCntInDiagonal;
+    }
+
+    public function getMarkedCellCntNorthEast(Game $game, Move $move, ?array $cells = []): int
     {
         $markedCellCntInDiagonal = -1;
 
@@ -289,7 +349,38 @@ final class MoveRepository extends BaseRepository implements IMoveRepo
             if (isset($cells[$row][$column])) {
                 ++$markedCellCntInDiagonal;
 
-                // #19 Move dioganlly.
+                // #19 Move diagonally.
+                --$row;
+                ++$column;
+            } else {
+                $continue = false;
+            }
+        }
+
+        return $markedCellCntInDiagonal;
+    }
+
+    public function getMarkedCellCntSouthEast(Game $game, Move $move, ?array $cells = []): int
+    {
+        $markedCellCntInDiagonal = -1;
+
+        // #19 Check that the column contains enough selected cells to have a win.
+        if (count($cells) < $game->getMoveCntToWin()) {
+            return 0;
+        }
+
+        // #19 Traverse cells diagonally till the end of the list has been reached.
+        $continue = true;
+        // #19 Start the traverse from the last selected cell.
+        $row = $move->getRow();
+        $column = $move->getColumn();
+
+        while (true == $continue) {
+            // #19 Is there a marked cell?
+            if (isset($cells[$row][$column])) {
+                ++$markedCellCntInDiagonal;
+
+                // #19 Move diagonally.
                 ++$row;
                 ++$column;
             } else {
@@ -309,7 +400,7 @@ final class MoveRepository extends BaseRepository implements IMoveRepo
             return 0;
         }
 
-        // #19 Traverse cells dioganlly till the end of the list has been reached.
+        // #19 Traverse cells diagonally till the end of the list has been reached.
         $continue = true;
         // #19 Start the traverse from the last selected cell.
         $row = $move->getRow();
@@ -320,7 +411,7 @@ final class MoveRepository extends BaseRepository implements IMoveRepo
             if (isset($cells[$row][$column])) {
                 ++$markedCellCntInDiagonal;
 
-                // #19 Move dioganlly.
+                // #19 Move diagonally.
                 --$row;
                 --$column;
             } else {
