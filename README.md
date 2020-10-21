@@ -1,6 +1,6 @@
 #### LM1
 
-![page.jpg](page.jpg)
+![page.png](page.png)
 
 ## FIRST TIME? HOW TO SET THIS UP?
 
