@@ -192,24 +192,28 @@ final class MoveRepository extends BaseRepository implements IMoveRepo
         if ($this->isColumnWin($game, $move, $this->getMarkedCellsInTheColumn($game->getId(), $move->getSymbol(), $move->getColumn()))) {
             return true;
         }
+        if ($this->isDiagonalWin($game, $move, $this->getMarkedCells($game->getId(), $move->getSymbol(), $move->getColumn()))) {
+            return true;
+        }
 
         return false;
     }
 
+    /**
+     * #19 Check if there's enough marked cells diagonally with the same symbol.
+     *
+     * @param array $cells
+     */
     public function isDiagonalWin(Game $game, Move $move, ?array $cells = []): bool
     {
-        $hasWin = false;
-        $markedCellCntInRow = 1;
-
         // #19 Check that the row contains enough selected cells to have a win.
         if (count($cells) < $game->getMoveCntToWin()) {
-            return $hasWin;
+            return false;
         }
-
-        if ($game->getMoveCntToWin() === $this->moveRepo->getMarkedCellCntDiagonallyFromLeftToRight($game, $move, $cells)) {
+        if ($game->getMoveCntToWin() === $this->getMarkedCellCntDiagonallyFromLeftToRight($game, $move, $cells)) {
             return true;
         }
-        if ($game->getMoveCntToWin() === $this->moveRepo->getMarkedCellCntDiagonallyFromRightToLeft($game, $move, $cells)) {
+        if ($game->getMoveCntToWin() === $this->getMarkedCellCntDiagonallyFromRightToLeft($game, $move, $cells)) {
             return true;
         }
 
