@@ -1,6 +1,10 @@
-#### LM1
+#### Flexi Tic-Tac-Toe
+
+Forget the old 3x3 board. Choose Your own width, height and steps required to win!
 
 ![page.png](page.png)
+
+![input.png](input.png)
 
 ## FIRST TIME? HOW TO SET THIS UP?
 
