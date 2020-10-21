@@ -90,6 +90,36 @@ final class MoveRepository extends BaseRepository implements IMoveRepo
 
         return $cells;
     }
+	
+	/**
+	 * #19 Collect marked cells by a specific symbol in the specific row (last move). Will be used to calc. the winner.
+	 * @param int $gameId
+	 * @param string $symbol
+	 * @param int $rowNumber
+	 * @return array
+	 */
+	public function getMarkedCellsInTheRow(int $gameId, string $symbol, int $rowNumber): array
+    {
+		$q = $this->getMarkedCellsQueryBuilder($gameId, $symbol)
+			->andWhere('a.row = :rowNumber')
+            ->orderBy('a.row', 'ASC')
+            ->addOrderBy('a.column', 'ASC')
+			->setParameter('rowNumber', $rowNumber)
+			->getQuery();
+		$cells = $q->getResult();
+
+        if (!empty($cells)) {
+            $columns = [];
+
+            foreach ($cells as $cell) {
+                $columns[$cell[Move::COLUMN]] = $cell;
+            }
+
+            return $columns;
+        }
+
+        return $cells;
+	}
 
     /**
      * #19 Collect marked cells by a specific symbol ordered by rows. Will be used to calc. the winner.
@@ -124,6 +154,9 @@ final class MoveRepository extends BaseRepository implements IMoveRepo
      */
     public function isWin(Game $game, Move $move)
     {
+		// #19 Don't continue if there is not enough marked cells.
+        // #19 TODO: Don't return the list from DB if there is not enough marked cells.
+		
         // #19 TODO: Most probably the Array needs to be replaced with a Collection.
         $cellCnt = 100; // TODO: Replace this.
 
@@ -191,37 +224,29 @@ final class MoveRepository extends BaseRepository implements IMoveRepo
      *
      * @return bool
      */
-    public function isRowWin(Game $game, ?array $cells = [])
+    public function isRowWin(Game $game, Move $move, ?array $cells = [])
     {
-        // #19 TODO: Most probably the Array needs to be replaced with a Collection.
-        $cellCnt = count($cells);
         $hasWin = false;
         $markedCellCntInRow = 1;
+		
+		// #19 Check that the row contains enough selected cells to have a win.
+		if(count($cells[$move->getRow()]) < $game->getMoveCntToWin()){
+			return $hasWin;
+		}
+		
+		// #19 Cells are ordered from left column to right, so every next item has a greater index.
+		foreach($cells as $i => $cell){
+			
+			// #19 Is there a marked cell on the right?
+			if (isset($cells[$i + 1])) {
+				++$markedCellCntInRow;
 
-        // #19 Don't continue if there is not enough marked cells.
-        // #19 TODO: Don't return the list from DB if there is not enough marked cells.
-        if ($cellCnt < $game->getMoveCntToWin()) {
-            return $hasWin;
-        }
-
-        for ($i = 0; $i < $cellCnt - 1; ++$i) {
-            // #19 Still on the same row?
-            if ($cells[$i][Move::ROW] === $cells[$i + 1][Move::ROW]) {
-                // #19 Check that the next marked cell is exactly 1 column on the right.
-                if ($cells[$i][Move::COLUMN] === $cells[$i + 1][Move::COLUMN] - 1) {
-                    ++$markedCellCntInRow;
-
-                    // #19 Stop because enough marked cells are collected.
-                    if ($markedCellCntInRow === $game->getMoveCntToWin()) {
-                        $hasWin = true;
-                        break;
-                    }
-                }
-            }
-            // #19 Reset the marked cell counter because the row has changed.
-            else {
-                $markedCellCntInRow = 1;
-            }
+				// #19 Stop because enough marked cells are collected.
+				if ($markedCellCntInRow === $game->getMoveCntToWin()) {
+					$hasWin = true;
+					break;
+				}
+			}
         }
 
         return $hasWin;
