@@ -171,10 +171,8 @@ final class MoveRepository extends BaseRepository implements IMoveRepo
 
     /**
      * #19 Check if there's enough marked cells side-by-side in columns, rows and diagonals with the same symbol.
-     *
-     * @return bool
      */
-    public function isWin(Game $game, Move $move)
+    public function isWin(Game $game, Move $move): bool
     {
         // #19 Don't continue if there is not enough marked cells.
         // #19 TODO: Don't return the list from DB if there is not enough marked cells.
@@ -194,6 +192,8 @@ final class MoveRepository extends BaseRepository implements IMoveRepo
         if ($this->isColumnWin($game, $move, $this->getMarkedCellsInTheColumn($game->getId(), $move->getSymbol(), $move->getColumn()))) {
             return true;
         }
+
+        return false;
     }
 
     /**
@@ -258,5 +258,76 @@ final class MoveRepository extends BaseRepository implements IMoveRepo
         }
 
         return $hasWin;
+    }
+
+    public function getMarkedCellCntDiagonallyFromLeftToRight(Game $game, Move $move, ?array $cells = []): int
+    {
+        $cntInNorthWest = $this->getMarkedCellCntNorthWest($game, $move, $cells);
+        $startingCell = 1;
+        $cntInSouthEast = $this->getMarkedCellCntSouthEast($game, $move, $cells);
+
+        return $cntInNorthWest + $startingCell + $cntInSouthEast;
+    }
+
+    public function getMarkedCellCntSouthEast(Game $game, Move $move, ?array $cells = []): int
+    {
+        $markedCellCntInDiagonal = -1;
+
+        // #19 Check that the column contains enough selected cells to have a win.
+        if (count($cells) < $game->getMoveCntToWin()) {
+            return 0;
+        }
+
+        // #19 Traverse cells dioganlly till the end of the list has been reached.
+        $continue = true;
+        // #19 Start the traverse from the last selected cell.
+        $row = $move->getRow();
+        $column = $move->getColumn();
+
+        while (true == $continue) {
+            // #19 Is there a marked cell?
+            if (isset($cells[$row][$column])) {
+                ++$markedCellCntInDiagonal;
+
+                // #19 Move dioganlly.
+                ++$row;
+                ++$column;
+            } else {
+                $continue = false;
+            }
+        }
+
+        return $markedCellCntInDiagonal;
+    }
+
+    public function getMarkedCellCntNorthWest(Game $game, Move $move, ?array $cells = []): int
+    {
+        $markedCellCntInDiagonal = -1;
+
+        // #19 Check that the column contains enough selected cells to have a win.
+        if (count($cells) < $game->getMoveCntToWin()) {
+            return 0;
+        }
+
+        // #19 Traverse cells dioganlly till the end of the list has been reached.
+        $continue = true;
+        // #19 Start the traverse from the last selected cell.
+        $row = $move->getRow();
+        $column = $move->getColumn();
+
+        while (true == $continue) {
+            // #19 Is there a marked cell?
+            if (isset($cells[$row][$column])) {
+                ++$markedCellCntInDiagonal;
+
+                // #19 Move dioganlly.
+                --$row;
+                --$column;
+            } else {
+                $continue = false;
+            }
+        }
+
+        return $markedCellCntInDiagonal;
     }
 }
