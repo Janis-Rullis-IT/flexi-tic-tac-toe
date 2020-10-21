@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\WxH;
+namespace App\Tests\Move;
 
 use App\Entity\Game;
 use App\Entity\Move;
@@ -27,7 +27,10 @@ class MoveTest extends WebTestCase
 
         $data = [Move::ROW => Game::MAX_HEIGHT_WIDTH - 1, Move::COLUMN => Move::MIN_INDEX];
         $this->client->request('POST', '/game/move', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode($data));
-        $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+        $responseBody = json_decode($this->client->getResponse()->getContent(), true);
+        var_dump($responseBody);
+        exit;
+//        $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
 
         $this->client->request('GET', '/game');
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());

@@ -6,7 +6,6 @@ namespace App\Tests\Move\Win;
 
 use App\Entity\Game;
 use App\Entity\Move;
-use App\Exception\MoveValidatorException;
 use App\Interfaces\IGameRepo;
 use App\Interfaces\IMoveRepo;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -24,8 +23,8 @@ class RowUnitTest extends KernelTestCase
         $this->gameRepo = $this->c->get('test.'.IGameRepo::class);
         $this->moveRepo = $this->c->get('test.'.IMoveRepo::class);
     }
-	
-	public function testSelectedInTheRow()
+
+    public function testSelectedInTheRow()
     {
         $this->assertNull($this->gameRepo->getCurrentDraft());
         $game = $this->gameRepo->insertDraftIfNotExist();
@@ -33,17 +32,17 @@ class RowUnitTest extends KernelTestCase
         $game = $this->gameRepo->setRules($game, Game::MIN_HEIGHT_WIDTH);
         $game->setMoveCntToWin(Game::MIN_HEIGHT_WIDTH);
         $game = $this->gameRepo->markAsStarted($game);
-		
-        $move = $this->moveRepo->selectCell($game, Move::MIN_INDEX, Move::MIN_INDEX);
-		$move = $this->moveRepo->selectCell($game, Move::MIN_INDEX, Move::MIN_INDEX + 1);
-		
-		$move = $this->moveRepo->selectCell($game, Move::MIN_INDEX + 1, Move::MIN_INDEX + 1);
 
-    	$markedCells = $this->moveRepo->getMarkedCellsInTheRow($game->getId(), Move::SYMBOL_X, Move::MIN_INDEX);
-		$this->assertEquals(count($markedCells), 2);
+        $move = $this->moveRepo->selectCell($game, Move::MIN_INDEX, Move::MIN_INDEX);
+        $move = $this->moveRepo->selectCell($game, Move::MIN_INDEX, Move::MIN_INDEX + 1);
+
+        $move = $this->moveRepo->selectCell($game, Move::MIN_INDEX + 1, Move::MIN_INDEX + 1);
+
+        $markedCells = $this->moveRepo->getMarkedCellsInTheRow($game->getId(), Move::SYMBOL_X, Move::MIN_INDEX);
+        $this->assertEquals(count($markedCells), 2);
     }
-	
-	public function testWin()
+
+    public function testWin()
     {
         $this->assertNull($this->gameRepo->getCurrentDraft());
         $game = $this->gameRepo->insertDraftIfNotExist();
@@ -52,13 +51,13 @@ class RowUnitTest extends KernelTestCase
         $game->setMoveCntToWin(Game::MIN_HEIGHT_WIDTH);
         $game = $this->gameRepo->markAsStarted($game);
         $move = $this->moveRepo->selectCell($game, Move::MIN_INDEX, Move::MIN_INDEX);
-		$move = $this->moveRepo->selectCell($game, Move::MIN_INDEX, Move::MIN_INDEX + 1);
+        $move = $this->moveRepo->selectCell($game, Move::MIN_INDEX, Move::MIN_INDEX + 1);
 
-    	$markedCells = $this->moveRepo->getMarkedCellsInTheRow($game->getId(), Move::SYMBOL_X, $move->getRow());
-		$this->assertTrue($this->moveRepo->isRowWin($game, $move, $markedCells));
+        $markedCells = $this->moveRepo->getMarkedCellsInTheRow($game->getId(), Move::SYMBOL_X, $move->getRow());
+        $this->assertTrue($this->moveRepo->isRowWin($game, $move, $markedCells));
     }
-	
-	public function testNotWin()
+
+    public function testNotWin()
     {
         $this->assertNull($this->gameRepo->getCurrentDraft());
         $game = $this->gameRepo->insertDraftIfNotExist();
@@ -67,24 +66,9 @@ class RowUnitTest extends KernelTestCase
         $game->setMoveCntToWin(Game::MIN_HEIGHT_WIDTH + 1);
         $game = $this->gameRepo->markAsStarted($game);
         $move = $this->moveRepo->selectCell($game, Move::MIN_INDEX, Move::MIN_INDEX);
-		$move = $this->moveRepo->selectCell($game, Move::MIN_INDEX, Move::MIN_INDEX + 1);
+        $move = $this->moveRepo->selectCell($game, Move::MIN_INDEX, Move::MIN_INDEX + 1);
 
-    	$markedCells = $this->moveRepo->getMarkedCellsInTheRow($game->getId(), Move::SYMBOL_X, $move->getRow());
-		$this->assertFalse($this->moveRepo->isRowWin($game, $move, $markedCells));
+        $markedCells = $this->moveRepo->getMarkedCellsInTheRow($game->getId(), Move::SYMBOL_X, $move->getRow());
+        $this->assertFalse($this->moveRepo->isRowWin($game, $move, $markedCells));
     }
-
-    public function testNotEnoughSelected()
-    {
-        $this->assertNull($this->gameRepo->getCurrentDraft());
-        $game = $this->gameRepo->insertDraftIfNotExist();
-        $game = $this->gameRepo->setBoardDimensions($game, Game::MIN_HEIGHT_WIDTH, Game::MIN_HEIGHT_WIDTH);
-        $game = $this->gameRepo->setRules($game, Game::MIN_HEIGHT_WIDTH);
-        $game->setMoveCntToWin(Game::MIN_HEIGHT_WIDTH);
-        $game = $this->gameRepo->markAsStarted($game);
-        $move = $this->moveRepo->selectCell($game, Move::MIN_INDEX, Move::MIN_INDEX);
-
-    	$markedCells = $this->moveRepo->getMarkedCells($game->getId(), Move::SYMBOL_X);
-		$this->assertFalse($this->moveRepo->isRowWin($game, $move, $markedCells));
-    }
-
 }
