@@ -120,6 +120,36 @@ final class MoveRepository extends BaseRepository implements IMoveRepo
 
         return $cells;
 	}
+	
+	/**
+	 * #19 Collect marked cells by a specific symbol in the specific column (last move). Will be used to calc. the winner.
+	 * @param int $gameId
+	 * @param string $symbol
+	 * @param int $columnNumber
+	 * @return array
+	 */
+	public function getMarkedCellsInTheColumn(int $gameId, string $symbol, int $columnNumber): array
+    {
+		$q = $this->getMarkedCellsQueryBuilder($gameId, $symbol)
+			->andWhere('a.column = :columnNumber')
+            ->orderBy('a.column', 'ASC')
+			->addOrderBy('a.row', 'ASC')
+			->setParameter('columnNumber', $columnNumber)
+			->getQuery();
+		$cells = $q->getResult();
+
+        if (!empty($cells)) {
+            $rows = [];
+
+            foreach ($cells as $cell) {
+                $rows[$cell[Move::ROW]] = $cell;
+            }
+
+            return $rows;
+        }
+
+        return $cells;
+	}
 
     /**
      * #19 Collect marked cells by a specific symbol ordered by rows. Will be used to calc. the winner.
