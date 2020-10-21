@@ -37,6 +37,7 @@ class MoveColTest extends WebTestCase
 
         $data = [Move::ROW => Move::MIN_INDEX, Move::COLUMN => Move::MIN_INDEX];
         $this->client->request('POST', $this->uri, [], [], ['CONTENT_TYPE' => 'application/json'], json_encode($data));
+        $responseBody = json_decode($this->client->getResponse()->getContent(), true);
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
         $responseBody = json_decode($this->client->getResponse()->getContent(), true);
         $this->assertEquals($data[Move::COLUMN], $responseBody[Move::COLUMN]);
