@@ -188,12 +188,12 @@ final class MoveRepository extends BaseRepository implements IMoveRepo
             return false;
         }
 
-//        if ($this->isRowWin($game, $move, $this->getMarkedCellsInTheRow($game->getId(), $move->getSymbol(), $move->getRow()))) {
-//            return true;
-//        }
-//        if ($this->isColumnWin($game, $move, $this->getMarkedCellsInTheColumn($game->getId(), $move->getSymbol(), $move->getColumn()))) {
-//            return true;
-//        }
+        if ($this->isRowWin($game, $move, $this->getMarkedCellsInTheRow($game->getId(), $move->getSymbol(), $move->getRow()))) {
+            return true;
+        }
+        if ($this->isColumnWin($game, $move, $this->getMarkedCellsInTheColumn($game->getId(), $move->getSymbol(), $move->getColumn()))) {
+            return true;
+        }
     }
 
     /**
@@ -207,7 +207,7 @@ final class MoveRepository extends BaseRepository implements IMoveRepo
         $markedCellCntInRow = 1;
 
         // #19 Check that the row contains enough selected cells to have a win.
-        if (count($cells[$move->getRow()]) < $game->getMoveCntToWin()) {
+        if (count($cells) < $game->getMoveCntToWin()) {
             return $hasWin;
         }
 
@@ -239,7 +239,7 @@ final class MoveRepository extends BaseRepository implements IMoveRepo
         $markedCellCntInColumn = 1;
 
         // #19 Check that the column contains enough selected cells to have a win.
-        if (count($cells[$move->getColumn()]) < $game->getMoveCntToWin()) {
+        if (count($cells) < $game->getMoveCntToWin()) {
             return $hasWin;
         }
 

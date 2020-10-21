@@ -28,9 +28,7 @@ class MoveTest extends WebTestCase
         $data = [Move::ROW => Game::MAX_HEIGHT_WIDTH - 1, Move::COLUMN => Move::MIN_INDEX];
         $this->client->request('POST', '/game/move', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode($data));
         $responseBody = json_decode($this->client->getResponse()->getContent(), true);
-        var_dump($responseBody);
-        exit;
-//        $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+        $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
 
         $this->client->request('GET', '/game');
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
