@@ -69,6 +69,29 @@ final class MoveRepository extends BaseRepository implements IMoveRepo
     }
 
     /**
+     * #19 Collect marked cells by a specific symbol organized in [ROW][COLUMN]. Will be used to calc. the winner.
+     *
+     * @param type $organizeInRowColumns
+     */
+    public function getMarkedCells(int $gameId, string $symbol, $organizeInRowColumns = true): array
+    {
+        $q = $this->getMarkedCellsQueryBuilder($gameId, $symbol)->getQuery();
+        $cells = $q->getResult();
+
+        if ($organizeInRowColumns && !empty($cells)) {
+            $organized = [];
+
+            foreach ($cells as $cell) {
+                $organized[$cell[Move::ROW]][$cell[Move::COLUMN]] = $cell;
+            }
+
+            return $organized;
+        }
+
+        return $cells;
+    }
+
+    /**
      * #19 Collect marked cells by a specific symbol ordered by rows. Will be used to calc. the winner.
      */
     public function getMarkedCellsByRows(int $gameId, string $symbol): array
