@@ -46,6 +46,7 @@ class MoveService
                 $move->setIsLast(true);
             } elseif ($this->moveRepo->isTie($game, $totalSelectedMoveCnt)) {
                 $this->gameRepo->markAsCompleted($game);
+                $move->setIsLast(true);
                 $move->setIsTie(true);
             }
 
