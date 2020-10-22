@@ -47,6 +47,8 @@ class MoveUnitTest extends KernelTestCase
         $this->assertTrue(isset($markedCells[Move::MIN_INDEX][Move::MIN_INDEX]));
         $this->assertTrue(isset($markedCells[Move::MIN_INDEX][Move::MIN_INDEX + 1]));
         $this->assertTrue(isset($markedCells[Move::MIN_INDEX + 1][Move::MIN_INDEX]));
+
+        $this->assertEquals(3, $this->moveRepo->getTotalSelectedMoveCnt($game->getId()));
     }
 
     public function testValid()
@@ -59,6 +61,7 @@ class MoveUnitTest extends KernelTestCase
         $game = $this->gameRepo->markAsStarted($game);
         $move = $this->moveRepo->selectCell($game, Move::MIN_INDEX, Move::MIN_INDEX);
         $this->assertEquals($move->getSymbol(), Move::SYMBOL_X);
+        $this->assertEquals(1, $this->moveRepo->getTotalSelectedMoveCnt($game->getId()));
     }
 
     public function testCellAlreadyTaken()

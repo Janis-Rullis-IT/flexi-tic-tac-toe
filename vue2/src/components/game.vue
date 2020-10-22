@@ -165,13 +165,15 @@ export default {
 
             // #19 This was the last move.
             if(response.data.is_last){
-
-              // #19 Congratulations!
-              this.showSuccess(cell.value + ' wins!');
+              if(response.data.is_tie){
+                this.showSuccess('TIE!');
+              }else{
+                this.showSuccess(cell.value.toUpperCase() + ' wins!');
+              }
 
               // #19 Let to enjoy the view for 3 seconds then reload the page.
               setTimeout(function(){location.reload();}, 3000);
-            }
+            } 
           },
           function onFail(response) {
             this.loading = false;

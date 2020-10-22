@@ -38,7 +38,7 @@ class DiagonallyFromLeftToRightUnitTest extends KernelTestCase
         $move = $this->moveRepo->selectCell($game, Move::MIN_INDEX + 2, Move::MIN_INDEX + 2);
 
         $markedCells = $this->moveRepo->getMarkedCells($game->getId(), Move::SYMBOL_X);
-        $this->assertEquals(3, $this->moveRepo->getMarkedCellCntDiagonallyFromLeftToRight($game, $move, $markedCells));
+        $this->assertEquals(3, $this->moveRepo->getMarkedCellCntDiagonallyFromLeftToRight(3, $game, $move, $markedCells));
     }
 
     public function testNotEnough()
@@ -54,6 +54,6 @@ class DiagonallyFromLeftToRightUnitTest extends KernelTestCase
         $move = $this->moveRepo->selectCell($game, Move::MIN_INDEX + 1, Move::MIN_INDEX + 1);
 
         $markedCells = $this->moveRepo->getMarkedCells($game->getId(), Move::SYMBOL_X);
-        $this->assertEquals(1, $this->moveRepo->getMarkedCellCntDiagonallyFromLeftToRight($game, $move, $markedCells));
+        $this->assertEquals(1, $this->moveRepo->getMarkedCellCntDiagonallyFromLeftToRight(2, $game, $move, $markedCells));
     }
 }

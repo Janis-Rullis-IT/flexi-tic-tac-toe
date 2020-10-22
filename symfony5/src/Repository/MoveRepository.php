@@ -69,6 +69,18 @@ final class MoveRepository extends BaseRepository implements IMoveRepo
     }
 
     /**
+     * #37 Get the total count of selected cells in this game. Will be used to calculate wins or ties.
+     */
+    public function getTotalSelectedMoveCnt(int $gameId): int
+    {
+        $q = $this->em->createQueryBuilder('a')
+            ->select('COUNT(a.id)')->from(Move::class, 'a')
+            ->where('a.gameId = :gameId')->setParameter('gameId', $gameId)->getQuery();
+
+        return (int) $q->getSingleScalarResult();
+    }
+
+    /**
      * #19 Collect marked cells by a specific symbol organized in [ROW][COLUMN]. Will be used to calc. the winner.
      *
      * @param type $organizeInRowColumns
@@ -172,27 +184,20 @@ final class MoveRepository extends BaseRepository implements IMoveRepo
     /**
      * #19 Check if there's enough marked cells side-by-side in columns, rows and diagonals with the same symbol.
      */
-    public function isWin(Game $game, Move $move): bool
+    public function isWin(int $totalSelectedMoveCnt, Game $game, Move $move): bool
     {
         // #19 Don't continue if there is not enough marked cells.
-        // #19 TODO: Don't return the list from DB if there is not enough marked cells.
-
-        // #19 TODO: Most probably the Array needs to be replaced with a Collection.
-        $cellCnt = 100; // TODO: Replace this.
-
-        // #19 Don't continue if there is not enough marked cells.
-        // #19 TODO: Don't return the list from DB if there is not enough marked cells.
-        if ($cellCnt < $game->getMoveCntToWin()) {
+        if ($totalSelectedMoveCnt < $game->getMoveCntToWin()) {
             return false;
         }
 
-        if ($this->isRowWin($game, $move, $this->getMarkedCellsInTheRow($game->getId(), $move->getSymbol(), $move->getRow()))) {
+        if ($this->isRowWin($totalSelectedMoveCnt, $game, $move, $this->getMarkedCellsInTheRow($game->getId(), $move->getSymbol(), $move->getRow()))) {
             return true;
         }
-        if ($this->isColumnWin($game, $move, $this->getMarkedCellsInTheColumn($game->getId(), $move->getSymbol(), $move->getColumn()))) {
+        if ($this->isColumnWin($totalSelectedMoveCnt, $game, $move, $this->getMarkedCellsInTheColumn($game->getId(), $move->getSymbol(), $move->getColumn()))) {
             return true;
         }
-        if ($this->isDiagonalWin($game, $move, $this->getMarkedCells($game->getId(), $move->getSymbol(), $move->getColumn()))) {
+        if ($this->isDiagonalWin($totalSelectedMoveCnt, $game, $move, $this->getMarkedCells($game->getId(), $move->getSymbol(), $move->getColumn()))) {
             return true;
         }
 
@@ -204,16 +209,12 @@ final class MoveRepository extends BaseRepository implements IMoveRepo
      *
      * @param array $cells
      */
-    public function isDiagonalWin(Game $game, Move $move, ?array $cells = []): bool
+    public function isDiagonalWin(int $totalSelectedMoveCnt, Game $game, Move $move, ?array $cells = []): bool
     {
-        // #19 Check that the row contains enough selected cells to have a win.
-        if (count($cells) < $game->getMoveCntToWin()) {
-            return false;
-        }
-        if ($game->getMoveCntToWin() === $this->getMarkedCellCntDiagonallyFromLeftToRight($game, $move, $cells)) {
+        if ($game->getMoveCntToWin() === $this->getMarkedCellCntDiagonallyFromLeftToRight($totalSelectedMoveCnt, $game, $move, $cells)) {
             return true;
         }
-        if ($game->getMoveCntToWin() === $this->getMarkedCellCntDiagonallyFromRightToLeft($game, $move, $cells)) {
+        if ($game->getMoveCntToWin() === $this->getMarkedCellCntDiagonallyFromRightToLeft($totalSelectedMoveCnt, $game, $move, $cells)) {
             return true;
         }
 
@@ -225,13 +226,13 @@ final class MoveRepository extends BaseRepository implements IMoveRepo
      *
      * @param array $cells
      */
-    public function isRowWin(Game $game, Move $move, ?array $cells = []): bool
+    public function isRowWin(int $totalSelectedMoveCnt, Game $game, Move $move, ?array $cells = []): bool
     {
         $hasWin = false;
         $markedCellCntInRow = 1;
 
         // #19 Check that the row contains enough selected cells to have a win.
-        if (count($cells) < $game->getMoveCntToWin()) {
+        if ($totalSelectedMoveCnt < $game->getMoveCntToWin()) {
             return $hasWin;
         }
 
@@ -257,13 +258,13 @@ final class MoveRepository extends BaseRepository implements IMoveRepo
      *
      * @param array $cells
      */
-    public function isColumnWin(Game $game, Move $move, ?array $cells = []): bool
+    public function isColumnWin(int $totalSelectedMoveCnt, Game $game, Move $move, ?array $cells = []): bool
     {
         $hasWin = false;
         $markedCellCntInColumn = 1;
 
         // #19 Check that the column contains enough selected cells to have a win.
-        if (count($cells) < $game->getMoveCntToWin()) {
+        if ($totalSelectedMoveCnt < $game->getMoveCntToWin()) {
             return $hasWin;
         }
 
@@ -284,30 +285,30 @@ final class MoveRepository extends BaseRepository implements IMoveRepo
         return $hasWin;
     }
 
-    public function getMarkedCellCntDiagonallyFromLeftToRight(Game $game, Move $move, ?array $cells = []): int
+    public function getMarkedCellCntDiagonallyFromLeftToRight(int $totalSelectedMoveCnt, Game $game, Move $move, ?array $cells = []): int
     {
-        $cntInNorthWest = $this->getMarkedCellCntNorthWest($game, $move, $cells);
+        $cntInNorthWest = $this->getMarkedCellCntNorthWest($totalSelectedMoveCnt, $game, $move, $cells);
         $startingCell = 1;
-        $cntInSouthEast = $this->getMarkedCellCntSouthEast($game, $move, $cells);
+        $cntInSouthEast = $this->getMarkedCellCntSouthEast($totalSelectedMoveCnt, $game, $move, $cells);
 
         return $cntInNorthWest + $startingCell + $cntInSouthEast;
     }
 
-    public function getMarkedCellCntDiagonallyFromRightToLeft(Game $game, Move $move, ?array $cells = []): int
+    public function getMarkedCellCntDiagonallyFromRightToLeft(int $totalSelectedMoveCnt, Game $game, Move $move, ?array $cells = []): int
     {
-        $cntInNorthWest = $this->getMarkedCellCntNorthEast($game, $move, $cells);
+        $cntInNorthWest = $this->getMarkedCellCntNorthEast($totalSelectedMoveCnt, $game, $move, $cells);
         $startingCell = 1;
-        $cntInSouthEast = $this->getMarkedCellCntSouthWest($game, $move, $cells);
+        $cntInSouthEast = $this->getMarkedCellCntSouthWest($totalSelectedMoveCnt, $game, $move, $cells);
 
         return $cntInNorthWest + $startingCell + $cntInSouthEast;
     }
 
-    public function getMarkedCellCntSouthWest(Game $game, Move $move, ?array $cells = []): int
+    public function getMarkedCellCntSouthWest(int $totalSelectedMoveCnt, Game $game, Move $move, ?array $cells = []): int
     {
         $markedCellCntInDiagonal = -1;
 
         // #19 Check that the column contains enough selected cells to have a win.
-        if (count($cells) < $game->getMoveCntToWin()) {
+        if ($totalSelectedMoveCnt < $game->getMoveCntToWin()) {
             return 0;
         }
 
@@ -333,12 +334,12 @@ final class MoveRepository extends BaseRepository implements IMoveRepo
         return $markedCellCntInDiagonal;
     }
 
-    public function getMarkedCellCntNorthEast(Game $game, Move $move, ?array $cells = []): int
+    public function getMarkedCellCntNorthEast(int $totalSelectedMoveCnt, Game $game, Move $move, ?array $cells = []): int
     {
         $markedCellCntInDiagonal = -1;
 
         // #19 Check that the column contains enough selected cells to have a win.
-        if (count($cells) < $game->getMoveCntToWin()) {
+        if ($totalSelectedMoveCnt < $game->getMoveCntToWin()) {
             return 0;
         }
 
@@ -364,12 +365,12 @@ final class MoveRepository extends BaseRepository implements IMoveRepo
         return $markedCellCntInDiagonal;
     }
 
-    public function getMarkedCellCntSouthEast(Game $game, Move $move, ?array $cells = []): int
+    public function getMarkedCellCntSouthEast(int $totalSelectedMoveCnt, Game $game, Move $move, ?array $cells = []): int
     {
         $markedCellCntInDiagonal = -1;
 
         // #19 Check that the column contains enough selected cells to have a win.
-        if (count($cells) < $game->getMoveCntToWin()) {
+        if ($totalSelectedMoveCnt < $game->getMoveCntToWin()) {
             return 0;
         }
 
@@ -395,12 +396,12 @@ final class MoveRepository extends BaseRepository implements IMoveRepo
         return $markedCellCntInDiagonal;
     }
 
-    public function getMarkedCellCntNorthWest(Game $game, Move $move, ?array $cells = []): int
+    public function getMarkedCellCntNorthWest(int $totalSelectedMoveCnt, Game $game, Move $move, ?array $cells = []): int
     {
         $markedCellCntInDiagonal = -1;
 
         // #19 Check that the column contains enough selected cells to have a win.
-        if (count($cells) < $game->getMoveCntToWin()) {
+        if ($totalSelectedMoveCnt < $game->getMoveCntToWin()) {
             return 0;
         }
 
@@ -424,5 +425,13 @@ final class MoveRepository extends BaseRepository implements IMoveRepo
         }
 
         return $markedCellCntInDiagonal;
+    }
+
+    /**
+     * #37 If there's no winner and all cells are selected then it's a tie.
+     */
+    public function isTie(Game $game, int $totalSelectedMoveCnt): bool
+    {
+        return $totalSelectedMoveCnt === $game->getTotalCellCnt();
     }
 }

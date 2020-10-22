@@ -54,7 +54,7 @@ class ColUnitTest extends KernelTestCase
         $move = $this->moveRepo->selectCell($game, Move::MIN_INDEX + 1, Move::MIN_INDEX);
 
         $markedCells = $this->moveRepo->getMarkedCellsInTheColumn($game->getId(), Move::SYMBOL_X, $move->getColumn());
-        $this->assertTrue($this->moveRepo->isColumnWin($game, $move, $markedCells));
+        $this->assertTrue($this->moveRepo->isColumnWin(2, $game, $move, $markedCells));
     }
 
     public function testNotWin()
@@ -69,6 +69,6 @@ class ColUnitTest extends KernelTestCase
         $move = $this->moveRepo->selectCell($game, Move::MIN_INDEX + 1, Move::MIN_INDEX);
 
         $markedCells = $this->moveRepo->getMarkedCellsInTheColumn($game->getId(), Move::SYMBOL_X, $move->getColumn());
-        $this->assertFalse($this->moveRepo->isColumnWin($game, $move, $markedCells));
+        $this->assertFalse($this->moveRepo->isColumnWin(2, $game, $move, $markedCells));
     }
 }

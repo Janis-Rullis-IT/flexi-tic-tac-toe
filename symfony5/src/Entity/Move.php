@@ -36,6 +36,7 @@ class Move
     const COLUMN = 'column';
     const SYMBOL = 'symbol';
     const IS_LAST = 'is_last';
+    const IS_TIE = 'is_tie';
 
     /**
      * @ORM\Id()
@@ -79,6 +80,12 @@ class Move
      * @Groups({"PUB", "ID_ERROR"})
      */
     private bool $is_last = false;
+
+    /**
+     * @SWG\Property(property="is_tie", type="boolean", example=false)
+     * @Groups({"PUB", "ID_ERROR"})
+     */
+    private bool $is_tie = false;
 
     public function getId(): ?int
     {
@@ -180,6 +187,18 @@ class Move
         return $this->is_last;
     }
 
+    public function setIsTie(bool $isTie): self
+    {
+        $this->is_tie = $isTie;
+
+        return $this;
+    }
+
+    public function getIsTie(): ?bool
+    {
+        return $this->is_tie;
+    }
+
     public function getMaxAllowedRow(Game $game): ?int
     {
         return $game->getHeight() - 1;
@@ -208,6 +227,7 @@ class Move
         $allFields = [
             self::ROW => $this->getRow(), self::COLUMN => $this->getColumn(),
             self::SYMBOL => $this->getSymbol(), self::IS_LAST => $this->getIsLast(),
+            self::IS_TIE => $this->getIsTie(),
         ];
 
         if (empty($fields)) {

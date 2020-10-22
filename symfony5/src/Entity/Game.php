@@ -281,6 +281,14 @@ class Game
     }
 
     /**
+     * #37 Get the total cell count from the height and width. Required to calc. a tie.
+     */
+    public function getTotalCellCnt(): int
+    {
+        return $this->getHeight() * $this->getWidth();
+    }
+
+    /**
      * #15 Convert the Entity to array in unified manner.
      * Will give same result in different endpoints.
      *
