@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Move\Win;
 
+use App\Service\MoveService;
 use App\Entity\Game;
 use App\Entity\Move;
 use App\Interfaces\IGameRepo;
@@ -22,6 +23,7 @@ class DiagonallyFromRightToLeftUnitTest extends KernelTestCase
         $this->c = $kernel->getContainer();
         $this->gameRepo = $this->c->get('test.'.IGameRepo::class);
         $this->moveRepo = $this->c->get('test.'.IMoveRepo::class);
+		$this->moveService = $this->c->get('test.'.MoveService::class);
     }
 
     public function testValid()
@@ -38,8 +40,8 @@ class DiagonallyFromRightToLeftUnitTest extends KernelTestCase
         $move = $this->moveRepo->selectCell($game, Move::MIN_INDEX + 2, Game::MIN_HEIGHT_WIDTH - 2);
 
         $markedCells = $this->moveRepo->getMarkedCells($game->getId(), Move::SYMBOL_X);
-        $this->assertEquals(3, $this->moveRepo->getMarkedCellCntDiagonallyFromRightToLeft(3, $game, $move, $markedCells));
-        $this->assertTrue($this->moveRepo->isDiagonalWin(3, $game, $move, $markedCells));
+        $this->assertEquals(3, $this->moveService->getMarkedCellCntDiagonallyFromRightToLeft(3, $game, $move, $markedCells));
+        $this->assertTrue($this->moveService->isDiagonalWin(3, $game, $move, $markedCells));
     }
 
     public function testNotEnough()
@@ -55,7 +57,7 @@ class DiagonallyFromRightToLeftUnitTest extends KernelTestCase
         $move = $this->moveRepo->selectCell($game, Move::MIN_INDEX + 1, Game::MIN_HEIGHT_WIDTH - 1);
 
         $markedCells = $this->moveRepo->getMarkedCells($game->getId(), Move::SYMBOL_X);
-        $this->assertEquals(1, $this->moveRepo->getMarkedCellCntDiagonallyFromRightToLeft(2, $game, $move, $markedCells));
-        $this->assertFalse($this->moveRepo->isDiagonalWin(2, $game, $move, $markedCells));
+        $this->assertEquals(1, $this->moveService->getMarkedCellCntDiagonallyFromRightToLeft(2, $game, $move, $markedCells));
+        $this->assertFalse($this->moveService->isDiagonalWin(2, $game, $move, $markedCells));
     }
 }

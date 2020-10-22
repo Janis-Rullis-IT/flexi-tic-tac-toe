@@ -38,3 +38,7 @@ services:
     test.App\Interfaces\IMoveRepo:
         alias: App\Interfaces\IMoveRepo
         public: true
+    #38
+    test.App\Service\MoveService:
+        alias: App\Service\MoveService
+        public: true

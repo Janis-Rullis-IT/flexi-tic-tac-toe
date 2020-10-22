@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Move\Win;
 
+use App\Service\MoveService;
 use App\Entity\Game;
 use App\Entity\Move;
 use App\Interfaces\IGameRepo;
@@ -22,6 +23,7 @@ class RowUnitTest extends KernelTestCase
         $this->c = $kernel->getContainer();
         $this->gameRepo = $this->c->get('test.'.IGameRepo::class);
         $this->moveRepo = $this->c->get('test.'.IMoveRepo::class);
+		$this->moveService = $this->c->get('test.'.MoveService::class);
     }
 
     public function testSelectedInTheRow()
@@ -54,7 +56,7 @@ class RowUnitTest extends KernelTestCase
         $move = $this->moveRepo->selectCell($game, Move::MIN_INDEX, Move::MIN_INDEX + 1);
 
         $markedCells = $this->moveRepo->getMarkedCellsInTheRow($game->getId(), Move::SYMBOL_X, $move->getRow());
-        $this->assertTrue($this->moveRepo->isRowWin(2, $game, $move, $markedCells));
+        $this->assertTrue($this->moveService->isRowWin(2, $game, $move, $markedCells));
     }
 
     public function testNotWin()
@@ -69,6 +71,6 @@ class RowUnitTest extends KernelTestCase
         $move = $this->moveRepo->selectCell($game, Move::MIN_INDEX, Move::MIN_INDEX + 1);
 
         $markedCells = $this->moveRepo->getMarkedCellsInTheRow($game->getId(), Move::SYMBOL_X, $move->getRow());
-        $this->assertFalse($this->moveRepo->isRowWin(2, $game, $move, $markedCells));
+        $this->assertFalse($this->moveService->isRowWin(2, $game, $move, $markedCells));
     }
 }

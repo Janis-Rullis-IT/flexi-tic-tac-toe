@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Move\Win;
 
+use App\Service\MoveService;
 use App\Entity\Move;
 use App\Interfaces\IGameRepo;
 use App\Interfaces\IMoveRepo;
@@ -21,6 +22,7 @@ class TieUnitTest extends KernelTestCase
         $this->c = $kernel->getContainer();
         $this->gameRepo = $this->c->get('test.'.IGameRepo::class);
         $this->moveRepo = $this->c->get('test.'.IMoveRepo::class);
+		$this->moveService = $this->c->get('test.'.MoveService::class);
     }
 
     public function testValid()
@@ -49,6 +51,6 @@ class TieUnitTest extends KernelTestCase
         $move = $this->moveRepo->selectCell($game, Move::MIN_INDEX + 2, Move::MIN_INDEX + 2); // XXO
 
         $this->assertEquals($game->getTotalCellCnt(), $game->getHeight() * $game->getWidth());
-        $this->assertTrue($this->moveRepo->isTie($game, $this->moveRepo->getTotalSelectedMoveCnt($game->getId())));
+        $this->assertTrue($this->moveService->isTie($game, $this->moveRepo->getTotalSelectedMoveCnt($game->getId())));
     }
 }

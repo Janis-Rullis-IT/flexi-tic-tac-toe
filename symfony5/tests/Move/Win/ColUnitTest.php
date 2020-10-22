@@ -6,6 +6,7 @@ namespace App\Tests\Move\Win;
 
 use App\Entity\Game;
 use App\Entity\Move;
+use App\Service\MoveService;
 use App\Interfaces\IGameRepo;
 use App\Interfaces\IMoveRepo;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -22,6 +23,7 @@ class ColUnitTest extends KernelTestCase
         $this->c = $kernel->getContainer();
         $this->gameRepo = $this->c->get('test.'.IGameRepo::class);
         $this->moveRepo = $this->c->get('test.'.IMoveRepo::class);
+		$this->moveService = $this->c->get('test.'.MoveService::class);
     }
 
     public function testSelectedInTheCol()
@@ -54,7 +56,7 @@ class ColUnitTest extends KernelTestCase
         $move = $this->moveRepo->selectCell($game, Move::MIN_INDEX + 1, Move::MIN_INDEX);
 
         $markedCells = $this->moveRepo->getMarkedCellsInTheColumn($game->getId(), Move::SYMBOL_X, $move->getColumn());
-        $this->assertTrue($this->moveRepo->isColumnWin(2, $game, $move, $markedCells));
+        $this->assertTrue($this->moveService->isColumnWin(2, $game, $move, $markedCells));
     }
 
     public function testNotWin()
@@ -69,6 +71,6 @@ class ColUnitTest extends KernelTestCase
         $move = $this->moveRepo->selectCell($game, Move::MIN_INDEX + 1, Move::MIN_INDEX);
 
         $markedCells = $this->moveRepo->getMarkedCellsInTheColumn($game->getId(), Move::SYMBOL_X, $move->getColumn());
-        $this->assertFalse($this->moveRepo->isColumnWin(2, $game, $move, $markedCells));
+        $this->assertFalse($this->moveService->isColumnWin(2, $game, $move, $markedCells));
     }
 }
