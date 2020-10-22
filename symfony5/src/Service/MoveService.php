@@ -39,10 +39,14 @@ class MoveService
             $game = $this->gameRepo->mustFindCurrentOngoing();
             $move = $this->moveRepo->selectCell($game, $request[Move::ROW], $request[Move::COLUMN]);
             $game = $this->gameRepo->toggleNextSymbol($game);
+            $totalSelectedMoveCnt = $this->moveRepo->getTotalSelectedMoveCnt($game->getId());
 
-            if ($this->moveRepo->isWin($game, $move)) {
+            if ($this->moveRepo->isWin($totalSelectedMoveCnt, $game, $move)) {
                 $this->gameRepo->markAsCompleted($game);
                 $move->setIsLast(true);
+            } elseif ($this->moveRepo->isTie($game, $totalSelectedMoveCnt)) {
+                $this->gameRepo->markAsCompleted($game);
+                $move->setIsTie(true);
             }
 
             return $move;

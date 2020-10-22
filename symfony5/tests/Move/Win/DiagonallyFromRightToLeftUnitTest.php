@@ -38,8 +38,8 @@ class DiagonallyFromRightToLeftUnitTest extends KernelTestCase
         $move = $this->moveRepo->selectCell($game, Move::MIN_INDEX + 2, Game::MIN_HEIGHT_WIDTH - 2);
 
         $markedCells = $this->moveRepo->getMarkedCells($game->getId(), Move::SYMBOL_X);
-        $this->assertEquals(3, $this->moveRepo->getMarkedCellCntDiagonallyFromRightToLeft($game, $move, $markedCells));
-        $this->assertTrue($this->moveRepo->isDiagonalWin($game, $move, $markedCells));
+        $this->assertEquals(3, $this->moveRepo->getMarkedCellCntDiagonallyFromRightToLeft(3, $game, $move, $markedCells));
+        $this->assertTrue($this->moveRepo->isDiagonalWin(3, $game, $move, $markedCells));
     }
 
     public function testNotEnough()
@@ -55,7 +55,7 @@ class DiagonallyFromRightToLeftUnitTest extends KernelTestCase
         $move = $this->moveRepo->selectCell($game, Move::MIN_INDEX + 1, Game::MIN_HEIGHT_WIDTH - 1);
 
         $markedCells = $this->moveRepo->getMarkedCells($game->getId(), Move::SYMBOL_X);
-        $this->assertEquals(1, $this->moveRepo->getMarkedCellCntDiagonallyFromRightToLeft($game, $move, $markedCells));
-        $this->assertFalse($this->moveRepo->isDiagonalWin($game, $move, $markedCells));
+        $this->assertEquals(1, $this->moveRepo->getMarkedCellCntDiagonallyFromRightToLeft(2, $game, $move, $markedCells));
+        $this->assertFalse($this->moveRepo->isDiagonalWin(2, $game, $move, $markedCells));
     }
 }
