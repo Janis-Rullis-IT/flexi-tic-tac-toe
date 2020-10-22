@@ -18,7 +18,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class GameController extends AbstractController
 {
     /**
-     * Submit the width and height for the new game's board.
+     * Start the game.
      *
      * @Route("/game", name="start", methods={"POST"})
      * @SWG\Tag(name="1. game")
@@ -73,7 +73,7 @@ class GameController extends AbstractController
      * Submit the width and height for the new game's board.
      *
      * @Route("/game/grid", name="setBoardDimensions", methods={"POST"})
-     * @SWG\Tag(name="1. game")
+     * @SWG\Tag(name="2. other")
      *
      * @SWG\Parameter(name="body", in="body", required=true, @SWG\Schema(required={"width", "height"}, type="object", ref=@Model(type=Game::class, groups={"BOARD"})))
      * @SWG\Response(response=200, description="OK", @SWG\Schema(type="object", ref=@Model(type=Game::class, groups={"PUB"})))
@@ -98,7 +98,7 @@ class GameController extends AbstractController
      * Set game rules like how many moves are required to win.
      *
      * @Route("/game/rules", name="setRules", methods={"PUT"})
-     * @SWG\Tag(name="1. game")
+     * @SWG\Tag(name="2. other")
      *
      * @SWG\Parameter(name="body", in="body", required=true, @SWG\Schema(required={"move_cnt_to_win"}, type="object", ref=@Model(type=Game::class, groups={"RULES"})))
      * @SWG\Response(response=200, description="OK", @SWG\Schema(type="object", ref=@Model(type=Game::class, groups={"PUB"})))
@@ -123,7 +123,7 @@ class GameController extends AbstractController
      * Mark game as started ('ongoing').
      *
      * @Route("/game/ongoing", name="markAsStarted", methods={"PUT"})
-     * @SWG\Tag(name="1. game")
+     * @SWG\Tag(name="2. other")
      *
      * @SWG\Response(response=200, description="OK", @SWG\Schema(type="object", ref=@Model(type=Game::class, groups={"PUB"})))
      * @SWG\Response(response=400, description="Bad Request", @SWG\Schema(type="object", ref=@Model(type=Game::class, groups={"PUB"})))
@@ -153,6 +153,8 @@ class GameController extends AbstractController
      * @Route("/game/move", name="selectCell", methods={"POST"})
      * @SWG\Tag(name="1. game")
      *
+     * @SWG\Parameter(name="body", in="body", required=true, @SWG\Schema(required={"row", "column"}, type="object", ref=@Model(type=Move::class, groups={"CREATE"})))
+     * @SWG\Response(response=200, description="OK", @SWG\Schema(type="object", ref=@Model(type=Move::class, groups={"PUB"})))
      * @SWG\Response(response=400, description="Bad Request", @SWG\Schema(type="object", @SWG\Property(property="errors", type="object", example={"cell": "#12 Width and height must be an integer from 2 to 20."})))
      */
     public function selectCell(Request $request, MoveService $moveService): JsonResponse

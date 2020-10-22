@@ -43,14 +43,14 @@ class Move
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      * @SWG\Property(property="id", type="integer", example=1)
-     * @Groups({"PUB"})
+     * @Groups({"ID_ERROR"})
      */
     private int $id;
 
     /**
      * @ORM\Column(name="`game_id`", type="integer")
-     * @SWG\Property(property="game_id", type="integer", example=1)
-     * @Groups({"PUB", "ID_ERROR"})
+		* @SWG\Property(property="game_id", type="integer", example=1)
+		* @Groups({"ID_ERROR"})
      */
     private int $gameId;
 
@@ -71,7 +71,7 @@ class Move
     /**
      * @ORM\Column(name="`symbol`", type="string")
      * @SWG\Property(property="symbol", type="string", example="x")
-     * @Groups({"CREATE", "PUB", "ID_ERROR"})
+     * @Groups({"PUB", "ID_ERROR"})
      */
     private string $symbol = self::SYMBOL_X;
 
@@ -94,13 +94,12 @@ class Move
 
     /**
      * #17 Make sure that the selected row is correct.
-     *
-     * @param \App\Entity\Game $game
-     *
-     * @return \self
-     *
-     * @throws GameValidatorException
-     */
+	 * 
+	 * @param \App\Entity\Game $game
+	 * @param int $row
+	 * @return \self
+	 * @throws MoveValidatorException
+	 */
     public function setRow(Game $game, int $row): self
     {
         // #17 Make sure that the move is not outside the board.
@@ -124,12 +123,12 @@ class Move
 
     /**
      * #17 Make sure that the selected column is correct.
-     *
-     * @param \App\Entity\Game $game
-     *
-     * @return \self
-     * @thcolumns GameValidatorException
-     */
+	 * 
+	 * @param \App\Entity\Game $game
+	 * @param int $column
+	 * @return \self
+	 * @throws MoveValidatorException
+	 */
     public function setColumn(Game $game, int $column): self
     {
         // #17 Make sure that the move is not outside the board.
