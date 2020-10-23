@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\Exception\MoveValidatorException;
+use App\Exception\SelectedCellValidatorException;
 use Doctrine\ORM\Mapping as ORM;
 use Swagger\Annotations as SWG;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -13,25 +13,25 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ORM\Entity(repositoryClass="App\Repository\SelectedCellRepo")
  * @ORM\Table(name="`move`")
  */
-class Move
+class SelectedCell
 {
     const MIN_INDEX = 0;
     const SYMBOL_X = 'x';
     const SYMBOL_O = 'o';
     const SYMBOL_VALUES = [self::SYMBOL_X, self::SYMBOL_O];
     // #17 Error messages.
-    const ERROR_MOVE_INVALID = '#17 Invalid move.';
-    const ERROR_MOVE_INVALID_CODE = 200;
-    const ERROR_MOVE_ONLY_FOR_ONGOING = '#17 Moves can be set only for an ongoing game.';
-    const ERROR_MOVE_ONLY_FOR_ONGOING_CODE = 201;
+    const ERROR_SELECTED_CELL_INVALID = '#17 Invalid SelectedCell.';
+    const ERROR_SELECTED_CELL_INVALID_CODE = 200;
+    const ERROR_SELECTED_CELL_ONLY_FOR_ONGOING = '#17 SelectedCells can be set only for an ongoing game.';
+    const ERROR_SELECTED_CELL_ONLY_FOR_ONGOING_CODE = 201;
     const ERROR_ROW_MISSING = '#17 Row is missing.';
     const ERROR_ROW_MISSING_CODE = 202;
     const ERROR_COLUMN_MISSING = '#17 Column is missing.';
     const ERROR_COLUMN_MISSING_CODE = 203;
-    const ERROR_MOVE_ALREADY_TAKEN_INVALID = '#18 This cell is already taken.';
-    const ERROR_MOVE_ALREADY_TAKEN_INVALID_CODE = 204;
+    const ERROR_SELECTED_CELL_ALREADY_TAKEN_INVALID = '#18 This cell is already taken.';
+    const ERROR_SELECTED_CELL_ALREADY_TAKEN_INVALID_CODE = 204;
     // #17 Field names.
-    const MOVE = 'move';
+    const SELECTED_CELL = 'selected_cell';
     const ROW = 'row';
     const COLUMN = 'column';
     const SYMBOL = 'symbol';
@@ -99,17 +99,17 @@ class Move
      *
      * @return \self
      *
-     * @throws MoveValidatorException
+     * @throws SelectedCellValidatorException
      */
     public function setRow(Game $game, int $row): self
     {
-        // #17 Make sure that the move is not outside the board.
+        // #17 Make sure that the SelectedCell is not outside the board.
         if ($row < self::MIN_INDEX || $row > $this->getMaxAllowedRow($game)) {
-            throw new MoveValidatorException([self::MOVE => self::ERROR_MOVE_INVALID], self::ERROR_MOVE_INVALID_CODE);
+            throw new SelectedCellValidatorException([self::SELECTED_CELL => self::ERROR_SELECTED_CELL_INVALID], self::ERROR_SELECTED_CELL_INVALID_CODE);
         }
-        // #15 Allow to set move only if it is a started game.
+        // #15 Allow to set SelectedCell only if it is a started game.
         if (Game::ONGOING !== $game->getStatus()) {
-            throw new MoveValidatorException([self::MOVE => self::ERROR_MOVE_ONLY_FOR_ONGOING], self::ERROR_MOVE_ONLY_FOR_ONGOING_CODE);
+            throw new SelectedCellValidatorException([self::SELECTED_CELL => self::ERROR_SELECTED_CELL_ONLY_FOR_ONGOING], self::ERROR_SELECTED_CELL_ONLY_FOR_ONGOING_CODE);
         }
 
         $this->row = $row;
@@ -129,17 +129,17 @@ class Move
      *
      * @return \self
      *
-     * @throws MoveValidatorException
+     * @throws SelectedCellValidatorException
      */
     public function setColumn(Game $game, int $column): self
     {
-        // #17 Make sure that the move is not outside the board.
+        // #17 Make sure that the SelectedCell is not outside the board.
         if ($column < self::MIN_INDEX || $column > $this->getMaxAllowedColumn($game)) {
-            throw new MoveValidatorException([self::MOVE => self::ERROR_MOVE_INVALID], self::ERROR_MOVE_INVALID_CODE);
+            throw new SelectedCellValidatorException([self::SELECTED_CELL => self::ERROR_SELECTED_CELL_INVALID], self::ERROR_SELECTED_CELL_INVALID_CODE);
         }
-        // #15 Allow to set move only if it is a started game.
+        // #15 Allow to set SelectedCell only if it is a started game.
         if (Game::ONGOING !== $game->getStatus()) {
-            throw new MoveValidatorException([self::MOVE => self::ERROR_MOVE_ONLY_FOR_ONGOING], self::ERROR_MOVE_ONLY_FOR_ONGOING_CODE);
+            throw new SelectedCellValidatorException([self::SELECTED_CELL => self::ERROR_SELECTED_CELL_ONLY_FOR_ONGOING], self::ERROR_SELECTED_CELL_ONLY_FOR_ONGOING_CODE);
         }
 
         $this->column = $column;

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Move\Win;
+namespace App\Tests\SelectedCell\Win;
 
 use App\Entity\Game;
-use App\Entity\Move;
+use App\Entity\SelectedCell;
 use App\Interfaces\IGameRepo;
 use App\Interfaces\ISelectedCellRepo;
 use App\Service\SelectedCellService;
@@ -32,16 +32,16 @@ class DiagonallyFromRightToLeftUnitTest extends KernelTestCase
         $game = $this->gameRepo->insertDraftIfNotExist();
         $game = $this->gameRepo->setBoardDimensions($game, Game::MIN_HEIGHT_WIDTH + 1, Game::MIN_HEIGHT_WIDTH + 1);
         $game = $this->gameRepo->setRules($game, Game::MIN_HEIGHT_WIDTH + 1);
-        $game->setMoveCntToWin(Game::MIN_HEIGHT_WIDTH + 1);
+        $game->setSelectedCellCntToWin(Game::MIN_HEIGHT_WIDTH + 1);
         $game = $this->gameRepo->markAsStarted($game);
 
-        $move = $this->selectedCellRepo->select($game, Move::MIN_INDEX, Game::MIN_HEIGHT_WIDTH);
-        $move = $this->selectedCellRepo->select($game, Move::MIN_INDEX + 1, Game::MIN_HEIGHT_WIDTH - 1);
-        $move = $this->selectedCellRepo->select($game, Move::MIN_INDEX + 2, Game::MIN_HEIGHT_WIDTH - 2);
+        $SelectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX, Game::MIN_HEIGHT_WIDTH);
+        $SelectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX + 1, Game::MIN_HEIGHT_WIDTH - 1);
+        $SelectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX + 2, Game::MIN_HEIGHT_WIDTH - 2);
 
-        $markedCells = $this->selectedCellRepo->getAll($game->getId(), Move::SYMBOL_X);
-        $this->assertEquals(3, $this->SelectedCellService->getMarkedCellCntDiagonallyFromRightToLeft(3, $game, $move, $markedCells));
-        $this->assertTrue($this->SelectedCellService->isDiagonalWin(3, $game, $move, $markedCells));
+        $markedCells = $this->selectedCellRepo->getAll($game->getId(), SelectedCell::SYMBOL_X);
+        $this->assertEquals(3, $this->SelectedCellService->getMarkedCellCntDiagonallyFromRightToLeft(3, $game, $SelectedCell, $markedCells));
+        $this->assertTrue($this->SelectedCellService->isDiagonalWin(3, $game, $SelectedCell, $markedCells));
     }
 
     public function testNotEnough()
@@ -50,14 +50,14 @@ class DiagonallyFromRightToLeftUnitTest extends KernelTestCase
         $game = $this->gameRepo->insertDraftIfNotExist();
         $game = $this->gameRepo->setBoardDimensions($game, Game::MIN_HEIGHT_WIDTH + 1, Game::MIN_HEIGHT_WIDTH + 1);
         $game = $this->gameRepo->setRules($game, Game::MIN_HEIGHT_WIDTH + 1);
-        $game->setMoveCntToWin(Game::MIN_HEIGHT_WIDTH + 1);
+        $game->setSelectedCellCntToWin(Game::MIN_HEIGHT_WIDTH + 1);
         $game = $this->gameRepo->markAsStarted($game);
 
-        $move = $this->selectedCellRepo->select($game, Move::MIN_INDEX, Game::MIN_HEIGHT_WIDTH);
-        $move = $this->selectedCellRepo->select($game, Move::MIN_INDEX + 1, Game::MIN_HEIGHT_WIDTH - 1);
+        $SelectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX, Game::MIN_HEIGHT_WIDTH);
+        $SelectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX + 1, Game::MIN_HEIGHT_WIDTH - 1);
 
-        $markedCells = $this->selectedCellRepo->getAll($game->getId(), Move::SYMBOL_X);
-        $this->assertEquals(1, $this->SelectedCellService->getMarkedCellCntDiagonallyFromRightToLeft(2, $game, $move, $markedCells));
-        $this->assertFalse($this->SelectedCellService->isDiagonalWin(2, $game, $move, $markedCells));
+        $markedCells = $this->selectedCellRepo->getAll($game->getId(), SelectedCell::SYMBOL_X);
+        $this->assertEquals(1, $this->SelectedCellService->getMarkedCellCntDiagonallyFromRightToLeft(2, $game, $SelectedCell, $markedCells));
+        $this->assertFalse($this->SelectedCellService->isDiagonalWin(2, $game, $SelectedCell, $markedCells));
     }
 }

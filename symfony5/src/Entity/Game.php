@@ -31,8 +31,8 @@ class Game
     const ERROR_HEIGHT_WIDTH_INVALID_CODE = 100;
     const ERROR_WIDTH_ALREADY_SET = '#12 Can not change the width for a game that has already started.';
     const ERROR_WIDTH_ALREADY_SET_CODE = 101;
-    const ERROR_MOVE_CNT_TO_WIN_INVALID = '#15 Move count to win must be an integer not smaller than 2 and not bigger than the height or width.';
-    const ERROR_MOVE_CNT_TO_WIN_INVALID_CODE = 102;
+    const ERROR_SELECTED_CELL_CNT_TO_WIN_INVALID = '#15 SelectedCell count to win must be an integer not smaller than 2 and not bigger than the height or width.';
+    const ERROR_SELECTED_CELL_CNT_TO_WIN_INVALID_CODE = 102;
     const ERROR_STATUS_INVALID = '#14 Status must be \'draft\', \'ongoing\' or \'completed\'.';
     const ERROR_STATUS_INVALID_CODE = 103;
     const ERROR_ONLY_FOR_DRAFT = '#14 Allowed only for a game with a \'draft\' status.';
@@ -51,8 +51,8 @@ class Game
     const WIDTH = 'width';
     const HEIGHT = 'height';
     const HEIGHT_WIDTH = 'height_width';
-    const MOVE_CNT_TO_WIN = 'move_cnt_to_win';
-    const MOVES = 'moves';
+    const SELECTED_CELL_CNT_TO_WIN = 'move_cnt_to_win';
+    const SELECTED_CELLS = 'selected_cells';
     const NEXT_SYMBOL = 'next_symbol';
 
     /**
@@ -95,32 +95,33 @@ class Game
     /**
      * @ORM\Column(name="`next_symbol`", type="string")
      * @SWG\Property(property="next_symbol", type="string", example="x")
-     * @Groups({"CREATE", "PUB", "ID_ERROR"})
+     * @Groups({"PUB", "ID_ERROR"})
      */
-    private string $next_symbol = Move::SYMBOL_X;
+    private string $next_symbol = SelectedCell::SYMBOL_X;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Move")
+     * @ORM\ManyToMany(targetEntity="SelectedCell")
      * @ORM\JoinTable(name="`move`",
      *      joinColumns={@ORM\JoinColumn(name="game_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="id", referencedColumnName="id", unique=true)}
      * )
-     * @SWG\Property(property="moves", type="array", @SWG\Items(@Model(type=Move::class)))
+     * @SWG\Property(property="selected_cells", type="array", @SWG\Items(@Model(type=SelectedCell::class)))
+     * @Groups({"PUB"})
      */
-    private ?Collection $moves = null;
+    private ?Collection $selectedCells = null;
 
     public function __construct()
     {
-        $this->moves = new ArrayCollection();
+        $this->selectedCells = new ArrayCollection();
     }
 
     /**
-     * #30 Collect game's moves
-     * Collected using annotation JOIN. See `$moves`.
+     * #30 Collect game's SelectedCells
+     * Collected using annotation JOIN. See `$SelectedCells`.
      */
-    public function getMoves()
+    public function getSelectedCells()
     {
-        return $this->moves;
+        return $this->selectedCells;
     }
 
     public function getId(): ?int
@@ -151,7 +152,7 @@ class Game
                 break;
             // #17 ONGOING requires to have a draft status and board dimensions and rules set.
             case self::ONGOING:
-                if (!(self::DRAFT === $this->getStatus() && !empty($this->getHeight()) && !empty($this->getWidth()) && !empty($this->getMoveCntToWin()))) {
+                if (!(self::DRAFT === $this->getStatus() && !empty($this->getHeight()) && !empty($this->getWidth()) && !empty($this->getSelectedCellCntToWin()))) {
                     throw new GameValidatorException([self::STATUS => self::ERROR_STATUS_ONGOING_INVALID], self::ERROR_STATUS_ONGOING_INVALID_CODE);
                 }
         }
@@ -223,38 +224,38 @@ class Game
     }
 
     /**
-     * #15 Set how many moves are required to win.
+     * #15 Set how many SelectedCells are required to win.
      * Board dimensions are required to be set first.
      *
      * @return \self
      *
      * @throws GameValidatorException
      */
-    public function setMoveCntToWin(int $moveCntToWin): self
+    public function setSelectedCellCntToWin(int $SelectedCellCntToWin): self
     {
-        // #15 Move count to win must be no smaller than the min board dimensions or go outside the board.
-        if ($moveCntToWin < $this->getMinDimension() || $moveCntToWin > $this->getMaxDimension()) {
-            throw new GameValidatorException([self::MOVE_CNT_TO_WIN => self::ERROR_MOVE_CNT_TO_WIN_INVALID], self::ERROR_MOVE_CNT_TO_WIN_INVALID_CODE);
+        // #15 SelectedCell count to win must be no smaller than the min board dimensions or go outside the board.
+        if ($SelectedCellCntToWin < $this->getMinDimension() || $SelectedCellCntToWin > $this->getMaxDimension()) {
+            throw new GameValidatorException([self::SELECTED_CELL_CNT_TO_WIN => self::ERROR_SELECTED_CELL_CNT_TO_WIN_INVALID], self::ERROR_SELECTED_CELL_CNT_TO_WIN_INVALID_CODE);
         }
         // #15 Allow to set dimensions only if it is a new game.
         if (self::DRAFT !== $this->getStatus()) {
-            throw new GameValidatorException([self::MOVE_CNT_TO_WIN => self::ERROR_ONLY_FOR_DRAFT], self::ERROR_ONLY_FOR_DRAFT_CODE);
+            throw new GameValidatorException([self::SELECTED_CELL_CNT_TO_WIN => self::ERROR_ONLY_FOR_DRAFT], self::ERROR_ONLY_FOR_DRAFT_CODE);
         }
 
-        $this->move_cnt_to_win = $moveCntToWin;
+        $this->move_cnt_to_win = $SelectedCellCntToWin;
 
         return $this;
     }
 
-    public function getMoveCntToWin(): ?int
+    public function getSelectedCellCntToWin(): ?int
     {
         return $this->move_cnt_to_win;
     }
 
     public function setNextSymbol(): self
     {
-        // #33 A move was made, need to change the next symbol.
-        $this->next_symbol = Move::SYMBOL_X === $this->getNextSymbol() ? Move::SYMBOL_O : Move::SYMBOL_X;
+        // #33 A SelectedCell was made, need to change the next symbol.
+        $this->next_symbol = SelectedCell::SYMBOL_X === $this->getNextSymbol() ? SelectedCell::SYMBOL_O : SelectedCell::SYMBOL_X;
 
         return $this;
     }
@@ -304,14 +305,14 @@ class Game
         if (!empty($relations)) {
             foreach ($relations as $relation) {
                 switch ($relation) {
-                    case Game::MOVES:
-                        $moves = $this->getMoves();
-                        $return[Game::MOVES] = [];
-                        if (!empty($moves)) {
-                            foreach ($moves as $move) {
+                    case Game::SELECTED_CELLS:
+                        $SelectedCells = $this->getSelectedCells();
+                        $return[Game::SELECTED_CELLS] = [];
+                        if (!empty($SelectedCells)) {
+                            foreach ($SelectedCells as $SelectedCell) {
                                 // #32 This format is better because when drawing the board it's faster to make sure that it's selected.
                                 // https://github.com/janis-rullis/lm1-symfony5-vue2-api/issues/32#issuecomment-712735160
-                                $return[Game::MOVES][$move->getRow()][$move->getColumn()] = $move->toArray();
+                                $return[Game::SELECTED_CELLS][$SelectedCell->getRow()][$SelectedCell->getColumn()] = $SelectedCell->toArray();
                             }
                         }
                         break;
@@ -332,7 +333,7 @@ class Game
         $allFields = [
             self::ID => $this->getId(), self::STATUS => $this->getStatus(),
             self::WIDTH => $this->getWidth(), self::HEIGHT => $this->getHeight(),
-            self::MOVE_CNT_TO_WIN => $this->getMoveCntToWin(), self::NEXT_SYMBOL => $this->getNextSymbol(),
+            self::SELECTED_CELL_CNT_TO_WIN => $this->getSelectedCellCntToWin(), self::NEXT_SYMBOL => $this->getNextSymbol(),
         ];
 
         if (empty($fields)) {

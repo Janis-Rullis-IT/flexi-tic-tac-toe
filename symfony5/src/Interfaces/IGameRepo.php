@@ -8,7 +8,7 @@ interface IGameRepo
 {
     public function setBoardDimensions(Game $item, int $width, int $height): Game;
 
-    public function setRules(Game $item, int $moveCntToWin): Game;
+    public function setRules(Game $item, int $SelectedCellCntToWin): Game;
 
     public function insertDraftIfNotExist(): Game;
 

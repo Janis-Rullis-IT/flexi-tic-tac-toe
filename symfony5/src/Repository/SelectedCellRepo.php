@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Entity\Game;
-use App\Entity\Move;
-use App\Exception\MoveValidatorException;
+use App\Entity\SelectedCell;
+use App\Exception\SelectedCellValidatorException;
 use App\Interfaces\ISelectedCellRepo;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
@@ -20,17 +20,17 @@ final class SelectedCellRepo extends BaseRepository implements ISelectedCellRepo
 {
     public function __construct(EntityManagerInterface $em)
     {
-        parent::__construct($em, Move::class);
+        parent::__construct($em, SelectedCell::class);
     }
 
     /**
      * #12 Set game board dimensions but don't store it yet.
      * Validations happen in those Entity methods.
      */
-    public function select(Game $game, int $row, int $column): Move
+    public function select(Game $game, int $row, int $column): SelectedCell
     {
         try {
-            $item = new Move();
+            $item = new SelectedCell();
             $item->setGameId($game->getId());
             $item->setRow($game, $row);
             $item->setColumn($game, $column);
@@ -40,9 +40,9 @@ final class SelectedCellRepo extends BaseRepository implements ISelectedCellRepo
 
             return $item;
         }
-        // #18 Look in DB if such move has already been registered.
+        // #18 Look in DB if such SelectedCell has already been registered.
         catch (\Doctrine\DBAL\Exception\UniqueConstraintViolationException $ex) {
-            throw new MoveValidatorException([Move::MOVE => Move::ERROR_MOVE_ALREADY_TAKEN_INVALID], Move::ERROR_MOVE_ALREADY_TAKEN_INVALID_CODE);
+            throw new SelectedCellValidatorException([SelectedCell::SELECTED_CELL => SelectedCell::ERROR_SELECTED_CELL_ALREADY_TAKEN_INVALID], SelectedCell::ERROR_SELECTED_CELL_ALREADY_TAKEN_INVALID_CODE);
         }
     }
 
@@ -61,7 +61,7 @@ final class SelectedCellRepo extends BaseRepository implements ISelectedCellRepo
     {
         return $this->em->createQueryBuilder('a')
             ->select('a.row', 'a.column')
-            ->from(Move::class, 'a')
+            ->from(SelectedCell::class, 'a')
             ->where('a.gameId = :gameId')
             ->andWhere('a.symbol = :symbol')
             ->setParameter('gameId', $gameId)
@@ -74,7 +74,7 @@ final class SelectedCellRepo extends BaseRepository implements ISelectedCellRepo
     public function getTotalCnt(int $gameId): int
     {
         $q = $this->em->createQueryBuilder('a')
-            ->select('COUNT(a.id)')->from(Move::class, 'a')
+            ->select('COUNT(a.id)')->from(SelectedCell::class, 'a')
             ->where('a.gameId = :gameId')->setParameter('gameId', $gameId)->getQuery();
 
         return (int) $q->getSingleScalarResult();
@@ -94,7 +94,7 @@ final class SelectedCellRepo extends BaseRepository implements ISelectedCellRepo
             $organized = [];
 
             foreach ($cells as $cell) {
-                $organized[$cell[Move::ROW]][$cell[Move::COLUMN]] = $cell;
+                $organized[$cell[SelectedCell::ROW]][$cell[SelectedCell::COLUMN]] = $cell;
             }
 
             return $organized;
@@ -104,7 +104,7 @@ final class SelectedCellRepo extends BaseRepository implements ISelectedCellRepo
     }
 
     /**
-     * #19 Collect marked cells by a specific symbol in the specific row (last move). Will be used to calc. the winner.
+     * #19 Collect marked cells by a specific symbol in the specific row (last SelectedCell). Will be used to calc. the winner.
      */
     public function getFromRow(int $gameId, string $symbol, int $rowNumber): array
     {
@@ -120,7 +120,7 @@ final class SelectedCellRepo extends BaseRepository implements ISelectedCellRepo
             $columns = [];
 
             foreach ($cells as $cell) {
-                $columns[$cell[Move::COLUMN]] = $cell;
+                $columns[$cell[SelectedCell::COLUMN]] = $cell;
             }
 
             return $columns;
@@ -130,7 +130,7 @@ final class SelectedCellRepo extends BaseRepository implements ISelectedCellRepo
     }
 
     /**
-     * #19 Collect marked cells by a specific symbol in the specific column (last move). Will be used to calc. the winner.
+     * #19 Collect marked cells by a specific symbol in the specific column (last SelectedCell). Will be used to calc. the winner.
      */
     public function getFromColumn(int $gameId, string $symbol, int $columnNumber): array
     {
@@ -146,7 +146,7 @@ final class SelectedCellRepo extends BaseRepository implements ISelectedCellRepo
             $rows = [];
 
             foreach ($cells as $cell) {
-                $rows[$cell[Move::ROW]] = $cell;
+                $rows[$cell[SelectedCell::ROW]] = $cell;
             }
 
             return $rows;

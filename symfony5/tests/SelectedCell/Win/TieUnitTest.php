@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Move\Win;
+namespace App\Tests\SelectedCell\Win;
 
-use App\Entity\Move;
+use App\Entity\SelectedCell;
 use App\Interfaces\IGameRepo;
 use App\Interfaces\ISelectedCellRepo;
 use App\Service\SelectedCellService;
@@ -32,23 +32,23 @@ class TieUnitTest extends KernelTestCase
         $game = $this->gameRepo->insertDraftIfNotExist();
         $game = $this->gameRepo->setBoardDimensions($game, $boardDimension, $boardDimension);
         $game = $this->gameRepo->setRules($game, $boardDimension);
-        $game->setMoveCntToWin($boardDimension);
+        $game->setSelectedCellCntToWin($boardDimension);
         $game = $this->gameRepo->markAsStarted($game);
 
-        $move = $this->selectedCellRepo->select($game, Move::MIN_INDEX, Move::MIN_INDEX);
-        $move = $this->selectedCellRepo->select($game, Move::MIN_INDEX, Move::MIN_INDEX + 1);
+        $SelectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX, SelectedCell::MIN_INDEX);
+        $SelectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX, SelectedCell::MIN_INDEX + 1);
         $game = $this->gameRepo->toggleNextSymbol($game);
-        $move = $this->selectedCellRepo->select($game, Move::MIN_INDEX, Move::MIN_INDEX + 1); // XX0
+        $SelectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX, SelectedCell::MIN_INDEX + 1); // XX0
 
-        $move = $this->selectedCellRepo->select($game, Move::MIN_INDEX + 1, Move::MIN_INDEX);
-        $move = $this->selectedCellRepo->select($game, Move::MIN_INDEX + 1, Move::MIN_INDEX + 1);
+        $SelectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX + 1, SelectedCell::MIN_INDEX);
+        $SelectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX + 1, SelectedCell::MIN_INDEX + 1);
         $game = $this->gameRepo->toggleNextSymbol($game);
-        $move = $this->selectedCellRepo->select($game, Move::MIN_INDEX + 1, Move::MIN_INDEX + 2); // OOX
+        $SelectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX + 1, SelectedCell::MIN_INDEX + 2); // OOX
 
-        $move = $this->selectedCellRepo->select($game, Move::MIN_INDEX + 2, Move::MIN_INDEX);
-        $move = $this->selectedCellRepo->select($game, Move::MIN_INDEX + 2, Move::MIN_INDEX + 1);
+        $SelectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX + 2, SelectedCell::MIN_INDEX);
+        $SelectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX + 2, SelectedCell::MIN_INDEX + 1);
         $game = $this->gameRepo->toggleNextSymbol($game);
-        $move = $this->selectedCellRepo->select($game, Move::MIN_INDEX + 2, Move::MIN_INDEX + 2); // XXO
+        $SelectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX + 2, SelectedCell::MIN_INDEX + 2); // XXO
 
         $this->assertEquals($game->getTotalCellCnt(), $game->getHeight() * $game->getWidth());
         $this->assertTrue($this->SelectedCellService->isTie($game, $this->selectedCellRepo->getTotalCnt($game->getId())));

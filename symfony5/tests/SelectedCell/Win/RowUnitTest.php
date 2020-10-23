@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Move\Win;
+namespace App\Tests\SelectedCell\Win;
 
 use App\Entity\Game;
-use App\Entity\Move;
+use App\Entity\SelectedCell;
 use App\Interfaces\IGameRepo;
 use App\Interfaces\ISelectedCellRepo;
 use App\Service\SelectedCellService;
@@ -32,15 +32,15 @@ class RowUnitTest extends KernelTestCase
         $game = $this->gameRepo->insertDraftIfNotExist();
         $game = $this->gameRepo->setBoardDimensions($game, Game::MIN_HEIGHT_WIDTH, Game::MIN_HEIGHT_WIDTH);
         $game = $this->gameRepo->setRules($game, Game::MIN_HEIGHT_WIDTH);
-        $game->setMoveCntToWin(Game::MIN_HEIGHT_WIDTH);
+        $game->setSelectedCellCntToWin(Game::MIN_HEIGHT_WIDTH);
         $game = $this->gameRepo->markAsStarted($game);
 
-        $move = $this->selectedCellRepo->select($game, Move::MIN_INDEX, Move::MIN_INDEX);
-        $move = $this->selectedCellRepo->select($game, Move::MIN_INDEX, Move::MIN_INDEX + 1);
+        $SelectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX, SelectedCell::MIN_INDEX);
+        $SelectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX, SelectedCell::MIN_INDEX + 1);
 
-        $move = $this->selectedCellRepo->select($game, Move::MIN_INDEX + 1, Move::MIN_INDEX + 1);
+        $SelectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX + 1, SelectedCell::MIN_INDEX + 1);
 
-        $markedCells = $this->selectedCellRepo->getFromRow($game->getId(), Move::SYMBOL_X, Move::MIN_INDEX);
+        $markedCells = $this->selectedCellRepo->getFromRow($game->getId(), SelectedCell::SYMBOL_X, SelectedCell::MIN_INDEX);
         $this->assertEquals(count($markedCells), 2);
     }
 
@@ -50,13 +50,13 @@ class RowUnitTest extends KernelTestCase
         $game = $this->gameRepo->insertDraftIfNotExist();
         $game = $this->gameRepo->setBoardDimensions($game, Game::MIN_HEIGHT_WIDTH, Game::MIN_HEIGHT_WIDTH);
         $game = $this->gameRepo->setRules($game, Game::MIN_HEIGHT_WIDTH);
-        $game->setMoveCntToWin(Game::MIN_HEIGHT_WIDTH);
+        $game->setSelectedCellCntToWin(Game::MIN_HEIGHT_WIDTH);
         $game = $this->gameRepo->markAsStarted($game);
-        $move = $this->selectedCellRepo->select($game, Move::MIN_INDEX, Move::MIN_INDEX);
-        $move = $this->selectedCellRepo->select($game, Move::MIN_INDEX, Move::MIN_INDEX + 1);
+        $SelectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX, SelectedCell::MIN_INDEX);
+        $SelectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX, SelectedCell::MIN_INDEX + 1);
 
-        $markedCells = $this->selectedCellRepo->getFromRow($game->getId(), Move::SYMBOL_X, $move->getRow());
-        $this->assertTrue($this->SelectedCellService->isRowWin(2, $game, $move, $markedCells));
+        $markedCells = $this->selectedCellRepo->getFromRow($game->getId(), SelectedCell::SYMBOL_X, $SelectedCell->getRow());
+        $this->assertTrue($this->SelectedCellService->isRowWin(2, $game, $SelectedCell, $markedCells));
     }
 
     public function testNotWin()
@@ -65,12 +65,12 @@ class RowUnitTest extends KernelTestCase
         $game = $this->gameRepo->insertDraftIfNotExist();
         $game = $this->gameRepo->setBoardDimensions($game, Game::MIN_HEIGHT_WIDTH + 1, Game::MIN_HEIGHT_WIDTH + 1);
         $game = $this->gameRepo->setRules($game, Game::MIN_HEIGHT_WIDTH + 1);
-        $game->setMoveCntToWin(Game::MIN_HEIGHT_WIDTH + 1);
+        $game->setSelectedCellCntToWin(Game::MIN_HEIGHT_WIDTH + 1);
         $game = $this->gameRepo->markAsStarted($game);
-        $move = $this->selectedCellRepo->select($game, Move::MIN_INDEX, Move::MIN_INDEX);
-        $move = $this->selectedCellRepo->select($game, Move::MIN_INDEX, Move::MIN_INDEX + 1);
+        $SelectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX, SelectedCell::MIN_INDEX);
+        $SelectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX, SelectedCell::MIN_INDEX + 1);
 
-        $markedCells = $this->selectedCellRepo->getFromRow($game->getId(), Move::SYMBOL_X, $move->getRow());
-        $this->assertFalse($this->SelectedCellService->isRowWin(2, $game, $move, $markedCells));
+        $markedCells = $this->selectedCellRepo->getFromRow($game->getId(), SelectedCell::SYMBOL_X, $SelectedCell->getRow());
+        $this->assertFalse($this->SelectedCellService->isRowWin(2, $game, $SelectedCell, $markedCells));
     }
 }

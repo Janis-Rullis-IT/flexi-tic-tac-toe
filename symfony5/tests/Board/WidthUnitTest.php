@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\WxH;
+namespace App\Tests\Board;
 
 use App\Entity\Game;
 use App\Exception\GameValidatorException;
@@ -17,7 +17,7 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
  *
  * * Grid has already been chosen					0
  */
-class GridWidthUnitTest extends KernelTestCase
+class WidthUnitTest extends KernelTestCase
 {
     private $c;
 

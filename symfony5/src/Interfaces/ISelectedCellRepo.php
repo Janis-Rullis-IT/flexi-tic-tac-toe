@@ -3,11 +3,11 @@
 namespace App\Interfaces;
 
 use App\Entity\Game;
-use App\Entity\Move;
+use App\Entity\SelectedCell;
 
 interface ISelectedCellRepo
 {
-    public function select(Game $game, int $row, int $column): Move;
+    public function select(Game $game, int $row, int $column): SelectedCell;
 
     public function getTotalCnt(int $gameId): int;
 

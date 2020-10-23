@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Game;
-use App\Entity\Move;
+use App\Entity\SelectedCell;
 use App\Interfaces\IGameRepo;
 use App\Service\GameService;
 use App\Service\SelectedCellService;
@@ -59,7 +59,7 @@ class GameController extends AbstractController
                 return $this->json(['errors' => [Game::ID => Game::ERROR_CAN_NOT_FIND]], Response::HTTP_NOT_FOUND);
             }
 
-            return $this->json($game->toArray([], [Game::MOVES]), Response::HTTP_OK);
+            return $this->json($game->toArray([], [Game::SELECTED_CELLS]), Response::HTTP_OK);
         } catch (\Exception $e) {
             if (method_exists($e, 'getErrors')) {
                 return $this->json(['errors' => $e->getErrors()], Response::HTTP_BAD_REQUEST);
@@ -95,7 +95,7 @@ class GameController extends AbstractController
     }
 
     /**
-     * Set game rules like how many moves are required to win.
+     * Set game rules like how many SelectedCells are required to win.
      *
      * @Route("/game/rules", name="setRules", methods={"PUT"})
      * @SWG\Tag(name="2. other")
@@ -153,8 +153,8 @@ class GameController extends AbstractController
      * @Route("/game/move", name="select", methods={"POST"})
      * @SWG\Tag(name="1. game")
      *
-     * @SWG\Parameter(name="body", in="body", required=true, @SWG\Schema(required={"row", "column"}, type="object", ref=@Model(type=Move::class, groups={"CREATE"})))
-     * @SWG\Response(response=200, description="OK", @SWG\Schema(type="object", ref=@Model(type=Move::class, groups={"PUB"})))
+     * @SWG\Parameter(name="body", in="body", required=true, @SWG\Schema(required={"row", "column"}, type="object", ref=@Model(type=SelectedCell::class, groups={"CREATE"})))
+     * @SWG\Response(response=200, description="OK", @SWG\Schema(type="object", ref=@Model(type=SelectedCell::class, groups={"PUB"})))
      * @SWG\Response(response=400, description="Bad Request", @SWG\Schema(type="object", @SWG\Property(property="errors", type="object", example={"cell": "#12 Width and height must be an integer from 2 to 20."})))
      */
     public function select(Request $request, SelectedCellService $selectedCellService): JsonResponse

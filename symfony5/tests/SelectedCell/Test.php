@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Move;
+namespace App\Tests\SelectedCell;
 
 use App\Entity\Game;
-use App\Entity\Move;
+use App\Entity\SelectedCell;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
-class MoveTest extends WebTestCase
+class Test extends WebTestCase
 {
     private $uri = '/game/move';
 
@@ -19,13 +19,13 @@ class MoveTest extends WebTestCase
         $this->c = $this->client->getContainer();
     }
 
-    public function testValidMove()
+    public function testValidSelectedCell()
     {
-        $data = [Game::WIDTH => Game::MAX_HEIGHT_WIDTH, Game::HEIGHT => Game::MAX_HEIGHT_WIDTH, Game::MOVE_CNT_TO_WIN => Game::MAX_HEIGHT_WIDTH];
+        $data = [Game::WIDTH => Game::MAX_HEIGHT_WIDTH, Game::HEIGHT => Game::MAX_HEIGHT_WIDTH, Game::SELECTED_CELL_CNT_TO_WIN => Game::MAX_HEIGHT_WIDTH];
         $this->client->request('POST', '/game', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode($data));
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
 
-        $data = [Move::ROW => Game::MAX_HEIGHT_WIDTH - 1, Move::COLUMN => Move::MIN_INDEX];
+        $data = [SelectedCell::ROW => Game::MAX_HEIGHT_WIDTH - 1, SelectedCell::COLUMN => SelectedCell::MIN_INDEX];
         $this->client->request('POST', '/game/move', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode($data));
         $responseBody = json_decode($this->client->getResponse()->getContent(), true);
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
@@ -33,9 +33,9 @@ class MoveTest extends WebTestCase
         $this->client->request('GET', '/game');
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
         $responseBody = json_decode($this->client->getResponse()->getContent(), true);
-        $moves = $responseBody[Game::MOVES];
-        $expected = [Move::IS_TIE => false, Move::IS_LAST => false, Move::SYMBOL => MOVE::SYMBOL_X, Move::ROW => $data[Move::ROW], Move::COLUMN => $data[Move::COLUMN]];
-        $this->assertEquals($moves[$data[Move::ROW]][$data[Move::COLUMN]], $expected);
-        $this->assertEquals($responseBody[Game::NEXT_SYMBOL], Move::SYMBOL_O);
+        $SelectedCells = $responseBody[Game::SELECTED_CELLS];
+        $expected = [SelectedCell::IS_TIE => false, SelectedCell::IS_LAST => false, SelectedCell::SYMBOL => SelectedCell::SYMBOL_X, SelectedCell::ROW => $data[SelectedCell::ROW], SelectedCell::COLUMN => $data[SelectedCell::COLUMN]];
+        $this->assertEquals($SelectedCells[$data[SelectedCell::ROW]][$data[SelectedCell::COLUMN]], $expected);
+        $this->assertEquals($responseBody[Game::NEXT_SYMBOL], SelectedCell::SYMBOL_O);
     }
 }
