@@ -39,9 +39,9 @@ services:
         alias: App\Interfaces\ISelectedCellRepo
         public: true
     #38
-    test.App\Service\SelectedCellService:
-        alias: App\Service\SelectedCellService
+    test.App\Interfaces\ISelectedCellService:
+        alias: App\Interfaces\ISelectedCellService
         public: true
-    test.App\Interfaces\IVictoryCalculationService:
-        alias: App\Interfaces\IVictoryCalculationService
+    test.App\Interfaces\SelectedCell\IVictoryCalculationService:
+        alias: App\Interfaces\SelectedCell\IVictoryCalculationService
         public: true

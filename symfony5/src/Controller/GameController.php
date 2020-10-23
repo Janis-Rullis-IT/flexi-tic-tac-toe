@@ -5,8 +5,8 @@ namespace App\Controller;
 use App\Entity\Game;
 use App\Entity\SelectedCell;
 use App\Interfaces\IGameRepo;
-use App\Service\GameService;
-use App\Service\SelectedCellService;
+use App\Interfaces\IGameService;
+use App\Interfaces\ISelectedCellService;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Swagger\Annotations as SWG;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -27,7 +27,7 @@ class GameController extends AbstractController
      * @SWG\Response(response=200, description="OK", @SWG\Schema(type="object", ref=@Model(type=Game::class, groups={"CREATE_PUB"})))
      * @SWG\Response(response=400, description="Bad Request", @SWG\Schema(type="object", @SWG\Property(property="errors", type="object", example={"width": "#12 Width and height must be an integer from 2 to 20."})))
      */
-    public function start(Request $request, GameService $gameService): JsonResponse
+    public function start(Request $request, IGameService $gameService): JsonResponse
     {
         try {
             $resp = $gameService->start(json_decode($request->getContent(), true))->toArray();
@@ -79,7 +79,7 @@ class GameController extends AbstractController
      * @SWG\Response(response=200, description="OK", @SWG\Schema(type="object", ref=@Model(type=Game::class, groups={"CREATE_PUB"})))
      * @SWG\Response(response=400, description="Bad Request", @SWG\Schema(type="object", @SWG\Property(property="errors", type="object", example={"width": "#12 Width and height must be an integer from 2 to 20."})))
      */
-    public function setBoardDimensions(Request $request, GameService $gameService): JsonResponse
+    public function setBoardDimensions(Request $request, IGameService $gameService): JsonResponse
     {
         try {
             $resp = $gameService->setBoardDimensions(json_decode($request->getContent(), true))->toArray();
@@ -104,7 +104,7 @@ class GameController extends AbstractController
      * @SWG\Response(response=200, description="OK", @SWG\Schema(type="object", ref=@Model(type=Game::class, groups={"CREATE_PUB"})))
      * @SWG\Response(response=400, description="Bad Request", @SWG\Schema(type="object", @SWG\Property(property="errors", type="object", example={"move_cnt_to_win": "#15 move_cnt_to_win count to win must be an integer not smaller than 2 and not bigger than the height or width."})))
      */
-    public function setRules(Request $request, GameService $gameService): JsonResponse
+    public function setRules(Request $request, IGameService $gameService): JsonResponse
     {
         try {
             $resp = $gameService->setRules(json_decode($request->getContent(), true))->toArray();
@@ -157,7 +157,7 @@ class GameController extends AbstractController
      * @SWG\Response(response=200, description="OK", @SWG\Schema(type="object", ref=@Model(type=SelectedCell::class, groups={"PUB"})))
      * @SWG\Response(response=400, description="Bad Request", @SWG\Schema(type="object", @SWG\Property(property="errors", type="object", example={"cell": "#12 Width and height must be an integer from 2 to 20."})))
      */
-    public function select(Request $request, SelectedCellService $selectedCellService): JsonResponse
+    public function select(Request $request, ISelectedCellService $selectedCellService): JsonResponse
     {
         try {
             $resp = $selectedCellService->select(json_decode($request->getContent(), true))->toArray();

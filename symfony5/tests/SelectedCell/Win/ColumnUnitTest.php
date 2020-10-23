@@ -8,7 +8,7 @@ use App\Entity\Game;
 use App\Entity\SelectedCell;
 use App\Interfaces\IGameRepo;
 use App\Interfaces\ISelectedCellRepo;
-use App\Interfaces\IVictoryCalculationService;
+use App\Interfaces\SelectedCell\IVictoryCalculationService;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class ColumnUnitTest extends KernelTestCase

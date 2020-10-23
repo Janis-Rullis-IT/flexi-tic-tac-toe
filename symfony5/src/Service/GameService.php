@@ -6,8 +6,9 @@ namespace App\Service;
 
 use App\Entity\Game;
 use App\Interfaces\IGameRepo;
+use App\Interfaces\IGameService;
 
-final class GameService
+final class GameService implements IGameService
 {
     private $gameRepo;
 

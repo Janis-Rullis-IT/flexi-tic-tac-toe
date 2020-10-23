@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Interfaces;
+namespace App\Interfaces\SelectedCell;
 
 use App\Entity\Game;
 use App\Entity\SelectedCell;

@@ -8,9 +8,10 @@ use App\Entity\SelectedCell;
 use App\Exception\SelectedCellValidatorException;
 use App\Interfaces\IGameRepo;
 use App\Interfaces\ISelectedCellRepo;
-use App\Interfaces\IVictoryCalculationService;
+use App\Interfaces\ISelectedCellService;
+use App\Interfaces\SelectedCell\IVictoryCalculationService;
 
-final class SelectedCellService
+final class SelectedCellService implements ISelectedCellService
 {
     private $gameRepo;
     private $selectedCellRepo;
