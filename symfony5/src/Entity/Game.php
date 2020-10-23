@@ -31,7 +31,7 @@ class Game
     const ERROR_HEIGHT_WIDTH_INVALID_CODE = 100;
     const ERROR_WIDTH_ALREADY_SET = '#12 Can not change the width for a game that has already started.';
     const ERROR_WIDTH_ALREADY_SET_CODE = 101;
-    const ERROR_SELECTED_CELL_CNT_TO_WIN_INVALID = '#15 SelectedCell count to win must be an integer not smaller than 2 and not bigger than the height or width.';
+    const ERROR_SELECTED_CELL_CNT_TO_WIN_INVALID = '#15 move_cnt_to_win count to win must be an integer not smaller than 2 and not bigger than the height or width.';
     const ERROR_SELECTED_CELL_CNT_TO_WIN_INVALID_CODE = 102;
     const ERROR_STATUS_INVALID = '#14 Status must be \'draft\', \'ongoing\' or \'completed\'.';
     const ERROR_STATUS_INVALID_CODE = 103;
@@ -60,42 +60,42 @@ class Game
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      * @SWG\Property(property="id", type="integer", example=1)
-     * @Groups({"PUB"})
+     * @Groups({"PUB", "CREATE_PUB"})
      */
     private int $id;
 
     /**
      * @ORM\Column(type="string", nullable=true)
      * @SWG\Property(property="status", type="string", example="ongoing")
-     * @Groups({"PUB", "ID_ERROR"})
+     * @Groups({"PUB", "CREATE_PUB", "ID_ERROR"})
      */
     private ?string $status = null;
 
     /**
      * @ORM\Column(type="integer")
      * @SWG\Property(property="width", type="integer", example=3)
-     * @Groups({"CREATE", "BOARD", "PUB", "ID_ERROR"})
+     * @Groups({"CREATE", "BOARD", "PUB", "CREATE_PUB", "ID_ERROR"})
      */
     private int $width = 3;
 
     /**
      * @ORM\Column(type="integer")
      * @SWG\Property(property="height", type="integer", example=3)
-     * @Groups({"CREATE", "BOARD", "PUB", "ID_ERROR"})
+     * @Groups({"CREATE", "BOARD", "PUB", "CREATE_PUB", "ID_ERROR"})
      */
     private int $height = 3;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
      * @SWG\Property(property="move_cnt_to_win", type="integer", example=3)
-     * @Groups({"CREATE", "PUB", "RULES"})
+     * @Groups({"CREATE", "PUB", "CREATE_PUB", "RULES"})
      */
     private ?int $move_cnt_to_win = null;
 
     /**
      * @ORM\Column(name="`next_symbol`", type="string")
      * @SWG\Property(property="next_symbol", type="string", example="x")
-     * @Groups({"PUB", "ID_ERROR"})
+     * @Groups({"PUB", "CREATE_PUB", "ID_ERROR"})
      */
     private string $next_symbol = SelectedCell::SYMBOL_X;
 
@@ -117,7 +117,7 @@ class Game
 
     /**
      * #30 Collect game's SelectedCells
-     * Collected using annotation JOIN. See `$SelectedCells`.
+     * Collected using annotation JOIN. See `$selectedCells`.
      */
     public function getSelectedCells()
     {
@@ -231,10 +231,10 @@ class Game
      *
      * @throws GameValidatorException
      */
-    public function setSelectedCellCntToWin(int $SelectedCellCntToWin): self
+    public function setSelectedCellCntToWin(int $selectedCellCntToWin): self
     {
         // #15 SelectedCell count to win must be no smaller than the min board dimensions or go outside the board.
-        if ($SelectedCellCntToWin < $this->getMinDimension() || $SelectedCellCntToWin > $this->getMaxDimension()) {
+        if ($selectedCellCntToWin < $this->getMinDimension() || $selectedCellCntToWin > $this->getMaxDimension()) {
             throw new GameValidatorException([self::SELECTED_CELL_CNT_TO_WIN => self::ERROR_SELECTED_CELL_CNT_TO_WIN_INVALID], self::ERROR_SELECTED_CELL_CNT_TO_WIN_INVALID_CODE);
         }
         // #15 Allow to set dimensions only if it is a new game.
@@ -242,7 +242,7 @@ class Game
             throw new GameValidatorException([self::SELECTED_CELL_CNT_TO_WIN => self::ERROR_ONLY_FOR_DRAFT], self::ERROR_ONLY_FOR_DRAFT_CODE);
         }
 
-        $this->move_cnt_to_win = $SelectedCellCntToWin;
+        $this->move_cnt_to_win = $selectedCellCntToWin;
 
         return $this;
     }
@@ -306,13 +306,13 @@ class Game
             foreach ($relations as $relation) {
                 switch ($relation) {
                     case Game::SELECTED_CELLS:
-                        $SelectedCells = $this->getSelectedCells();
+                        $selectedCells = $this->getSelectedCells();
                         $return[Game::SELECTED_CELLS] = [];
-                        if (!empty($SelectedCells)) {
-                            foreach ($SelectedCells as $SelectedCell) {
+                        if (!empty($selectedCells)) {
+                            foreach ($selectedCells as $selectedCell) {
                                 // #32 This format is better because when drawing the board it's faster to make sure that it's selected.
                                 // https://github.com/janis-rullis/lm1-symfony5-vue2-api/issues/32#issuecomment-712735160
-                                $return[Game::SELECTED_CELLS][$SelectedCell->getRow()][$SelectedCell->getColumn()] = $SelectedCell->toArray();
+                                $return[Game::SELECTED_CELLS][$selectedCell->getRow()][$selectedCell->getColumn()] = $selectedCell->toArray();
                             }
                         }
                         break;

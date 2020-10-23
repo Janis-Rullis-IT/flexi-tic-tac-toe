@@ -33,9 +33,9 @@ class UnitTest extends KernelTestCase
         $game = $this->gameRepo->setRules($game, Game::MIN_HEIGHT_WIDTH);
         $game->setSelectedCellCntToWin(Game::MIN_HEIGHT_WIDTH);
         $game = $this->gameRepo->markAsStarted($game);
-        $SelectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX, SelectedCell::MIN_INDEX);
-        $SelectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX, SelectedCell::MIN_INDEX + 1);
-        $SelectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX + 1, SelectedCell::MIN_INDEX);
+        $selectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX, SelectedCell::MIN_INDEX);
+        $selectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX, SelectedCell::MIN_INDEX + 1);
+        $selectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX + 1, SelectedCell::MIN_INDEX);
 
         $cells = $this->selectedCellRepo->getOrderedByRows($game->getId(), SelectedCell::SYMBOL_X);
         $this->assertEquals($cells[0][SelectedCell::ROW], SelectedCell::MIN_INDEX);
@@ -59,8 +59,8 @@ class UnitTest extends KernelTestCase
         $game = $this->gameRepo->setRules($game, Game::MIN_HEIGHT_WIDTH);
         $game->setSelectedCellCntToWin(Game::MIN_HEIGHT_WIDTH);
         $game = $this->gameRepo->markAsStarted($game);
-        $SelectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX, SelectedCell::MIN_INDEX);
-        $this->assertEquals($SelectedCell->getSymbol(), SelectedCell::SYMBOL_X);
+        $selectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX, SelectedCell::MIN_INDEX);
+        $this->assertEquals($selectedCell->getSymbol(), SelectedCell::SYMBOL_X);
         $this->assertEquals(1, $this->selectedCellRepo->getTotalCnt($game->getId()));
     }
 
@@ -72,10 +72,10 @@ class UnitTest extends KernelTestCase
         $game = $this->gameRepo->setRules($game, Game::MIN_HEIGHT_WIDTH);
         $game->setSelectedCellCntToWin(Game::MIN_HEIGHT_WIDTH);
         $game = $this->gameRepo->markAsStarted($game);
-        $SelectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX, SelectedCell::MIN_INDEX);
+        $selectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX, SelectedCell::MIN_INDEX);
 
         $this->expectException(SelectedCellValidatorException::class);
         $this->expectExceptionCode(SelectedCell::ERROR_SELECTED_CELL_ALREADY_TAKEN_INVALID_CODE, SelectedCell::ERROR_SELECTED_CELL_ALREADY_TAKEN_INVALID);
-        $SelectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX, SelectedCell::MIN_INDEX);
+        $selectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX, SelectedCell::MIN_INDEX);
     }
 }

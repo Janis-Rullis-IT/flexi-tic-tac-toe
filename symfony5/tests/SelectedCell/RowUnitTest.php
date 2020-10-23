@@ -27,7 +27,7 @@ class RowUnitTest extends KernelTestCase
 
     public function testValid()
     {
-        $SelectedCell = new SelectedCell();
+        $selectedCell = new SelectedCell();
         $game = new Game();
         $game->setStatus(Game::DRAFT);
         $game->setHeight(Game::MAX_HEIGHT_WIDTH);
@@ -35,54 +35,54 @@ class RowUnitTest extends KernelTestCase
         $game->setSelectedCellCntToWin(Game::MAX_HEIGHT_WIDTH);
 
         $game->setStatus(Game::ONGOING);
-        $SelectedCell->setRow($game, $SelectedCell->getMaxAllowedRow($game));
-        $this->assertEquals($SelectedCell->getRow(), $SelectedCell->getMaxAllowedRow($game));
+        $selectedCell->setRow($game, $selectedCell->getMaxAllowedRow($game));
+        $this->assertEquals($selectedCell->getRow(), $selectedCell->getMaxAllowedRow($game));
     }
 
     public function testNotGame()
     {
-        $SelectedCell = new SelectedCell();
+        $selectedCell = new SelectedCell();
         $this->expectException(\TypeError::class);
-        $SelectedCell->setRow('a', 1);
+        $selectedCell->setRow('a', 1);
     }
 
     public function testNotInteger()
     {
-        $SelectedCell = new SelectedCell();
+        $selectedCell = new SelectedCell();
         $this->expectException(\TypeError::class);
-        $SelectedCell->setRow(new Game(), 'a');
+        $selectedCell->setRow(new Game(), 'a');
     }
 
     public function testNotInteger2()
     {
-        $SelectedCell = new SelectedCell();
+        $selectedCell = new SelectedCell();
         $this->expectException(\TypeError::class);
-        $SelectedCell->setRow(new Game(), 3.9);
+        $selectedCell->setRow(new Game(), 3.9);
     }
 
     public function testStatusNotSet()
     {
-        $SelectedCell = new SelectedCell();
+        $selectedCell = new SelectedCell();
 
         $this->expectException(SelectedCellValidatorException::class);
         $this->expectExceptionCode(SelectedCell::ERROR_SELECTED_CELL_ONLY_FOR_ONGOING_CODE, SelectedCell::ERROR_SELECTED_CELL_ONLY_FOR_ONGOING);
-        $SelectedCell->setRow(new Game(), SelectedCell::MIN_INDEX);
+        $selectedCell->setRow(new Game(), SelectedCell::MIN_INDEX);
     }
 
     public function testInvalidStatusSet()
     {
-        $SelectedCell = new SelectedCell();
+        $selectedCell = new SelectedCell();
         $game = new Game();
         $game->setStatus(Game::DRAFT);
 
         $this->expectException(SelectedCellValidatorException::class);
         $this->expectExceptionCode(SelectedCell::ERROR_SELECTED_CELL_ONLY_FOR_ONGOING_CODE, SelectedCell::ERROR_SELECTED_CELL_ONLY_FOR_ONGOING);
-        $SelectedCell->setRow($game, SelectedCell::MIN_INDEX);
+        $selectedCell->setRow($game, SelectedCell::MIN_INDEX);
     }
 
     public function testTooSmall()
     {
-        $SelectedCell = new SelectedCell();
+        $selectedCell = new SelectedCell();
         $game = new Game();
         $game->setStatus(Game::DRAFT);
         $game->setHeight(Game::MAX_HEIGHT_WIDTH);
@@ -93,12 +93,12 @@ class RowUnitTest extends KernelTestCase
 
         $this->expectException(SelectedCellValidatorException::class);
         $this->expectExceptionCode(SelectedCell::ERROR_SELECTED_CELL_INVALID_CODE, SelectedCell::ERROR_SELECTED_CELL_INVALID);
-        $SelectedCell->setRow($game, SelectedCell::MIN_INDEX - 1);
+        $selectedCell->setRow($game, SelectedCell::MIN_INDEX - 1);
     }
 
     public function testTooBig()
     {
-        $SelectedCell = new SelectedCell();
+        $selectedCell = new SelectedCell();
         $game = new Game();
         $game->setStatus(Game::DRAFT);
         $game->setHeight(Game::MAX_HEIGHT_WIDTH);
@@ -109,6 +109,6 @@ class RowUnitTest extends KernelTestCase
 
         $this->expectException(SelectedCellValidatorException::class);
         $this->expectExceptionCode(SelectedCell::ERROR_SELECTED_CELL_INVALID_CODE, SelectedCell::ERROR_SELECTED_CELL_INVALID);
-        $SelectedCell->setRow($game, $SelectedCell->getMaxAllowedRow($game) + 1);
+        $selectedCell->setRow($game, $selectedCell->getMaxAllowedRow($game) + 1);
     }
 }

@@ -38,20 +38,20 @@ final class SelectedCellService
         }
         try {
             $game = $this->gameRepo->mustFindCurrentOngoing();
-            $SelectedCell = $this->selectedCellRepo->select($game, $request[SelectedCell::ROW], $request[SelectedCell::COLUMN]);
+            $selectedCell = $this->selectedCellRepo->select($game, $request[SelectedCell::ROW], $request[SelectedCell::COLUMN]);
             $game = $this->gameRepo->toggleNextSymbol($game);
-            $totalSelectedSelectedCellCnt = $this->selectedCellRepo->getTotalCnt($game->getId());
+            $totalSelectedCellCnt = $this->selectedCellRepo->getTotalCnt($game->getId());
 
-            if ($this->isWin($totalSelectedSelectedCellCnt, $game, $SelectedCell)) {
+            if ($this->isWin($totalSelectedCellCnt, $game, $selectedCell)) {
                 $this->gameRepo->markAsCompleted($game);
-                $SelectedCell->setIsLast(true);
-            } elseif ($this->isTie($game, $totalSelectedSelectedCellCnt)) {
+                $selectedCell->setIsLast(true);
+            } elseif ($this->isTie($game, $totalSelectedCellCnt)) {
                 $this->gameRepo->markAsCompleted($game);
-                $SelectedCell->setIsLast(true);
-                $SelectedCell->setIsTie(true);
+                $selectedCell->setIsLast(true);
+                $selectedCell->setIsTie(true);
             }
 
-            return $SelectedCell;
+            return $selectedCell;
         } catch (\Error $ex) {
             throw new SelectedCellValidatorException([SelectedCell::SELECTED_CELL => SelectedCell::ERROR_SELECTED_CELL_INVALID], SelectedCell::ERROR_SELECTED_CELL_INVALID_CODE);
         }
@@ -60,20 +60,20 @@ final class SelectedCellService
     /**
      * #19 Check if there's enough marked cells side-by-side in columns, rows and diagonals with the same symbol.
      */
-    public function isWin(int $totalSelectedSelectedCellCnt, Game $game, SelectedCell $SelectedCell): bool
+    public function isWin(int $totalSelectedCellCnt, Game $game, SelectedCell $selectedCell): bool
     {
         // #19 Don't continue if there is not enough marked cells.
-        if ($totalSelectedSelectedCellCnt < $game->getSelectedCellCntToWin()) {
+        if ($totalSelectedCellCnt < $game->getSelectedCellCntToWin()) {
             return false;
         }
 
-        if ($this->isRowWin($totalSelectedSelectedCellCnt, $game, $SelectedCell, $this->selectedCellRepo->getFromRow($game->getId(), $SelectedCell->getSymbol(), $SelectedCell->getRow()))) {
+        if ($this->isRowWin($totalSelectedCellCnt, $game, $selectedCell, $this->selectedCellRepo->getFromRow($game->getId(), $selectedCell->getSymbol(), $selectedCell->getRow()))) {
             return true;
         }
-        if ($this->isColumnWin($totalSelectedSelectedCellCnt, $game, $SelectedCell, $this->selectedCellRepo->getFromColumn($game->getId(), $SelectedCell->getSymbol(), $SelectedCell->getColumn()))) {
+        if ($this->isColumnWin($totalSelectedCellCnt, $game, $selectedCell, $this->selectedCellRepo->getFromColumn($game->getId(), $selectedCell->getSymbol(), $selectedCell->getColumn()))) {
             return true;
         }
-        if ($this->isDiagonalWin($totalSelectedSelectedCellCnt, $game, $SelectedCell, $this->selectedCellRepo->getAll($game->getId(), $SelectedCell->getSymbol(), $SelectedCell->getColumn()))) {
+        if ($this->isDiagonalWin($totalSelectedCellCnt, $game, $selectedCell, $this->selectedCellRepo->getAll($game->getId(), $selectedCell->getSymbol(), $selectedCell->getColumn()))) {
             return true;
         }
 
@@ -85,12 +85,12 @@ final class SelectedCellService
      *
      * @param array $cells
      */
-    public function isDiagonalWin(int $totalSelectedSelectedCellCnt, Game $game, SelectedCell $SelectedCell, ?array $cells = []): bool
+    public function isDiagonalWin(int $totalSelectedCellCnt, Game $game, SelectedCell $selectedCell, ?array $cells = []): bool
     {
-        if ($game->getSelectedCellCntToWin() === $this->getMarkedCellCntDiagonallyFromLeftToRight($totalSelectedSelectedCellCnt, $game, $SelectedCell, $cells)) {
+        if ($game->getSelectedCellCntToWin() === $this->getSelectedCellCntDiagonallyFromLeftToRight($totalSelectedCellCnt, $game, $selectedCell, $cells)) {
             return true;
         }
-        if ($game->getSelectedCellCntToWin() === $this->getMarkedCellCntDiagonallyFromRightToLeft($totalSelectedSelectedCellCnt, $game, $SelectedCell, $cells)) {
+        if ($game->getSelectedCellCntToWin() === $this->getSelectedCellCntDiagonallyFromRightToLeft($totalSelectedCellCnt, $game, $selectedCell, $cells)) {
             return true;
         }
 
@@ -102,13 +102,13 @@ final class SelectedCellService
      *
      * @param array $cells
      */
-    public function isRowWin(int $totalSelectedSelectedCellCnt, Game $game, SelectedCell $SelectedCell, ?array $cells = []): bool
+    public function isRowWin(int $totalSelectedCellCnt, Game $game, SelectedCell $selectedCell, ?array $cells = []): bool
     {
         $hasWin = false;
         $markedCellCntInRow = 1;
 
         // #19 Check that the row contains enough selected cells to have a win.
-        if ($totalSelectedSelectedCellCnt < $game->getSelectedCellCntToWin()) {
+        if ($totalSelectedCellCnt < $game->getSelectedCellCntToWin()) {
             return $hasWin;
         }
 
@@ -134,13 +134,13 @@ final class SelectedCellService
      *
      * @param array $cells
      */
-    public function isColumnWin(int $totalSelectedSelectedCellCnt, Game $game, SelectedCell $SelectedCell, ?array $cells = []): bool
+    public function isColumnWin(int $totalSelectedCellCnt, Game $game, SelectedCell $selectedCell, ?array $cells = []): bool
     {
         $hasWin = false;
         $markedCellCntInColumn = 1;
 
         // #19 Check that the column contains enough selected cells to have a win.
-        if ($totalSelectedSelectedCellCnt < $game->getSelectedCellCntToWin()) {
+        if ($totalSelectedCellCnt < $game->getSelectedCellCntToWin()) {
             return $hasWin;
         }
 
@@ -161,38 +161,38 @@ final class SelectedCellService
         return $hasWin;
     }
 
-    public function getMarkedCellCntDiagonallyFromLeftToRight(int $totalSelectedSelectedCellCnt, Game $game, SelectedCell $SelectedCell, ?array $cells = []): int
+    public function getSelectedCellCntDiagonallyFromLeftToRight(int $totalSelectedCellCnt, Game $game, SelectedCell $selectedCell, ?array $cells = []): int
     {
-        $cntInNorthWest = $this->getMarkedCellCntNorthWest($totalSelectedSelectedCellCnt, $game, $SelectedCell, $cells);
+        $cntInNorthWest = $this->getSelectedCellCntNorthWest($totalSelectedCellCnt, $game, $selectedCell, $cells);
         $startingCell = 1;
-        $cntInSouthEast = $this->getMarkedCellCntSouthEast($totalSelectedSelectedCellCnt, $game, $SelectedCell, $cells);
+        $cntInSouthEast = $this->getSelectedCellCntSouthEast($totalSelectedCellCnt, $game, $selectedCell, $cells);
 
         return $cntInNorthWest + $startingCell + $cntInSouthEast;
     }
 
-    public function getMarkedCellCntDiagonallyFromRightToLeft(int $totalSelectedSelectedCellCnt, Game $game, SelectedCell $SelectedCell, ?array $cells = []): int
+    public function getSelectedCellCntDiagonallyFromRightToLeft(int $totalSelectedCellCnt, Game $game, SelectedCell $selectedCell, ?array $cells = []): int
     {
-        $cntInNorthWest = $this->getMarkedCellCntNorthEast($totalSelectedSelectedCellCnt, $game, $SelectedCell, $cells);
+        $cntInNorthWest = $this->getSelectedCellCntNorthEast($totalSelectedCellCnt, $game, $selectedCell, $cells);
         $startingCell = 1;
-        $cntInSouthEast = $this->getMarkedCellCntSouthWest($totalSelectedSelectedCellCnt, $game, $SelectedCell, $cells);
+        $cntInSouthEast = $this->getSelectedCellCntSouthWest($totalSelectedCellCnt, $game, $selectedCell, $cells);
 
         return $cntInNorthWest + $startingCell + $cntInSouthEast;
     }
 
-    public function getMarkedCellCntSouthWest(int $totalSelectedSelectedCellCnt, Game $game, SelectedCell $SelectedCell, ?array $cells = []): int
+    public function getSelectedCellCntSouthWest(int $totalSelectedCellCnt, Game $game, SelectedCell $selectedCell, ?array $cells = []): int
     {
         $markedCellCntInDiagonal = -1;
 
         // #19 Check that the column contains enough selected cells to have a win.
-        if ($totalSelectedSelectedCellCnt < $game->getSelectedCellCntToWin()) {
+        if ($totalSelectedCellCnt < $game->getSelectedCellCntToWin()) {
             return 0;
         }
 
         // #19 Traverse cells diagonally till the end of the list has been reached.
         $continue = true;
         // #19 Start the traverse from the last selected cell.
-        $row = $SelectedCell->getRow();
-        $column = $SelectedCell->getColumn();
+        $row = $selectedCell->getRow();
+        $column = $selectedCell->getColumn();
 
         while (true == $continue) {
             // #19 Is there a marked cell?
@@ -210,20 +210,20 @@ final class SelectedCellService
         return $markedCellCntInDiagonal;
     }
 
-    public function getMarkedCellCntNorthEast(int $totalSelectedSelectedCellCnt, Game $game, SelectedCell $SelectedCell, ?array $cells = []): int
+    public function getSelectedCellCntNorthEast(int $totalSelectedCellCnt, Game $game, SelectedCell $selectedCell, ?array $cells = []): int
     {
         $markedCellCntInDiagonal = -1;
 
         // #19 Check that the column contains enough selected cells to have a win.
-        if ($totalSelectedSelectedCellCnt < $game->getSelectedCellCntToWin()) {
+        if ($totalSelectedCellCnt < $game->getSelectedCellCntToWin()) {
             return 0;
         }
 
         // #19 Traverse cells dioganlly till the end of the list has been reached.
         $continue = true;
         // #19 Start the traverse from the last selected cell.
-        $row = $SelectedCell->getRow();
-        $column = $SelectedCell->getColumn();
+        $row = $selectedCell->getRow();
+        $column = $selectedCell->getColumn();
 
         while (true == $continue) {
             // #19 Is there a marked cell?
@@ -241,20 +241,20 @@ final class SelectedCellService
         return $markedCellCntInDiagonal;
     }
 
-    public function getMarkedCellCntSouthEast(int $totalSelectedSelectedCellCnt, Game $game, SelectedCell $SelectedCell, ?array $cells = []): int
+    public function getSelectedCellCntSouthEast(int $totalSelectedCellCnt, Game $game, SelectedCell $selectedCell, ?array $cells = []): int
     {
         $markedCellCntInDiagonal = -1;
 
         // #19 Check that the column contains enough selected cells to have a win.
-        if ($totalSelectedSelectedCellCnt < $game->getSelectedCellCntToWin()) {
+        if ($totalSelectedCellCnt < $game->getSelectedCellCntToWin()) {
             return 0;
         }
 
         // #19 Traverse cells diagonally till the end of the list has been reached.
         $continue = true;
         // #19 Start the traverse from the last selected cell.
-        $row = $SelectedCell->getRow();
-        $column = $SelectedCell->getColumn();
+        $row = $selectedCell->getRow();
+        $column = $selectedCell->getColumn();
 
         while (true == $continue) {
             // #19 Is there a marked cell?
@@ -272,20 +272,20 @@ final class SelectedCellService
         return $markedCellCntInDiagonal;
     }
 
-    public function getMarkedCellCntNorthWest(int $totalSelectedSelectedCellCnt, Game $game, SelectedCell $SelectedCell, ?array $cells = []): int
+    public function getSelectedCellCntNorthWest(int $totalSelectedCellCnt, Game $game, SelectedCell $selectedCell, ?array $cells = []): int
     {
         $markedCellCntInDiagonal = -1;
 
         // #19 Check that the column contains enough selected cells to have a win.
-        if ($totalSelectedSelectedCellCnt < $game->getSelectedCellCntToWin()) {
+        if ($totalSelectedCellCnt < $game->getSelectedCellCntToWin()) {
             return 0;
         }
 
         // #19 Traverse cells diagonally till the end of the list has been reached.
         $continue = true;
         // #19 Start the traverse from the last selected cell.
-        $row = $SelectedCell->getRow();
-        $column = $SelectedCell->getColumn();
+        $row = $selectedCell->getRow();
+        $column = $selectedCell->getColumn();
 
         while (true == $continue) {
             // #19 Is there a marked cell?
@@ -306,8 +306,8 @@ final class SelectedCellService
     /**
      * #37 If there's no winner and all cells are selected then it's a tie.
      */
-    public function isTie(Game $game, int $totalSelectedSelectedCellCnt): bool
+    public function isTie(Game $game, int $totalSelectedCellCnt): bool
     {
-        return $totalSelectedSelectedCellCnt === $game->getTotalCellCnt();
+        return $totalSelectedCellCnt === $game->getTotalCellCnt();
     }
 }

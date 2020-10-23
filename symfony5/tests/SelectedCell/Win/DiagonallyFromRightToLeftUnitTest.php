@@ -35,13 +35,13 @@ class DiagonallyFromRightToLeftUnitTest extends KernelTestCase
         $game->setSelectedCellCntToWin(Game::MIN_HEIGHT_WIDTH + 1);
         $game = $this->gameRepo->markAsStarted($game);
 
-        $SelectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX, Game::MIN_HEIGHT_WIDTH);
-        $SelectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX + 1, Game::MIN_HEIGHT_WIDTH - 1);
-        $SelectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX + 2, Game::MIN_HEIGHT_WIDTH - 2);
+        $selectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX, Game::MIN_HEIGHT_WIDTH);
+        $selectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX + 1, Game::MIN_HEIGHT_WIDTH - 1);
+        $selectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX + 2, Game::MIN_HEIGHT_WIDTH - 2);
 
         $markedCells = $this->selectedCellRepo->getAll($game->getId(), SelectedCell::SYMBOL_X);
-        $this->assertEquals(3, $this->SelectedCellService->getMarkedCellCntDiagonallyFromRightToLeft(3, $game, $SelectedCell, $markedCells));
-        $this->assertTrue($this->SelectedCellService->isDiagonalWin(3, $game, $SelectedCell, $markedCells));
+        $this->assertEquals(3, $this->SelectedCellService->getSelectedCellCntDiagonallyFromRightToLeft(3, $game, $selectedCell, $markedCells));
+        $this->assertTrue($this->SelectedCellService->isDiagonalWin(3, $game, $selectedCell, $markedCells));
     }
 
     public function testNotEnough()
@@ -53,11 +53,11 @@ class DiagonallyFromRightToLeftUnitTest extends KernelTestCase
         $game->setSelectedCellCntToWin(Game::MIN_HEIGHT_WIDTH + 1);
         $game = $this->gameRepo->markAsStarted($game);
 
-        $SelectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX, Game::MIN_HEIGHT_WIDTH);
-        $SelectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX + 1, Game::MIN_HEIGHT_WIDTH - 1);
+        $selectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX, Game::MIN_HEIGHT_WIDTH);
+        $selectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX + 1, Game::MIN_HEIGHT_WIDTH - 1);
 
         $markedCells = $this->selectedCellRepo->getAll($game->getId(), SelectedCell::SYMBOL_X);
-        $this->assertEquals(1, $this->SelectedCellService->getMarkedCellCntDiagonallyFromRightToLeft(2, $game, $SelectedCell, $markedCells));
-        $this->assertFalse($this->SelectedCellService->isDiagonalWin(2, $game, $SelectedCell, $markedCells));
+        $this->assertEquals(1, $this->SelectedCellService->getSelectedCellCntDiagonallyFromRightToLeft(2, $game, $selectedCell, $markedCells));
+        $this->assertFalse($this->SelectedCellService->isDiagonalWin(2, $game, $selectedCell, $markedCells));
     }
 }

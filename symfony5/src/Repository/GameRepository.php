@@ -37,10 +37,10 @@ final class GameRepository extends BaseRepository implements IGameRepo
      * #15 Set game rules like how many SelectedCells are required to win.
      * Board dimensions are required to be set first.
      */
-    public function setRules(Game $item, int $SelectedCellCntToWin): Game
+    public function setRules(Game $item, int $selectedCellCntToWin): Game
     {
         $item = $this->em->getReference(Game::class, $item->getId());
-        $item->setSelectedCellCntToWin($SelectedCellCntToWin);
+        $item->setSelectedCellCntToWin($selectedCellCntToWin);
         $this->save();
 
         return $item;

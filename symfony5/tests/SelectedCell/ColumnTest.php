@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ColumnTest extends WebTestCase
 {
-    private $uri = '/game/move';
+    private $uri = '/game/select_cell';
 
     protected function setUp(): void
     {

@@ -35,10 +35,10 @@ class RowUnitTest extends KernelTestCase
         $game->setSelectedCellCntToWin(Game::MIN_HEIGHT_WIDTH);
         $game = $this->gameRepo->markAsStarted($game);
 
-        $SelectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX, SelectedCell::MIN_INDEX);
-        $SelectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX, SelectedCell::MIN_INDEX + 1);
+        $selectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX, SelectedCell::MIN_INDEX);
+        $selectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX, SelectedCell::MIN_INDEX + 1);
 
-        $SelectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX + 1, SelectedCell::MIN_INDEX + 1);
+        $selectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX + 1, SelectedCell::MIN_INDEX + 1);
 
         $markedCells = $this->selectedCellRepo->getFromRow($game->getId(), SelectedCell::SYMBOL_X, SelectedCell::MIN_INDEX);
         $this->assertEquals(count($markedCells), 2);
@@ -52,11 +52,11 @@ class RowUnitTest extends KernelTestCase
         $game = $this->gameRepo->setRules($game, Game::MIN_HEIGHT_WIDTH);
         $game->setSelectedCellCntToWin(Game::MIN_HEIGHT_WIDTH);
         $game = $this->gameRepo->markAsStarted($game);
-        $SelectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX, SelectedCell::MIN_INDEX);
-        $SelectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX, SelectedCell::MIN_INDEX + 1);
+        $selectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX, SelectedCell::MIN_INDEX);
+        $selectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX, SelectedCell::MIN_INDEX + 1);
 
-        $markedCells = $this->selectedCellRepo->getFromRow($game->getId(), SelectedCell::SYMBOL_X, $SelectedCell->getRow());
-        $this->assertTrue($this->SelectedCellService->isRowWin(2, $game, $SelectedCell, $markedCells));
+        $markedCells = $this->selectedCellRepo->getFromRow($game->getId(), SelectedCell::SYMBOL_X, $selectedCell->getRow());
+        $this->assertTrue($this->SelectedCellService->isRowWin(2, $game, $selectedCell, $markedCells));
     }
 
     public function testNotWin()
@@ -67,10 +67,10 @@ class RowUnitTest extends KernelTestCase
         $game = $this->gameRepo->setRules($game, Game::MIN_HEIGHT_WIDTH + 1);
         $game->setSelectedCellCntToWin(Game::MIN_HEIGHT_WIDTH + 1);
         $game = $this->gameRepo->markAsStarted($game);
-        $SelectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX, SelectedCell::MIN_INDEX);
-        $SelectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX, SelectedCell::MIN_INDEX + 1);
+        $selectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX, SelectedCell::MIN_INDEX);
+        $selectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX, SelectedCell::MIN_INDEX + 1);
 
-        $markedCells = $this->selectedCellRepo->getFromRow($game->getId(), SelectedCell::SYMBOL_X, $SelectedCell->getRow());
-        $this->assertFalse($this->SelectedCellService->isRowWin(2, $game, $SelectedCell, $markedCells));
+        $markedCells = $this->selectedCellRepo->getFromRow($game->getId(), SelectedCell::SYMBOL_X, $selectedCell->getRow());
+        $this->assertFalse($this->SelectedCellService->isRowWin(2, $game, $selectedCell, $markedCells));
     }
 }

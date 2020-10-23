@@ -35,12 +35,12 @@ class DiagonallyFromLeftToRightUnitTest extends KernelTestCase
         $game->setSelectedCellCntToWin(Game::MIN_HEIGHT_WIDTH + 1);
         $game = $this->gameRepo->markAsStarted($game);
 
-        $SelectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX, SelectedCell::MIN_INDEX);
-        $SelectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX + 1, SelectedCell::MIN_INDEX + 1);
-        $SelectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX + 2, SelectedCell::MIN_INDEX + 2);
+        $selectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX, SelectedCell::MIN_INDEX);
+        $selectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX + 1, SelectedCell::MIN_INDEX + 1);
+        $selectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX + 2, SelectedCell::MIN_INDEX + 2);
 
         $markedCells = $this->selectedCellRepo->getAll($game->getId(), SelectedCell::SYMBOL_X);
-        $this->assertEquals(3, $this->SelectedCellService->getMarkedCellCntDiagonallyFromLeftToRight(3, $game, $SelectedCell, $markedCells));
+        $this->assertEquals(3, $this->SelectedCellService->getSelectedCellCntDiagonallyFromLeftToRight(3, $game, $selectedCell, $markedCells));
     }
 
     public function testNotEnough()
@@ -52,10 +52,10 @@ class DiagonallyFromLeftToRightUnitTest extends KernelTestCase
         $game->setSelectedCellCntToWin(Game::MIN_HEIGHT_WIDTH + 1);
         $game = $this->gameRepo->markAsStarted($game);
 
-        $SelectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX, SelectedCell::MIN_INDEX);
-        $SelectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX + 1, SelectedCell::MIN_INDEX + 1);
+        $selectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX, SelectedCell::MIN_INDEX);
+        $selectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX + 1, SelectedCell::MIN_INDEX + 1);
 
         $markedCells = $this->selectedCellRepo->getAll($game->getId(), SelectedCell::SYMBOL_X);
-        $this->assertEquals(1, $this->SelectedCellService->getMarkedCellCntDiagonallyFromLeftToRight(2, $game, $SelectedCell, $markedCells));
+        $this->assertEquals(1, $this->SelectedCellService->getSelectedCellCntDiagonallyFromLeftToRight(2, $game, $selectedCell, $markedCells));
     }
 }

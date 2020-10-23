@@ -27,7 +27,7 @@ class ColumnUnitTest extends KernelTestCase
 
     public function testValid()
     {
-        $SelectedCell = new SelectedCell();
+        $selectedCell = new SelectedCell();
         $game = new Game();
         $game->setStatus(Game::DRAFT);
         $game->setHeight(Game::MAX_HEIGHT_WIDTH);
@@ -35,55 +35,55 @@ class ColumnUnitTest extends KernelTestCase
         $game->setSelectedCellCntToWin(Game::MAX_HEIGHT_WIDTH);
 
         $game->setStatus(Game::ONGOING);
-        $SelectedCell->setColumn($game, $SelectedCell->getMaxAllowedColumn($game));
-        $this->assertEquals($SelectedCell->getColumn(), $SelectedCell->getMaxAllowedColumn($game));
+        $selectedCell->setColumn($game, $selectedCell->getMaxAllowedColumn($game));
+        $this->assertEquals($selectedCell->getColumn(), $selectedCell->getMaxAllowedColumn($game));
         $this->selectedCellRepo->save();
     }
 
     public function testNotGame()
     {
-        $SelectedCell = new SelectedCell();
+        $selectedCell = new SelectedCell();
         $this->expectException(\TypeError::class);
-        $SelectedCell->setColumn('a', 1);
+        $selectedCell->setColumn('a', 1);
     }
 
     public function testNotInteger()
     {
-        $SelectedCell = new SelectedCell();
+        $selectedCell = new SelectedCell();
         $this->expectException(\TypeError::class);
-        $SelectedCell->setColumn(new Game(), 'a');
+        $selectedCell->setColumn(new Game(), 'a');
     }
 
     public function testNotInteger2()
     {
-        $SelectedCell = new SelectedCell();
+        $selectedCell = new SelectedCell();
         $this->expectException(\TypeError::class);
-        $SelectedCell->setColumn(new Game(), 3.9);
+        $selectedCell->setColumn(new Game(), 3.9);
     }
 
     public function testStatusNotSet()
     {
-        $SelectedCell = new SelectedCell();
+        $selectedCell = new SelectedCell();
 
         $this->expectException(SelectedCellValidatorException::class);
         $this->expectExceptionCode(SelectedCell::ERROR_SELECTED_CELL_ONLY_FOR_ONGOING_CODE, SelectedCell::ERROR_SELECTED_CELL_ONLY_FOR_ONGOING);
-        $SelectedCell->setColumn(new Game(), SelectedCell::MIN_INDEX);
+        $selectedCell->setColumn(new Game(), SelectedCell::MIN_INDEX);
     }
 
     public function testInvalidStatusSet()
     {
-        $SelectedCell = new SelectedCell();
+        $selectedCell = new SelectedCell();
         $game = new Game();
         $game->setStatus(Game::DRAFT);
 
         $this->expectException(SelectedCellValidatorException::class);
         $this->expectExceptionCode(SelectedCell::ERROR_SELECTED_CELL_ONLY_FOR_ONGOING_CODE, SelectedCell::ERROR_SELECTED_CELL_ONLY_FOR_ONGOING);
-        $SelectedCell->setColumn($game, SelectedCell::MIN_INDEX);
+        $selectedCell->setColumn($game, SelectedCell::MIN_INDEX);
     }
 
     public function testTooSmall()
     {
-        $SelectedCell = new SelectedCell();
+        $selectedCell = new SelectedCell();
         $game = new Game();
         $game->setStatus(Game::DRAFT);
         $game->setHeight(Game::MAX_HEIGHT_WIDTH);
@@ -93,12 +93,12 @@ class ColumnUnitTest extends KernelTestCase
         $game->setStatus(Game::ONGOING);
         $this->expectException(SelectedCellValidatorException::class);
         $this->expectExceptionCode(SelectedCell::ERROR_SELECTED_CELL_INVALID_CODE, SelectedCell::ERROR_SELECTED_CELL_INVALID);
-        $SelectedCell->setColumn($game, SelectedCell::MIN_INDEX - 1);
+        $selectedCell->setColumn($game, SelectedCell::MIN_INDEX - 1);
     }
 
     public function testTooBig()
     {
-        $SelectedCell = new SelectedCell();
+        $selectedCell = new SelectedCell();
         $game = new Game();
         $game->setStatus(Game::DRAFT);
         $game->setHeight(Game::MAX_HEIGHT_WIDTH);
@@ -109,6 +109,6 @@ class ColumnUnitTest extends KernelTestCase
 
         $this->expectException(SelectedCellValidatorException::class);
         $this->expectExceptionCode(SelectedCell::ERROR_SELECTED_CELL_INVALID_CODE, SelectedCell::ERROR_SELECTED_CELL_INVALID);
-        $SelectedCell->setColumn($game, $SelectedCell->getMaxAllowedColumn($game) + 1);
+        $selectedCell->setColumn($game, $selectedCell->getMaxAllowedColumn($game) + 1);
     }
 }
