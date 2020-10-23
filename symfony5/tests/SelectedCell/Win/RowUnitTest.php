@@ -8,7 +8,7 @@ use App\Entity\Game;
 use App\Entity\SelectedCell;
 use App\Interfaces\IGameRepo;
 use App\Interfaces\ISelectedCellRepo;
-use App\Service\SelectedCellService;
+use App\Service\SelectedCell\WinCalcService;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class RowUnitTest extends KernelTestCase
@@ -23,7 +23,7 @@ class RowUnitTest extends KernelTestCase
         $this->c = $kernel->getContainer();
         $this->gameRepo = $this->c->get('test.'.IGameRepo::class);
         $this->selectedCellRepo = $this->c->get('test.'.ISelectedCellRepo::class);
-        $this->SelectedCellService = $this->c->get('test.'.SelectedCellService::class);
+        $this->winCalcService = $this->c->get('test.'.WinCalcService::class);
     }
 
     public function testSelectedInTheRow()
@@ -56,7 +56,7 @@ class RowUnitTest extends KernelTestCase
         $selectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX, SelectedCell::MIN_INDEX + 1);
 
         $markedCells = $this->selectedCellRepo->getFromRow($game->getId(), SelectedCell::SYMBOL_X, $selectedCell->getRow());
-        $this->assertTrue($this->SelectedCellService->isRowWin(2, $game, $selectedCell, $markedCells));
+        $this->assertTrue($this->winCalcService->isRowWin(2, $game, $selectedCell, $markedCells));
     }
 
     public function testNotWin()
@@ -71,6 +71,6 @@ class RowUnitTest extends KernelTestCase
         $selectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX, SelectedCell::MIN_INDEX + 1);
 
         $markedCells = $this->selectedCellRepo->getFromRow($game->getId(), SelectedCell::SYMBOL_X, $selectedCell->getRow());
-        $this->assertFalse($this->SelectedCellService->isRowWin(2, $game, $selectedCell, $markedCells));
+        $this->assertFalse($this->winCalcService->isRowWin(2, $game, $selectedCell, $markedCells));
     }
 }

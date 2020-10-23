@@ -7,7 +7,7 @@ namespace App\Tests\SelectedCell\Win;
 use App\Entity\SelectedCell;
 use App\Interfaces\IGameRepo;
 use App\Interfaces\ISelectedCellRepo;
-use App\Service\SelectedCellService;
+use App\Service\SelectedCell\WinCalcService;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class TieUnitTest extends KernelTestCase
@@ -22,7 +22,7 @@ class TieUnitTest extends KernelTestCase
         $this->c = $kernel->getContainer();
         $this->gameRepo = $this->c->get('test.'.IGameRepo::class);
         $this->selectedCellRepo = $this->c->get('test.'.ISelectedCellRepo::class);
-        $this->SelectedCellService = $this->c->get('test.'.SelectedCellService::class);
+        $this->winCalcService = $this->c->get('test.'.WinCalcService::class);
     }
 
     public function testValid()
@@ -51,6 +51,6 @@ class TieUnitTest extends KernelTestCase
         $selectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX + 2, SelectedCell::MIN_INDEX + 2); // XXO
 
         $this->assertEquals($game->getTotalCellCnt(), $game->getHeight() * $game->getWidth());
-        $this->assertTrue($this->SelectedCellService->isTie($game, $this->selectedCellRepo->getTotalCnt($game->getId())));
+        $this->assertTrue($this->winCalcService->isTie($game, $this->selectedCellRepo->getTotalCnt($game->getId())));
     }
 }
