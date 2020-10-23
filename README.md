@@ -51,8 +51,8 @@ This describes all the available functions and the way how to call them.
 
 ## Wiki
 
-* https://github.com/janis-rullis/lm1-symfony5-vue2-api/wiki
+* https://github.com/Janis-Rullis-IT/flexi-tic-tac-toe/wiki
 
 ## Have questions? Found a bug?
 
-Please, submit an issue https://github.com/janis-rullis/lm1-symfony5-vue2-api/issues
+Please, submit an issue https://github.com/Janis-Rullis-IT/flexi-tic-tac-toe/issues

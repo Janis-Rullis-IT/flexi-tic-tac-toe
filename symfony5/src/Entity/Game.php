@@ -311,7 +311,7 @@ class Game
                         if (!empty($selectedCells)) {
                             foreach ($selectedCells as $selectedCell) {
                                 // #32 This format is better because when drawing the board it's faster to make sure that it's selected.
-                                // https://github.com/janis-rullis/lm1-symfony5-vue2-api/issues/32#issuecomment-712735160
+                                // https://github.com/Janis-Rullis-IT/flexi-tic-tac-toe/issues/32#issuecomment-712735160
                                 $return[Game::SELECTED_CELLS][$selectedCell->getRow()][$selectedCell->getColumn()] = $selectedCell->toArray();
                             }
                         }
