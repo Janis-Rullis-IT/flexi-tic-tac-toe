@@ -72,7 +72,7 @@ class GameController extends AbstractController
     /**
      * Submit the width and height for the new game's board.
      *
-     * @Route("/game/grid", name="setBoardDimensions", methods={"POST"})
+     * @Route("/game/board", name="setBoardDimensions", methods={"POST"})
      * @SWG\Tag(name="2. other")
      *
      * @SWG\Parameter(name="body", in="body", required=true, @SWG\Schema(required={"width", "height"}, type="object", ref=@Model(type=Game::class, groups={"BOARD"})))

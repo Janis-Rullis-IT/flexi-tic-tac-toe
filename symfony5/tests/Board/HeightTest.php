@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class HeightTest extends WebTestCase
 {
-    private $uri = '/game/grid';
+    private $uri = '/game/board';
 
     protected function setUp(): void
     {
