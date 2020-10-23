@@ -42,6 +42,6 @@ services:
     test.App\Service\SelectedCellService:
         alias: App\Service\SelectedCellService
         public: true
-    test.App\Service\SelectedCell\WinCalcService:
-        alias: App\Service\SelectedCell\WinCalcService
+    test.App\Interfaces\IVictoryCalculationService:
+        alias: App\Interfaces\IVictoryCalculationService
         public: true

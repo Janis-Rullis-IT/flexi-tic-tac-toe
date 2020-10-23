@@ -8,7 +8,7 @@ use App\Entity\Game;
 use App\Entity\SelectedCell;
 use App\Interfaces\IGameRepo;
 use App\Interfaces\ISelectedCellRepo;
-use App\Service\SelectedCell\WinCalcService;
+use App\Interfaces\IVictoryCalculationService;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class DiagonallyFromLeftToRightUnitTest extends KernelTestCase
@@ -16,6 +16,7 @@ class DiagonallyFromLeftToRightUnitTest extends KernelTestCase
     private $c;
     private $gameRepo;
     private $selectedCellRepo;
+    private $victoryCalculationService;
 
     protected function setUp(): void
     {
@@ -23,7 +24,7 @@ class DiagonallyFromLeftToRightUnitTest extends KernelTestCase
         $this->c = $kernel->getContainer();
         $this->gameRepo = $this->c->get('test.'.IGameRepo::class);
         $this->selectedCellRepo = $this->c->get('test.'.ISelectedCellRepo::class);
-        $this->winCalcService = $this->c->get('test.'.WinCalcService::class);
+        $this->victoryCalculationService = $this->c->get('test.'.IVictoryCalculationService::class);
     }
 
     public function testValid()
@@ -40,7 +41,7 @@ class DiagonallyFromLeftToRightUnitTest extends KernelTestCase
         $selectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX + 2, SelectedCell::MIN_INDEX + 2);
 
         $markedCells = $this->selectedCellRepo->getAll($game->getId(), SelectedCell::SYMBOL_X);
-        $this->assertEquals(3, $this->winCalcService->getSelectedCellCntDiagonallyFromLeftToRight(3, $game, $selectedCell, $markedCells));
+        $this->assertEquals(3, $this->victoryCalculationService->getSelectedCellCntDiagonallyFromLeftToRight(3, $game, $selectedCell, $markedCells));
     }
 
     public function testNotEnough()
@@ -56,6 +57,6 @@ class DiagonallyFromLeftToRightUnitTest extends KernelTestCase
         $selectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX + 1, SelectedCell::MIN_INDEX + 1);
 
         $markedCells = $this->selectedCellRepo->getAll($game->getId(), SelectedCell::SYMBOL_X);
-        $this->assertEquals(1, $this->winCalcService->getSelectedCellCntDiagonallyFromLeftToRight(2, $game, $selectedCell, $markedCells));
+        $this->assertEquals(1, $this->victoryCalculationService->getSelectedCellCntDiagonallyFromLeftToRight(2, $game, $selectedCell, $markedCells));
     }
 }

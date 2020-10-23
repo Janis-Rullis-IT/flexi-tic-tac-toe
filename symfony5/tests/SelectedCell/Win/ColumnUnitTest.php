@@ -8,7 +8,7 @@ use App\Entity\Game;
 use App\Entity\SelectedCell;
 use App\Interfaces\IGameRepo;
 use App\Interfaces\ISelectedCellRepo;
-use App\Service\SelectedCell\WinCalcService;
+use App\Interfaces\IVictoryCalculationService;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class ColumnUnitTest extends KernelTestCase
@@ -16,6 +16,7 @@ class ColumnUnitTest extends KernelTestCase
     private $c;
     private $gameRepo;
     private $selectedCellRepo;
+    private $victoryCalculationService;
 
     protected function setUp(): void
     {
@@ -23,7 +24,7 @@ class ColumnUnitTest extends KernelTestCase
         $this->c = $kernel->getContainer();
         $this->gameRepo = $this->c->get('test.'.IGameRepo::class);
         $this->selectedCellRepo = $this->c->get('test.'.ISelectedCellRepo::class);
-        $this->winCalcService = $this->c->get('test.'.WinCalcService::class);
+        $this->victoryCalculationService = $this->c->get('test.'.IVictoryCalculationService::class);
     }
 
     public function testSelectedInTheCol()
@@ -56,7 +57,7 @@ class ColumnUnitTest extends KernelTestCase
         $selectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX + 1, SelectedCell::MIN_INDEX);
 
         $markedCells = $this->selectedCellRepo->getFromColumn($game->getId(), SelectedCell::SYMBOL_X, $selectedCell->getColumn());
-        $this->assertTrue($this->winCalcService->isColumnWin(2, $game, $selectedCell, $markedCells));
+        $this->assertTrue($this->victoryCalculationService->isColumnWin(2, $game, $selectedCell, $markedCells));
     }
 
     public function testNotWin()
@@ -71,6 +72,6 @@ class ColumnUnitTest extends KernelTestCase
         $selectedCell = $this->selectedCellRepo->select($game, SelectedCell::MIN_INDEX + 1, SelectedCell::MIN_INDEX);
 
         $markedCells = $this->selectedCellRepo->getFromColumn($game->getId(), SelectedCell::SYMBOL_X, $selectedCell->getColumn());
-        $this->assertFalse($this->winCalcService->isColumnWin(2, $game, $selectedCell, $markedCells));
+        $this->assertFalse($this->victoryCalculationService->isColumnWin(2, $game, $selectedCell, $markedCells));
     }
 }

@@ -7,8 +7,9 @@ namespace App\Service\SelectedCell;
 use App\Entity\Game;
 use App\Entity\SelectedCell;
 use App\Interfaces\ISelectedCellRepo;
+use App\Interfaces\IVictoryCalculationService;
 
-final class WinCalcService
+final class VictoryCalculationService implements IVictoryCalculationService
 {
     private $selectedCellRepo;
 

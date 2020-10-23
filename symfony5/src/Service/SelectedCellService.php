@@ -8,19 +8,19 @@ use App\Entity\SelectedCell;
 use App\Exception\SelectedCellValidatorException;
 use App\Interfaces\IGameRepo;
 use App\Interfaces\ISelectedCellRepo;
-use App\Service\SelectedCell\WinCalcService;
+use App\Interfaces\IVictoryCalculationService;
 
 final class SelectedCellService
 {
     private $gameRepo;
     private $selectedCellRepo;
-    private $winCalcService;
+    private $victoryCalculationService;
 
-    public function __construct(IGameRepo $gameRepo, ISelectedCellRepo $selectedCellRepo, WinCalcService $winCalcService)
+    public function __construct(IGameRepo $gameRepo, ISelectedCellRepo $selectedCellRepo, IVictoryCalculationService $victoryCalculationService)
     {
         $this->gameRepo = $gameRepo;
         $this->selectedCellRepo = $selectedCellRepo;
-        $this->winCalcService = $winCalcService;
+        $this->victoryCalculationService = $victoryCalculationService;
     }
 
     /**
@@ -44,10 +44,10 @@ final class SelectedCellService
             $game = $this->gameRepo->toggleNextSymbol($game);
             $totalSelectedCellCnt = $this->selectedCellRepo->getTotalCnt($game->getId());
 
-            if ($this->winCalcService->isWin($totalSelectedCellCnt, $game, $selectedCell)) {
+            if ($this->victoryCalculationService->isWin($totalSelectedCellCnt, $game, $selectedCell)) {
                 $this->gameRepo->markAsCompleted($game);
                 $selectedCell->setIsLast(true);
-            } elseif ($this->winCalcService->isTie($game, $totalSelectedCellCnt)) {
+            } elseif ($this->victoryCalculationService->isTie($game, $totalSelectedCellCnt)) {
                 $this->gameRepo->markAsCompleted($game);
                 $selectedCell->setIsLast(true);
                 $selectedCell->setIsTie(true);
