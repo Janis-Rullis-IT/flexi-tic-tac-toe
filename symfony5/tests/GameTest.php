@@ -29,7 +29,7 @@ class GameTest extends WebTestCase
     public function testFound()
     {
         $data = [Game::WIDTH => Game::MAX_HEIGHT_WIDTH, Game::HEIGHT => Game::MIN_HEIGHT_WIDTH];
-        $this->client->request('POST', '/game/grid', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode($data));
+        $this->client->request('POST', '/game/board', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode($data));
 
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
 
@@ -44,7 +44,7 @@ class GameTest extends WebTestCase
     public function testValidMarkOngoing()
     {
         $data = [Game::WIDTH => Game::MAX_HEIGHT_WIDTH, Game::HEIGHT => Game::MIN_HEIGHT_WIDTH];
-        $this->client->request('POST', '/game/grid', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode($data));
+        $this->client->request('POST', '/game/board', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode($data));
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
 
         $data = [Game::SELECTED_CELL_CNT_TO_WIN => Game::MAX_HEIGHT_WIDTH];

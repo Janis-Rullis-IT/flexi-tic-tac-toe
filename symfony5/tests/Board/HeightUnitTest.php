@@ -13,7 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
  *
  * * -1	a 0
  *
- * * Set a limit. Otherwise it may complicate or even crash the system (100000x100000 grid) display and even the gameplay might be a nightmare.		2x2	20x20	20x19	19x20
+ * * Set a limit. Otherwise it may complicate or even crash the system (100000x100000 board) display and even the gameplay might be a nightmare.		2x2	20x20	20x19	19x20
  *
  * * Grid has already been chosen					0
  */

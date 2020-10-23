@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class WidthTest extends WebTestCase
 {
-    private $uri = '/game/grid';
+    private $uri = '/game/board';
 
     protected function setUp(): void
     {
