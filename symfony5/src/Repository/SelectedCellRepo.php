@@ -7,7 +7,7 @@ namespace App\Repository;
 use App\Entity\Game;
 use App\Entity\Move;
 use App\Exception\MoveValidatorException;
-use App\Interfaces\IMoveRepo;
+use App\Interfaces\ISelectedCellRepo;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 
@@ -16,7 +16,7 @@ use Doctrine\ORM\QueryBuilder;
  * - https://www.thinktocode.com/2018/03/05/repository-pattern-symfony/.
  * - https://www.thinktocode.com/2019/01/24/doctrine-repositories-should-be-collections-without-flush/.
  */
-final class MoveRepository extends BaseRepository implements IMoveRepo
+final class SelectedCellRepo extends BaseRepository implements ISelectedCellRepo
 {
     public function __construct(EntityManagerInterface $em)
     {
@@ -27,7 +27,7 @@ final class MoveRepository extends BaseRepository implements IMoveRepo
      * #12 Set game board dimensions but don't store it yet.
      * Validations happen in those Entity methods.
      */
-    public function selectCell(Game $game, int $row, int $column): Move
+    public function select(Game $game, int $row, int $column): Move
     {
         try {
             $item = new Move();
@@ -57,7 +57,7 @@ final class MoveRepository extends BaseRepository implements IMoveRepo
      *
      * @return \App\Repository\QueryBuilder
      */
-    public function getMarkedCellsQueryBuilder(int $gameId, string $symbol): QueryBuilder
+    public function getAllQueryBuilder(int $gameId, string $symbol): QueryBuilder
     {
         return $this->em->createQueryBuilder('a')
             ->select('a.row', 'a.column')
@@ -71,7 +71,7 @@ final class MoveRepository extends BaseRepository implements IMoveRepo
     /**
      * #37 Get the total count of selected cells in this game. Will be used to calculate wins or ties.
      */
-    public function getTotalSelectedMoveCnt(int $gameId): int
+    public function getTotalCnt(int $gameId): int
     {
         $q = $this->em->createQueryBuilder('a')
             ->select('COUNT(a.id)')->from(Move::class, 'a')
@@ -85,9 +85,9 @@ final class MoveRepository extends BaseRepository implements IMoveRepo
      *
      * @param type $organizeInRowColumns
      */
-    public function getMarkedCells(int $gameId, string $symbol, $organizeInRowColumns = true): array
+    public function getAll(int $gameId, string $symbol, $organizeInRowColumns = true): array
     {
-        $q = $this->getMarkedCellsQueryBuilder($gameId, $symbol)->getQuery();
+        $q = $this->getAllQueryBuilder($gameId, $symbol)->getQuery();
         $cells = $q->getResult();
 
         if ($organizeInRowColumns && !empty($cells)) {
@@ -106,9 +106,9 @@ final class MoveRepository extends BaseRepository implements IMoveRepo
     /**
      * #19 Collect marked cells by a specific symbol in the specific row (last move). Will be used to calc. the winner.
      */
-    public function getMarkedCellsInTheRow(int $gameId, string $symbol, int $rowNumber): array
+    public function getFromRow(int $gameId, string $symbol, int $rowNumber): array
     {
-        $q = $this->getMarkedCellsQueryBuilder($gameId, $symbol)
+        $q = $this->getAllQueryBuilder($gameId, $symbol)
             ->andWhere('a.row = :rowNumber')
             ->orderBy('a.row', 'ASC')
             ->addOrderBy('a.column', 'ASC')
@@ -132,9 +132,9 @@ final class MoveRepository extends BaseRepository implements IMoveRepo
     /**
      * #19 Collect marked cells by a specific symbol in the specific column (last move). Will be used to calc. the winner.
      */
-    public function getMarkedCellsInTheColumn(int $gameId, string $symbol, int $columnNumber): array
+    public function getFromColumn(int $gameId, string $symbol, int $columnNumber): array
     {
-        $q = $this->getMarkedCellsQueryBuilder($gameId, $symbol)
+        $q = $this->getAllQueryBuilder($gameId, $symbol)
             ->andWhere('a.column = :columnNumber')
             ->orderBy('a.column', 'ASC')
             ->addOrderBy('a.row', 'ASC')
@@ -158,9 +158,9 @@ final class MoveRepository extends BaseRepository implements IMoveRepo
     /**
      * #19 Collect marked cells by a specific symbol ordered by rows. Will be used to calc. the winner.
      */
-    public function getMarkedCellsOrderedByRows(int $gameId, string $symbol): array
+    public function getOrderedByRows(int $gameId, string $symbol): array
     {
-        $q = $this->getMarkedCellsQueryBuilder($gameId, $symbol)
+        $q = $this->getAllQueryBuilder($gameId, $symbol)
             ->orderBy('a.row', 'ASC')
             ->addOrderBy('a.column', 'ASC')
             ->getQuery();
@@ -171,9 +171,9 @@ final class MoveRepository extends BaseRepository implements IMoveRepo
     /**
      * #19 Collect marked cells by a specific symbol ordered by columns. Will be used to calc. the winner.
      */
-    public function getMarkedCellsOrderedByColumns(int $gameId, string $symbol): array
+    public function getOrderedByColumns(int $gameId, string $symbol): array
     {
-        $q = $this->getMarkedCellsQueryBuilder($gameId, $symbol)
+        $q = $this->getAllQueryBuilder($gameId, $symbol)
             ->orderBy('a.column', 'ASC')
             ->addOrderBy('a.row', 'ASC')
             ->getQuery();

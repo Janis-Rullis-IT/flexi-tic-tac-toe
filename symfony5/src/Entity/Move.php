@@ -10,7 +10,7 @@ use Swagger\Annotations as SWG;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\MoveRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\SelectedCellRepo")
  * @ORM\Table(name="`move`")
  */
 class Move
@@ -49,8 +49,8 @@ class Move
 
     /**
      * @ORM\Column(name="`game_id`", type="integer")
-		* @SWG\Property(property="game_id", type="integer", example=1)
-		* @Groups({"ID_ERROR"})
+     * @SWG\Property(property="game_id", type="integer", example=1)
+     * @Groups({"ID_ERROR"})
      */
     private int $gameId;
 
@@ -94,12 +94,13 @@ class Move
 
     /**
      * #17 Make sure that the selected row is correct.
-	 * 
-	 * @param \App\Entity\Game $game
-	 * @param int $row
-	 * @return \self
-	 * @throws MoveValidatorException
-	 */
+     *
+     * @param \App\Entity\Game $game
+     *
+     * @return \self
+     *
+     * @throws MoveValidatorException
+     */
     public function setRow(Game $game, int $row): self
     {
         // #17 Make sure that the move is not outside the board.
@@ -123,12 +124,13 @@ class Move
 
     /**
      * #17 Make sure that the selected column is correct.
-	 * 
-	 * @param \App\Entity\Game $game
-	 * @param int $column
-	 * @return \self
-	 * @throws MoveValidatorException
-	 */
+     *
+     * @param \App\Entity\Game $game
+     *
+     * @return \self
+     *
+     * @throws MoveValidatorException
+     */
     public function setColumn(Game $game, int $column): self
     {
         // #17 Make sure that the move is not outside the board.

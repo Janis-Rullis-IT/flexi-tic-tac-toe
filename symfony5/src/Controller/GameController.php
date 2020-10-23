@@ -6,7 +6,7 @@ use App\Entity\Game;
 use App\Entity\Move;
 use App\Interfaces\IGameRepo;
 use App\Service\GameService;
-use App\Service\MoveService;
+use App\Service\SelectedCellService;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Swagger\Annotations as SWG;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -150,17 +150,17 @@ class GameController extends AbstractController
     /**
      * Select the cell.
      *
-     * @Route("/game/move", name="selectCell", methods={"POST"})
+     * @Route("/game/move", name="select", methods={"POST"})
      * @SWG\Tag(name="1. game")
      *
      * @SWG\Parameter(name="body", in="body", required=true, @SWG\Schema(required={"row", "column"}, type="object", ref=@Model(type=Move::class, groups={"CREATE"})))
      * @SWG\Response(response=200, description="OK", @SWG\Schema(type="object", ref=@Model(type=Move::class, groups={"PUB"})))
      * @SWG\Response(response=400, description="Bad Request", @SWG\Schema(type="object", @SWG\Property(property="errors", type="object", example={"cell": "#12 Width and height must be an integer from 2 to 20."})))
      */
-    public function selectCell(Request $request, MoveService $moveService): JsonResponse
+    public function select(Request $request, SelectedCellService $selectedCellService): JsonResponse
     {
         try {
-            $resp = $moveService->selectCell(json_decode($request->getContent(), true))->toArray();
+            $resp = $selectedCellService->select(json_decode($request->getContent(), true))->toArray();
 
             return $this->json($resp, Response::HTTP_OK);
         } catch (\Exception $e) {

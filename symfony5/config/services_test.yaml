@@ -35,10 +35,10 @@ services:
         alias: App\Interfaces\IGameRepo
         public: true
     #17
-    test.App\Interfaces\IMoveRepo:
-        alias: App\Interfaces\IMoveRepo
+    test.App\Interfaces\ISelectedCellRepo:
+        alias: App\Interfaces\ISelectedCellRepo
         public: true
     #38
-    test.App\Service\MoveService:
-        alias: App\Service\MoveService
+    test.App\Service\SelectedCellService:
+        alias: App\Service\SelectedCellService
         public: true

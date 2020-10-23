@@ -4,21 +4,21 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use App\Entity\Move;
 use App\Entity\Game;
+use App\Entity\Move;
 use App\Exception\MoveValidatorException;
 use App\Interfaces\IGameRepo;
-use App\Interfaces\IMoveRepo;
+use App\Interfaces\ISelectedCellRepo;
 
-class MoveService
+final class SelectedCellService
 {
     private $gameRepo;
-    private $moveRepo;
+    private $selectedCellRepo;
 
-    public function __construct(IGameRepo $gameRepo, IMoveRepo $moveRepo)
+    public function __construct(IGameRepo $gameRepo, ISelectedCellRepo $selectedCellRepo)
     {
         $this->gameRepo = $gameRepo;
-        $this->moveRepo = $moveRepo;
+        $this->selectedCellRepo = $selectedCellRepo;
     }
 
     /**
@@ -28,7 +28,7 @@ class MoveService
      *
      * @throws \App\Exception\MoveValidatorException
      */
-    public function selectCell(?array $request): Move
+    public function select(?array $request): Move
     {
         if (!isset($request[Move::ROW])) {
             throw new MoveValidatorException([Move::ROW => Move::ERROR_ROW_MISSING], Move::ERROR_ROW_MISSING_CODE);
@@ -38,9 +38,9 @@ class MoveService
         }
         try {
             $game = $this->gameRepo->mustFindCurrentOngoing();
-            $move = $this->moveRepo->selectCell($game, $request[Move::ROW], $request[Move::COLUMN]);
+            $move = $this->selectedCellRepo->select($game, $request[Move::ROW], $request[Move::COLUMN]);
             $game = $this->gameRepo->toggleNextSymbol($game);
-            $totalSelectedMoveCnt = $this->moveRepo->getTotalSelectedMoveCnt($game->getId());
+            $totalSelectedMoveCnt = $this->selectedCellRepo->getTotalCnt($game->getId());
 
             if ($this->isWin($totalSelectedMoveCnt, $game, $move)) {
                 $this->gameRepo->markAsCompleted($game);
@@ -56,8 +56,8 @@ class MoveService
             throw new MoveValidatorException([Move::MOVE => Move::ERROR_MOVE_INVALID], Move::ERROR_MOVE_INVALID_CODE);
         }
     }
-	
-	    /**
+
+    /**
      * #19 Check if there's enough marked cells side-by-side in columns, rows and diagonals with the same symbol.
      */
     public function isWin(int $totalSelectedMoveCnt, Game $game, Move $move): bool
@@ -67,13 +67,13 @@ class MoveService
             return false;
         }
 
-        if ($this->isRowWin($totalSelectedMoveCnt, $game, $move, $this->moveRepo->getMarkedCellsInTheRow($game->getId(), $move->getSymbol(), $move->getRow()))) {
+        if ($this->isRowWin($totalSelectedMoveCnt, $game, $move, $this->selectedCellRepo->getFromRow($game->getId(), $move->getSymbol(), $move->getRow()))) {
             return true;
         }
-        if ($this->isColumnWin($totalSelectedMoveCnt, $game, $move, $this->moveRepo->getMarkedCellsInTheColumn($game->getId(), $move->getSymbol(), $move->getColumn()))) {
+        if ($this->isColumnWin($totalSelectedMoveCnt, $game, $move, $this->selectedCellRepo->getFromColumn($game->getId(), $move->getSymbol(), $move->getColumn()))) {
             return true;
         }
-        if ($this->isDiagonalWin($totalSelectedMoveCnt, $game, $move, $this->moveRepo->getMarkedCells($game->getId(), $move->getSymbol(), $move->getColumn()))) {
+        if ($this->isDiagonalWin($totalSelectedMoveCnt, $game, $move, $this->selectedCellRepo->getAll($game->getId(), $move->getSymbol(), $move->getColumn()))) {
             return true;
         }
 

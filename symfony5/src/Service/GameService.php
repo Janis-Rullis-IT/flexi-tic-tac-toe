@@ -7,7 +7,7 @@ namespace App\Service;
 use App\Entity\Game;
 use App\Interfaces\IGameRepo;
 
-class GameService
+final class GameService
 {
     private $gameRepo;
 
@@ -67,8 +67,6 @@ class GameService
      * #28 Start the game - set game board dimensions and rules like how many moves are required to win.
      *
      * @param array $request
-     *
-     * @throws \App\Exception\GameValidatorException
      */
     public function start(?array $request): Game
     {

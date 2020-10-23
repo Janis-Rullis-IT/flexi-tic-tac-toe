@@ -22,8 +22,7 @@ final class GameRepository extends BaseRepository implements IGameRepo
     }
 
     /**
-     * #12 Set game board dimensions but don't store it yet.
-     * Validations happen in those Entity methods.
+     * #12 Set game board dimensions.
      */
     public function setBoardDimensions(Game $item, int $width, int $height): Game
     {

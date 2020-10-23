@@ -8,21 +8,21 @@ use App\Entity\Game;
 use App\Entity\Move;
 use App\Exception\MoveValidatorException;
 use App\Interfaces\IGameRepo;
-use App\Interfaces\IMoveRepo;
+use App\Interfaces\ISelectedCellRepo;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class MoveColumnUnitTest extends KernelTestCase
 {
     private $c;
     private $gameRepo;
-    private $moveRepo;
+    private $selectedCellRepo;
 
     protected function setUp(): void
     {
         $kernel = self::bootKernel();
         $this->c = $kernel->getContainer();
         $this->gameRepo = $this->c->get('test.'.IGameRepo::class);
-        $this->moveRepo = $this->c->get('test.'.IMoveRepo::class);
+        $this->selectedCellRepo = $this->c->get('test.'.ISelectedCellRepo::class);
     }
 
     public function testValid()
@@ -37,7 +37,7 @@ class MoveColumnUnitTest extends KernelTestCase
         $game->setStatus(Game::ONGOING);
         $move->setColumn($game, $move->getMaxAllowedColumn($game));
         $this->assertEquals($move->getColumn(), $move->getMaxAllowedColumn($game));
-        $this->moveRepo->save();
+        $this->selectedCellRepo->save();
     }
 
     public function testNotGame()
