@@ -22,8 +22,7 @@ final class GameRepository extends BaseRepository implements IGameRepo
     }
 
     /**
-     * #12 Set game board dimensions but don't store it yet.
-     * Validations happen in those Entity methods.
+     * #12 Set game board dimensions.
      */
     public function setBoardDimensions(Game $item, int $width, int $height): Game
     {
@@ -35,13 +34,13 @@ final class GameRepository extends BaseRepository implements IGameRepo
     }
 
     /**
-     * #15 Set game rules like how many moves are required to win.
+     * #15 Set game rules like how many SelectedCells are required to win.
      * Board dimensions are required to be set first.
      */
-    public function setRules(Game $item, int $moveCntToWin): Game
+    public function setRules(Game $item, int $selectedCellCntToWin): Game
     {
         $item = $this->em->getReference(Game::class, $item->getId());
-        $item->setMoveCntToWin($moveCntToWin);
+        $item->setSelectedCellCntToWin($selectedCellCntToWin);
         $this->save();
 
         return $item;
@@ -155,7 +154,7 @@ final class GameRepository extends BaseRepository implements IGameRepo
     }
 
     /**
-     * #33 A move was made, need to change the next symbol.
+     * #33 A SelectedCell was made, need to change the next symbol.
      */
     public function toggleNextSymbol(Game $item): Game
     {

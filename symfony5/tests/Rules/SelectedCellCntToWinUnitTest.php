@@ -8,7 +8,7 @@ use App\Entity\Game;
 use App\Exception\GameValidatorException;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
-class MovesToWinUnitTest extends KernelTestCase
+class SelectedCellCntToWinUnitTest extends KernelTestCase
 {
     private $c;
 
@@ -24,8 +24,8 @@ class MovesToWinUnitTest extends KernelTestCase
         $game->setStatus(Game::DRAFT);
         $game->setHeight(Game::MIN_HEIGHT_WIDTH);
         $game->setWidth(Game::MAX_HEIGHT_WIDTH);
-        $game->setMoveCntToWin(Game::MAX_HEIGHT_WIDTH);
-        $this->assertEquals($game->getMoveCntToWin(), Game::MAX_HEIGHT_WIDTH);
+        $game->setSelectedCellCntToWin(Game::MAX_HEIGHT_WIDTH);
+        $this->assertEquals($game->getSelectedCellCntToWin(), Game::MAX_HEIGHT_WIDTH);
     }
 
     public function testValid2()
@@ -34,8 +34,8 @@ class MovesToWinUnitTest extends KernelTestCase
         $game->setStatus(Game::DRAFT);
         $game->setHeight(Game::MIN_HEIGHT_WIDTH);
         $game->setWidth(Game::MAX_HEIGHT_WIDTH);
-        $game->setMoveCntToWin(Game::MIN_HEIGHT_WIDTH);
-        $this->assertEquals($game->getMoveCntToWin(), Game::MIN_HEIGHT_WIDTH);
+        $game->setSelectedCellCntToWin(Game::MIN_HEIGHT_WIDTH);
+        $this->assertEquals($game->getSelectedCellCntToWin(), Game::MIN_HEIGHT_WIDTH);
     }
 
     public function testNotInteger()
@@ -43,7 +43,7 @@ class MovesToWinUnitTest extends KernelTestCase
         $game = new Game();
 
         $this->expectException(\TypeError::class);
-        $game->setMoveCntToWin('a');
+        $game->setSelectedCellCntToWin('a');
     }
 
     public function testNotInteger2()
@@ -51,7 +51,7 @@ class MovesToWinUnitTest extends KernelTestCase
         $game = new Game();
 
         $this->expectException(\TypeError::class);
-        $game->setMoveCntToWin(3.9);
+        $game->setSelectedCellCntToWin(3.9);
     }
 
     public function testInvalidStatusSet()
@@ -62,7 +62,7 @@ class MovesToWinUnitTest extends KernelTestCase
         $game->setStatus(Game::ONGOING);
         $game->setHeight(Game::MIN_HEIGHT_WIDTH);
         $game->setWidth(Game::MIN_HEIGHT_WIDTH);
-        $game->setMoveCntToWin(Game::MIN_HEIGHT_WIDTH);
+        $game->setSelectedCellCntToWin(Game::MIN_HEIGHT_WIDTH);
     }
 
     public function testTooSmall()
@@ -72,8 +72,8 @@ class MovesToWinUnitTest extends KernelTestCase
         $game->setHeight(Game::MIN_HEIGHT_WIDTH);
         $game->setWidth(Game::MIN_HEIGHT_WIDTH);
         $this->expectException(GameValidatorException::class);
-        $this->expectExceptionCode(Game::ERROR_MOVE_CNT_TO_WIN_INVALID_CODE, Game::ERROR_MOVE_CNT_TO_WIN_INVALID);
-        $game->setMoveCntToWin(Game::MIN_HEIGHT_WIDTH - 1);
+        $this->expectExceptionCode(Game::ERROR_SELECTED_CELL_CNT_TO_WIN_INVALID_CODE, Game::ERROR_SELECTED_CELL_CNT_TO_WIN_INVALID);
+        $game->setSelectedCellCntToWin(Game::MIN_HEIGHT_WIDTH - 1);
     }
 
     public function testTooBig()
@@ -83,7 +83,7 @@ class MovesToWinUnitTest extends KernelTestCase
         $game->setHeight(Game::MIN_HEIGHT_WIDTH);
         $game->setWidth(Game::MAX_HEIGHT_WIDTH);
         $this->expectException(GameValidatorException::class);
-        $this->expectExceptionCode(Game::ERROR_MOVE_CNT_TO_WIN_INVALID_CODE, Game::ERROR_MOVE_CNT_TO_WIN_INVALID);
-        $game->setMoveCntToWin(Game::MAX_HEIGHT_WIDTH + 1);
+        $this->expectExceptionCode(Game::ERROR_SELECTED_CELL_CNT_TO_WIN_INVALID_CODE, Game::ERROR_SELECTED_CELL_CNT_TO_WIN_INVALID);
+        $game->setSelectedCellCntToWin(Game::MAX_HEIGHT_WIDTH + 1);
     }
 }

@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\WxH;
+namespace App\Tests\Board;
 
 use App\Entity\Game;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
-class GridWidthTest extends WebTestCase
+class WidthTest extends WebTestCase
 {
     private $uri = '/game/grid';
 

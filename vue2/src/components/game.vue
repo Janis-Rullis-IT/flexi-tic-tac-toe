@@ -157,7 +157,7 @@ export default {
       if(cell.value === null){
         // #16 Send to API where it will be validated and stored.
         this.loading = true;
-         this.$http.post("game/move", cell).then(
+         this.$http.post("game/select_cell", cell).then(
           function onSuccess(response) {
             this.loading = false;
             // #16 Sets X or O.
@@ -210,16 +210,16 @@ export default {
     },
     // #32 Display marked cells.
     getCellsValue(game, row, column){
-      let hasMoves = typeof game.moves != "undefined" && game.moves != null;
-      if(hasMoves){
+      let hasCells = typeof game.selected_cells != "undefined" && game.selected_cells != null;
+      if(hasCells){
 
-        let hasRow = typeof game.moves[row] != "undefined" && game.moves[row] != null;
+        let hasRow = typeof game.selected_cells[row] != "undefined" && game.selected_cells[row] != null;
         if(hasRow){
 
-          let hasColumn = typeof game.moves[row][column] != "undefined" && game.moves[row][column] != null;
+          let hasColumn = typeof game.selected_cells[row][column] != "undefined" && game.selected_cells[row][column] != null;
           if(hasColumn){
 
-            return game.moves[row][column].symbol;
+            return game.selected_cells[row][column].symbol;
           }
         }
       }

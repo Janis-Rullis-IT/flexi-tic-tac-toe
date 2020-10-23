@@ -7,7 +7,7 @@ namespace App\Service;
 use App\Entity\Game;
 use App\Interfaces\IGameRepo;
 
-class GameService
+final class GameService
 {
     private $gameRepo;
 
@@ -41,7 +41,7 @@ class GameService
     }
 
     /**
-     * #15 Set game rules like how many moves are required to win.
+     * #15 Set game rules like how many SelectedCells are required to win.
      *
      * @param array $request
      *
@@ -51,24 +51,22 @@ class GameService
     {
         // #14 Currently, there is only 1 ongoing game.
         // Multiple games will be implemented in #25
-        if (!isset($request[Game::MOVE_CNT_TO_WIN])) {
-            throw new \App\Exception\GameValidatorException([Game::MOVE_CNT_TO_WIN => Game::ERROR_MOVE_CNT_TO_WIN_INVALID], Game::ERROR_MOVE_CNT_TO_WIN_INVALID_CODE);
+        if (!isset($request[Game::SELECTED_CELL_CNT_TO_WIN])) {
+            throw new \App\Exception\GameValidatorException([Game::SELECTED_CELL_CNT_TO_WIN => Game::ERROR_SELECTED_CELL_CNT_TO_WIN_INVALID], Game::ERROR_SELECTED_CELL_CNT_TO_WIN_INVALID_CODE);
         }
         try {
             $game = $this->gameRepo->mustFindCurrentDraft();
 
-            return $this->gameRepo->setRules($game, $request[Game::MOVE_CNT_TO_WIN]);
+            return $this->gameRepo->setRules($game, $request[Game::SELECTED_CELL_CNT_TO_WIN]);
         } catch (\Error $ex) {
-            throw new \App\Exception\GameValidatorException([Game::MOVE_CNT_TO_WIN => Game::ERROR_MOVE_CNT_TO_WIN_INVALID], Game::ERROR_MOVE_CNT_TO_WIN_INVALID_CODE);
+            throw new \App\Exception\GameValidatorException([Game::SELECTED_CELL_CNT_TO_WIN => Game::ERROR_SELECTED_CELL_CNT_TO_WIN_INVALID], Game::ERROR_SELECTED_CELL_CNT_TO_WIN_INVALID_CODE);
         }
     }
 
     /**
-     * #28 Start the game - set game board dimensions and rules like how many moves are required to win.
+     * #28 Start the game - set game board dimensions and rules like how many SelectedCells are required to win.
      *
      * @param array $request
-     *
-     * @throws \App\Exception\GameValidatorException
      */
     public function start(?array $request): Game
     {

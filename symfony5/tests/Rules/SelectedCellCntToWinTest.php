@@ -8,7 +8,7 @@ use App\Entity\Game;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
-class MovesToWinTest extends WebTestCase
+class SelectedCellCntToWinTest extends WebTestCase
 {
     private $uri = '/game/rules';
 
@@ -24,11 +24,11 @@ class MovesToWinTest extends WebTestCase
         $this->client->request('POST', '/game/grid', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode($data));
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
 
-        $data = [Game::MOVE_CNT_TO_WIN => Game::MAX_HEIGHT_WIDTH];
+        $data = [Game::SELECTED_CELL_CNT_TO_WIN => Game::MAX_HEIGHT_WIDTH];
         $this->client->request('PUT', $this->uri, [], [], ['CONTENT_TYPE' => 'application/json'], json_encode($data));
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
         $responseBody = json_decode($this->client->getResponse()->getContent(), true);
-        $this->assertEquals($data[Game::MOVE_CNT_TO_WIN], $responseBody[Game::MOVE_CNT_TO_WIN]);
+        $this->assertEquals($data[Game::SELECTED_CELL_CNT_TO_WIN], $responseBody[Game::SELECTED_CELL_CNT_TO_WIN]);
     }
 
 //    public function testHeightNotSet()

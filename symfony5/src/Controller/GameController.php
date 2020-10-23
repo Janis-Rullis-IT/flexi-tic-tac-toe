@@ -3,10 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Game;
-use App\Entity\Move;
+use App\Entity\SelectedCell;
 use App\Interfaces\IGameRepo;
 use App\Service\GameService;
-use App\Service\MoveService;
+use App\Service\SelectedCellService;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Swagger\Annotations as SWG;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -24,7 +24,7 @@ class GameController extends AbstractController
      * @SWG\Tag(name="1. game")
      *
      * @SWG\Parameter(name="body", in="body", required=true, @SWG\Schema(required={"width", "height", "move_cnt_to_win"}, type="object", ref=@Model(type=Game::class, groups={"CREATE"})))
-     * @SWG\Response(response=200, description="OK", @SWG\Schema(type="object", ref=@Model(type=Game::class, groups={"PUB"})))
+     * @SWG\Response(response=200, description="OK", @SWG\Schema(type="object", ref=@Model(type=Game::class, groups={"CREATE_PUB"})))
      * @SWG\Response(response=400, description="Bad Request", @SWG\Schema(type="object", @SWG\Property(property="errors", type="object", example={"width": "#12 Width and height must be an integer from 2 to 20."})))
      */
     public function start(Request $request, GameService $gameService): JsonResponse
@@ -59,7 +59,7 @@ class GameController extends AbstractController
                 return $this->json(['errors' => [Game::ID => Game::ERROR_CAN_NOT_FIND]], Response::HTTP_NOT_FOUND);
             }
 
-            return $this->json($game->toArray([], [Game::MOVES]), Response::HTTP_OK);
+            return $this->json($game->toArray([], [Game::SELECTED_CELLS]), Response::HTTP_OK);
         } catch (\Exception $e) {
             if (method_exists($e, 'getErrors')) {
                 return $this->json(['errors' => $e->getErrors()], Response::HTTP_BAD_REQUEST);
@@ -76,7 +76,7 @@ class GameController extends AbstractController
      * @SWG\Tag(name="2. other")
      *
      * @SWG\Parameter(name="body", in="body", required=true, @SWG\Schema(required={"width", "height"}, type="object", ref=@Model(type=Game::class, groups={"BOARD"})))
-     * @SWG\Response(response=200, description="OK", @SWG\Schema(type="object", ref=@Model(type=Game::class, groups={"PUB"})))
+     * @SWG\Response(response=200, description="OK", @SWG\Schema(type="object", ref=@Model(type=Game::class, groups={"CREATE_PUB"})))
      * @SWG\Response(response=400, description="Bad Request", @SWG\Schema(type="object", @SWG\Property(property="errors", type="object", example={"width": "#12 Width and height must be an integer from 2 to 20."})))
      */
     public function setBoardDimensions(Request $request, GameService $gameService): JsonResponse
@@ -95,14 +95,14 @@ class GameController extends AbstractController
     }
 
     /**
-     * Set game rules like how many moves are required to win.
+     * Set game rules like how many SelectedCells are required to win.
      *
      * @Route("/game/rules", name="setRules", methods={"PUT"})
      * @SWG\Tag(name="2. other")
      *
      * @SWG\Parameter(name="body", in="body", required=true, @SWG\Schema(required={"move_cnt_to_win"}, type="object", ref=@Model(type=Game::class, groups={"RULES"})))
-     * @SWG\Response(response=200, description="OK", @SWG\Schema(type="object", ref=@Model(type=Game::class, groups={"PUB"})))
-     * @SWG\Response(response=400, description="Bad Request", @SWG\Schema(type="object", ref=@Model(type=Game::class, groups={"PUB"})))
+     * @SWG\Response(response=200, description="OK", @SWG\Schema(type="object", ref=@Model(type=Game::class, groups={"CREATE_PUB"})))
+     * @SWG\Response(response=400, description="Bad Request", @SWG\Schema(type="object", @SWG\Property(property="errors", type="object", example={"move_cnt_to_win": "#15 move_cnt_to_win count to win must be an integer not smaller than 2 and not bigger than the height or width."})))
      */
     public function setRules(Request $request, GameService $gameService): JsonResponse
     {
@@ -125,8 +125,8 @@ class GameController extends AbstractController
      * @Route("/game/ongoing", name="markAsStarted", methods={"PUT"})
      * @SWG\Tag(name="2. other")
      *
-     * @SWG\Response(response=200, description="OK", @SWG\Schema(type="object", ref=@Model(type=Game::class, groups={"PUB"})))
-     * @SWG\Response(response=400, description="Bad Request", @SWG\Schema(type="object", ref=@Model(type=Game::class, groups={"PUB"})))
+     * @SWG\Response(response=200, description="OK", @SWG\Schema(type="object", ref=@Model(type=Game::class, groups={"CREATE_PUB"})))
+     * @SWG\Response(response=400, description="Bad Request", @SWG\Schema(type="object", ref=@Model(type=Game::class, groups={"CREATE_PUB"})))
      */
     public function markAsStarted(IGameRepo $gameRepo): JsonResponse
     {
@@ -150,17 +150,17 @@ class GameController extends AbstractController
     /**
      * Select the cell.
      *
-     * @Route("/game/move", name="selectCell", methods={"POST"})
+     * @Route("/game/select_cell", name="select", methods={"POST"})
      * @SWG\Tag(name="1. game")
      *
-     * @SWG\Parameter(name="body", in="body", required=true, @SWG\Schema(required={"row", "column"}, type="object", ref=@Model(type=Move::class, groups={"CREATE"})))
-     * @SWG\Response(response=200, description="OK", @SWG\Schema(type="object", ref=@Model(type=Move::class, groups={"PUB"})))
+     * @SWG\Parameter(name="body", in="body", required=true, @SWG\Schema(required={"row", "column"}, type="object", ref=@Model(type=SelectedCell::class, groups={"CREATE"})))
+     * @SWG\Response(response=200, description="OK", @SWG\Schema(type="object", ref=@Model(type=SelectedCell::class, groups={"PUB"})))
      * @SWG\Response(response=400, description="Bad Request", @SWG\Schema(type="object", @SWG\Property(property="errors", type="object", example={"cell": "#12 Width and height must be an integer from 2 to 20."})))
      */
-    public function selectCell(Request $request, MoveService $moveService): JsonResponse
+    public function select(Request $request, SelectedCellService $selectedCellService): JsonResponse
     {
         try {
-            $resp = $moveService->selectCell(json_decode($request->getContent(), true))->toArray();
+            $resp = $selectedCellService->select(json_decode($request->getContent(), true))->toArray();
 
             return $this->json($resp, Response::HTTP_OK);
         } catch (\Exception $e) {
