@@ -34,6 +34,7 @@ function stopDocker() {
 
   echo "Remove any possible past clutter."
   sudo rm db/mysql/* -R && touch db/mysql/.gitkeep
+  sudo rm db/postgres/* -R && touch db/postgres/.gitkeep
 
   echo "Stop any running container from this project"
   docker-compose down --remove-orphans

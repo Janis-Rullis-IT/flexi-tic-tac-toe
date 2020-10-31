@@ -32,7 +32,7 @@ services:
         image: 'mariadb:10.3.22-bionic'
         restart: unless-stopped
         ports:
-            - '3316:3306'
+            - '3326:3306'
         volumes:
             - type: bind
               source: ./db/mysql
@@ -67,6 +67,38 @@ services:
         networks:
             lm1-net:
                 ipv4_address: 172.71.3.14
+    lm1-postgres:
+        container_name: lm1-postgres
+        image: 'postgres:latest'
+        restart: unless-stopped
+        ports:
+            - '5452:5432'
+        volumes:
+            - type: bind
+              source: ./db/postgres
+              target: /var/lib/postgres
+        environment:
+            POSTGRES_USER: lm1-user
+            POSTGRES_PASSWORD: $MYSQL_PASSWORD
+        networks:
+            lm1-net:
+                ipv4_address: 172.71.3.15
+    lm1-pgadmin:
+      container_name: lm1-pgadmin
+      image: dpage/pgadmin4:latest
+      restart: unless-stopped
+      depends_on:
+        - lm1-postgres
+      ports:
+        - "5050:80"
+      volumes:
+        - /data/pgadmin:/root/.pgadmin
+      environment:
+        PGADMIN_DEFAULT_EMAIL: user@lm1.local
+        PGADMIN_DEFAULT_PASSWORD: $MYSQL_PASSWORD
+      networks:
+            lm1-net:
+                ipv4_address: 172.71.3.16
 networks:
     lm1-net:
         ipam:
