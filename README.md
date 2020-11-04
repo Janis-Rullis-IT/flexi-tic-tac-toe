@@ -32,6 +32,7 @@ This transletes the machines address to the domain-name.
 172.71.3.10     lm1.local
 172.71.3.11     api.lm1.local
 172.71.3.14     pma.lm1.local
+172.71.3.16     pga.lm1.local
 ```
 
 ## ALREADY SET-UP?
